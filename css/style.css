@@ -1,0 +1,226 @@
+/*1. ЦВЕТА И ШРИФТЫ */
+:root {
+  --bg-dark: #0a192f;
+  --bg-surface: #112240;
+  --primary-cyan: #64ffda;
+  --accent-purple: #8a2be2;
+  --text-main: #ccd6f6;
+  --text-muted: #8892b0;
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "Outfit", sans-serif;
+}
+
+/*2. БАЗОВЫЕ НАСТРОЙКИ */
+body {
+  background-color: var(--bg-dark);
+  font-family: var(--font-body);
+  color: var(--text-main);
+  overflow-x: hidden;
+  letter-spacing: 0.3px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: #e6f1ff;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Кастомные кнопки */
+.btn {
+  border-radius: 30px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  padding: 12px 25px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-cyan), #00b4d8);
+  color: var(--bg-dark) !important;
+  border: none;
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(100, 255, 218, 0.7);
+}
+
+/* 3. ШАПКА САЙТА */
+header {
+  background-color: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--primary-cyan) !important;
+}
+
+.nav-link {
+  color: var(--text-main) !important;
+  font-weight: 500;
+  margin-left: 1rem;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--primary-cyan) !important;
+}
+
+/*  4. СЕКЦИИ ГЛАВНОЙ СТРАНИЦЫ*/
+/* 4.1. Главный экран (Hero) */
+#hero {
+  align-items: center;
+  min-height: 70vh;
+  margin-bottom: 5rem;
+}
+
+#hero span {
+  display: inline-block;
+  background-color: rgba(138, 43, 226, 0.15);
+  color: #b57aff;
+  border: 1px solid rgba(138, 43, 226, 0.4);
+  padding: 8px 16px;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+#hero h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+#hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+#hero img {
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(100, 255, 218, 0.15);
+  border: 2px solid rgba(100, 255, 218, 0.2);
+}
+
+/* 4.2. Блок преимуществ (#features) */
+#features {
+  padding: 5rem 0;
+  border-top: 1px solid rgba(100, 255, 218, 0.1);
+  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+  margin-bottom: 5rem;
+}
+
+#features > div:first-child {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+#features .col-md-4 {
+  background-color: var(--bg-surface);
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(100, 255, 218, 0.05);
+  text-align: center;
+  transition:
+    transform 0.3s,
+    border-color 0.3s;
+}
+
+#features .col-md-4:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary-cyan);
+}
+
+#features h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+/* 4.3. Призыв к действию (#cta-test) */
+#cta-test {
+  background-color: var(--bg-surface);
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 30px;
+  padding: 4rem 2rem;
+  text-align: center;
+  margin-bottom: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+#cta-test span {
+  display: inline-block;
+  background-color: var(--primary-cyan);
+  color: var(--bg-dark);
+  font-weight: bold;
+  padding: 8px 20px;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+}
+
+#cta-test h2 {
+  font-size: 2.5rem;
+}
+
+#cta-test p {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+}
+
+/* 4.4. Форма контактов (#contact) */
+#contact {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+#contactForm {
+  background-color: var(--bg-surface);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  max-width: 600px;
+  margin: 2rem auto 0;
+  text-align: left;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+#contactForm div {
+  margin-bottom: 1.5rem;
+}
+
+#contactForm label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
