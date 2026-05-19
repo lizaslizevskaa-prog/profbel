@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProfBel | Профессии будущего</title>
 
-    <!-- Футуристичные шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +12,6 @@
       rel="stylesheet"
     />
 
-    <!-- Bootstrap 5 & FontAwesome -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -23,12 +21,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
 
-    <!-- Стили -->
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
   <body class="bg-main text-light d-flex flex-column min-vh-100">
-    <!-- НАВИГАЦИЯ -->
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
       <div class="container">
         <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
@@ -62,9 +58,7 @@
       </div>
     </nav>
 
-    <!-- КОНТЕНТ -->
     <main id="app" class="container py-5 flex-grow-1">
-      <!-- ВВЕДЕНИЕ -->
       <section class="mb-5 py-4">
         <div class="row align-items-center mb-5">
           <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
@@ -98,7 +92,6 @@
         </div>
       </section>
 
-      <!-- ПОЧЕМУ PROF-BEL -->
       <section class="mb-5 py-5 border-top border-bottom custom-border">
         <div class="text-center mb-5">
           <h2 class="fw-bold mb-3">Почему ProfBel?</h2>
@@ -146,7 +139,7 @@
           </div>
         </div>
       </section>
-      <!-- ПРОШЛЫЕ РЕЗУЛЬТАТЫ ТЕСТА (LocalStorage) -->
+
       <section
         id="pastResultsSection"
         class="mb-5 py-5 border-top border-bottom custom-border d-none"
@@ -160,10 +153,9 @@
           </p>
         </div>
         <div class="row g-4 justify-content-center" id="pastResultsContainer">
-          <!-- Результаты сгенерируются через JS -->
         </div>
       </section>
-      <!-- ИСТОРИИ УСПЕХА (СЛАЙДЕР) -->
+
       <section class="mb-5 py-5 border-bottom custom-border">
         <div class="d-flex justify-content-between align-items-end mb-4">
           <div>
@@ -184,7 +176,6 @@
           id="storiesSlider"
         >
           <div class="slider-track d-flex transition-all" id="sliderTrack">
-            <!-- Карточки генерируются через JS -->
           </div>
           <button class="slider-btn prev-btn shadow" id="sliderPrev">
             <i class="fas fa-chevron-left"></i>
@@ -198,7 +189,6 @@
         </div>
       </section>
 
-      <!-- ПРИЗЫВ К ДЕЙСТВИЮ (CTA) -->
       <section class="py-5 mb-5">
         <div
           class="cta-block rounded-5 p-4 p-md-5 text-center position-relative overflow-hidden"
@@ -228,7 +218,6 @@
         </div>
       </section>
 
-      <!-- ФОРМА ОБРАТНОЙ СВЯЗИ -->
       <section class="mb-5 py-5 border-top custom-border" id="contact">
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
@@ -310,7 +299,6 @@
       </section>
     </main>
 
-    <!-- ФУТЕР -->
     <footer class="custom-footer mt-auto pt-5 pb-3">
       <div class="container">
         <div class="row gy-4 mb-4">
@@ -408,11 +396,9 @@
             >
           </div>
         </div>
-        <p>© 2026 ProfBel. Практический проект по веб-разработке.</p>
       </div>
     </footer>
 
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ИСТОРИЙ УСПЕХА -->
     <div class="modal fade" id="storyModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-surface text-light border border-purple">
