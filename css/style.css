@@ -1,4 +1,6 @@
-/*1. ЦВЕТА И ШРИФТЫ */
+/* =========================================
+   1. ПЕРЕМЕННЫЕ ЦВЕТОВ И ШРИФТОВ
+========================================== */
 :root {
   --bg-dark: #0a192f;
   --bg-surface: #112240;
@@ -10,24 +12,16 @@
   --font-body: "Outfit", sans-serif;
 }
 
-/*2. БАЗОВЫЕ НАСТРОЙКИ */
-body {
+/* =========================================
+   2. БАЗОВЫЕ НАСТРОЙКИ
+========================================== */
+body.bg-main {
   background-color: var(--bg-dark);
   font-family: var(--font-body);
   color: var(--text-main);
   overflow-x: hidden;
   letter-spacing: 0.3px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
-
-main {
-  flex-grow: 1;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
 h1,
 h2,
 h3,
@@ -37,189 +31,470 @@ h6 {
   font-family: var(--font-heading);
   color: #e6f1ff;
   letter-spacing: -0.5px;
-  margin-bottom: 1rem;
+}
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+.text-primary-custom {
+  color: var(--primary-cyan) !important;
+}
+.text-purple {
+  color: #b57aff !important;
+}
+.gradient-text {
+  background: linear-gradient(90deg, var(--primary-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.icon-gradient {
+  background: linear-gradient(45deg, var(--primary-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.max-w-700 {
+  max-width: 700px;
+}
+.z-index-2 {
+  z-index: 2;
+  position: relative;
+}
+.custom-border {
+  border-color: rgba(100, 255, 218, 0.1) !important;
+}
+.bg-purple-soft {
+  background-color: rgba(138, 43, 226, 0.15) !important;
+}
+.bg-cyan {
+  background-color: var(--primary-cyan) !important;
+}
+.border-purple {
+  border: 1px solid rgba(138, 43, 226, 0.4) !important;
 }
 
-p {
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-/* Кастомные кнопки */
-.btn {
-  border-radius: 30px;
-  font-weight: 600;
-  font-family: var(--font-heading);
-  padding: 12px 25px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-primary {
-  background: linear-gradient(45deg, var(--primary-cyan), #00b4d8);
-  color: var(--bg-dark) !important;
-  border: none;
-  box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px rgba(100, 255, 218, 0.7);
-}
-
-/* 3. ШАПКА САЙТА */
-header {
+/* =========================================
+   3. НАВИГАЦИЯ (HEADER)
+========================================== */
+.custom-navbar {
   background-color: rgba(10, 25, 47, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
-
-.navbar-brand {
+.logo {
   font-family: var(--font-heading);
   font-weight: 800;
   font-size: 1.6rem;
-  color: var(--primary-cyan) !important;
+  color: #e6f1ff !important;
+  letter-spacing: -1px;
 }
-
+.logo span {
+  color: var(--primary-cyan);
+}
 .nav-link {
   color: var(--text-main) !important;
   font-weight: 500;
-  margin-left: 1rem;
   transition: color 0.3s;
 }
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary-cyan) !important;
+}
+.nav-link.active {
+  pointer-events: none;
+}
 
-.nav-link:hover {
+/* =========================================
+   4. КНОПКИ
+========================================== */
+.btn {
+  font-family: var(--font-heading);
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-outline-cyan {
+  border: 2px solid var(--primary-cyan);
+  color: var(--primary-cyan) !important;
+  background: transparent;
+}
+.btn-outline-cyan:hover {
+  background-color: rgba(100, 255, 218, 0.1);
+  transform: translateY(-2px);
+}
+.btn-accent-glow {
+  background: linear-gradient(45deg, var(--accent-purple), #5e1ebd);
+  color: #fff !important;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 25px !important;
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+}
+.btn-accent-glow:hover {
+  box-shadow: 0 0 25px rgba(138, 43, 226, 0.8);
+  transform: translateY(-2px);
+}
+.btn-giant-action {
+  background: linear-gradient(45deg, var(--primary-cyan), #00b4d8);
+  color: #0a192f !important;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 20px 40px;
+  border-radius: 50px;
+  border: none;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+  animation: pulse-cyan 2.5s infinite;
+  display: inline-block;
+}
+.btn-giant-action:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 35px rgba(100, 255, 218, 0.8);
+  animation: none;
+}
+@keyframes pulse-cyan {
+  0% {
+    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(100, 255, 218, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
+  }
+}
+.hover-primary:hover {
   color: var(--primary-cyan) !important;
 }
 
-/*  4. СЕКЦИИ ГЛАВНОЙ СТРАНИЦЫ*/
-/* 4.1. Главный экран (Hero) */
-#hero {
-  align-items: center;
-  min-height: 70vh;
-  margin-bottom: 5rem;
-}
-
-#hero span {
-  display: inline-block;
-  background-color: rgba(138, 43, 226, 0.15);
-  color: #b57aff;
-  border: 1px solid rgba(138, 43, 226, 0.4);
-  padding: 8px 16px;
-  border-radius: 50px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-}
-
-#hero h1 {
-  font-size: 3.5rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-#hero p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-}
-
-#hero img {
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(100, 255, 218, 0.15);
+/* =========================================
+   5. ГЛАВНАЯ СТРАНИЦА (HERO & CTA)
+========================================== */
+.futuristic-img {
+  position: relative;
+  z-index: 2;
   border: 2px solid rgba(100, 255, 218, 0.2);
 }
-
-/* 4.2. Блок преимуществ (#features) */
-#features {
-  padding: 5rem 0;
-  border-top: 1px solid rgba(100, 255, 218, 0.1);
-  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
-  margin-bottom: 5rem;
+.shadow-cyan {
+  box-shadow: 0 10px 40px rgba(100, 255, 218, 0.15);
 }
-
-#features > div:first-child {
-  text-align: center;
-  margin-bottom: 4rem;
+.glow-backdrop-large {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(
+    circle,
+    rgba(100, 255, 218, 0.2) 0%,
+    rgba(10, 25, 47, 0) 70%
+  );
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  filter: blur(50px);
 }
-
-#features .col-md-4 {
+.cta-block {
   background-color: var(--bg-surface);
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
+  border: 2px solid rgba(138, 43, 226, 0.3);
+}
+.cta-bg-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(
+    circle,
+    rgba(138, 43, 226, 0.15) 0%,
+    rgba(17, 34, 64, 0) 60%
+  );
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+.feature-card {
+  background-color: var(--bg-surface);
   border: 1px solid rgba(100, 255, 218, 0.05);
-  text-align: center;
   transition:
     transform 0.3s,
     border-color 0.3s;
 }
-
-#features .col-md-4:hover {
+.feature-card:hover {
   transform: translateY(-10px);
   border-color: var(--primary-cyan);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.icon-wrapper {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(100, 255, 218, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(100, 255, 218, 0.2);
 }
 
-#features h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-
-/* 4.3. Призыв к действию (#cta-test) */
-#cta-test {
+/* =========================================
+   6. КАТАЛОГ И ФИЛЬТРЫ
+========================================== */
+.filters-block {
   background-color: var(--bg-surface);
-  border: 2px solid rgba(138, 43, 226, 0.3);
-  border-radius: 30px;
-  padding: 4rem 2rem;
-  text-align: center;
-  margin-bottom: 5rem;
+}
+.custom-select,
+.custom-input {
+  background-color: var(--bg-dark);
+  border: 1px solid rgba(204, 214, 246, 0.2);
+  color: var(--text-main);
+}
+.custom-select:focus,
+.custom-input:focus {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 0 0.25rem rgba(100, 255, 218, 0.25);
+}
+.custom-card {
+  background-color: var(--bg-surface);
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s;
+}
+.custom-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(100, 255, 218, 0.15);
+}
+.card-img-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.custom-card:hover .card-img-wrapper img {
+  transform: scale(1.1);
+}
+.custom-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: var(--accent-purple);
+  font-weight: 600;
+  z-index: 10;
+}
+
+/* =========================================
+   7. КАРТОЧКА ПРОФЕССИИ
+========================================== */
+.detail-card {
+  background-color: var(--bg-surface);
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.detail-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(204, 214, 246, 0.1);
+}
+.detail-list li:last-child {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.detail-list i {
+  font-size: 1.2rem;
+  margin-top: 4px;
+}
+
+/* =========================================
+   8. ФУТЕР
+========================================== */
+.custom-footer {
+  background-color: var(--bg-surface);
+  border-top: 2px solid rgba(138, 43, 226, 0.2);
   position: relative;
   overflow: hidden;
 }
-
-#cta-test span {
+.custom-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 300px;
+  height: 100px;
+  background: var(--primary-cyan);
+  filter: blur(100px);
+  opacity: 0.1;
+  pointer-events: none;
+}
+.footer-links li {
+  margin-bottom: 12px;
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.3s ease;
   display: inline-block;
-  background-color: var(--primary-cyan);
-  color: var(--bg-dark);
-  font-weight: bold;
-  padding: 8px 20px;
-  border-radius: 50px;
-  margin-bottom: 1.5rem;
 }
-
-#cta-test h2 {
-  font-size: 2.5rem;
+.footer-links a i {
+  color: var(--primary-cyan);
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: translateX(-10px);
 }
-
-#cta-test p {
-  max-width: 700px;
-  margin: 0 auto 2rem;
+.footer-links a:hover {
+  color: var(--primary-cyan);
+  transform: translateX(5px);
+}
+.footer-links a:hover i {
+  opacity: 1;
+  transform: translateX(0);
+}
+.social-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(100, 255, 218, 0.05);
+  border: 1px solid rgba(100, 255, 218, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: all 0.3s ease;
   font-size: 1.1rem;
 }
-
-/* 4.4. Форма контактов (#contact) */
-#contact {
-  text-align: center;
-  margin-bottom: 5rem;
+.social-icon:hover {
+  background-color: var(--primary-cyan);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
+  transform: translateY(-3px);
+}
+.contact-icon {
+  width: 30px;
+  height: 30px;
+  background: rgba(138, 43, 226, 0.1);
+  color: #b57aff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+.transition-all {
+  transition: all 0.3s ease;
 }
 
-#contactForm {
+/* =========================================
+   9. СЛАЙДЕР ИСТОРИЙ И ФОРМА
+========================================== */
+.slider-container {
+  width: 100%;
+  padding: 10px 0;
+}
+.slider-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.story-slide {
+  min-width: 300px;
+  flex: 0 0 calc(33.333% - 14px);
   background-color: var(--bg-surface);
-  padding: 3rem;
-  border-radius: 20px;
   border: 1px solid rgba(100, 255, 218, 0.1);
-  max-width: 600px;
-  margin: 2rem auto 0;
-  text-align: left;
+  border-radius: 15px;
+  padding: 24px;
+  transition:
+    box-shadow 0.3s,
+    transform 0.3s;
+}
+.story-slide:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+@media (max-width: 992px) {
+  .story-slide {
+    flex: 0 0 calc(50% - 10px);
+  }
+}
+@media (max-width: 768px) {
+  .story-slide {
+    flex: 0 0 100%;
+  }
+}
+.story-img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-cyan);
+}
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-surface);
+  color: var(--primary-cyan);
+  border: 1px solid var(--primary-cyan);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+.slider-btn:hover {
+  background: var(--primary-cyan);
+  color: var(--bg-dark);
+}
+.prev-btn {
+  left: 5px;
+}
+.next-btn {
+  right: 5px;
+}
+.story-text-preview {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Форма */
+.form-card {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
-#contactForm div {
-  margin-bottom: 1.5rem;
+.invalid-feedback {
+  color: #ff6b6b;
+  font-size: 0.85em;
+  font-weight: 500;
 }
-
-#contactForm label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-main);
+.custom-input.is-invalid {
+  border-color: #ff6b6b;
+  background-image: none;
+}
+.custom-input.is-valid {
+  border-color: var(--primary-cyan);
+  background-image: none;
+}
+.custom-input::placeholder {
+  color: rgba(136, 146, 176, 0.5);
+}
+/* Утилита для списков ВУЗов/Колледжей */
+.last-border-none:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
