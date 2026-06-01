@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProfBel | Каталог профессий</title>
+    <meta
+      name="description"
+      content="ProfBel - твой персональный гид в мире профессий будущего в Беларуси. Найди свое призвание в IT, науке и инженерии."
+    />
+    <!-- jQuery UI -->
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-main text-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+      <div class="container">
+        <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
+        <button
+          class="navbar-toggler custom-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="fas fa-bars text-light"></i>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav gap-4 align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Главная</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="catalog.html"
+                >Каталог профессий</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="stories.html">Истории успеха</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <button
+                id="themeToggle"
+                class="btn btn-outline-secondary rounded-circle"
+                style="
+                  width: 42px;
+                  height: 42px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-color: rgba(100, 255, 218, 0.3);
+                "
+              >
+                <i class="fas fa-sun text-warning fs-5"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-5 flex-grow-1">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3">
+          Каталог <span class="gradient-text">профессий</span>
+        </h1>
+        <p class="lead text-muted-custom">
+          Изучи 26 самых перспективных направлений в Беларуси и найди свое.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <aside class="col-lg-3">
+          <div class="filters-block p-4 rounded-4 sidebar-sticky">
+            <h2 class="h4 fw-bold mb-4 border-bottom custom-border pb-2">
+              Фильтры
+            </h2>
+
+            <div class="mb-4 position-relative">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold"
+              >
+                <i class="fas fa-search me-1"></i> Поиск профессий
+              </label>
+              <div class="position-relative">
+                <input
+                  type="text"
+                  id="searchFilter"
+                  class="form-control custom-input search-autocomplete"
+                  placeholder="Введите название профессии..."
+                  autocomplete="off"
+                />
+                <i class="fas fa-search search-input-icon"></i>
+              </div>
+
+              <div id="searchStats" class="text-muted-custom small mt-1"></div>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold"
+                >Направление</label
+              >
+              <select id="directionFilter" class="form-select custom-select">
+                <option value="Все">Все направления</option>
+                <option value="IT">IT</option>
+                <option value="Инженерия">Инженерия</option>
+                <option value="Медицина">Медицина</option>
+                <option value="Биотехнологии">Биотехнологии</option>
+                <option value="Агропром">Агропром</option>
+                <option value="Экология">Экология</option>
+                <option value="Энергетика">Энергетика</option>
+                <option value="Беспилотные системы">Беспилотные системы</option>
+                <option value="Креатив">Креатив</option>
+                <option value="Логистика">Логистика</option>
+                <option value="Управление">Управление</option>
+                <option value="Образование">Образование</option>
+                <option value="Строительство">Строительство</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold mb-2"
+                >Образование</label
+              >
+              <div class="form-check mb-1">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="eduFilter"
+                  id="eduAll"
+                  value="Все"
+                  checked
+                />
+                <label class="form-check-label text-light" for="eduAll"
+                  >Любое</label
+                >
+              </div>
+              <div class="form-check mb-1">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="eduFilter"
+                  id="eduVuz"
+                  value="Вуз"
+                />
+                <label class="form-check-label text-light" for="eduVuz"
+                  >Только ВУЗ</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="eduFilter"
+                  id="eduCollege"
+                  value="Колледж"
+                />
+                <label class="form-check-label text-light" for="eduCollege"
+                  >Колледж доступен</label
+                >
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold mb-2"
+                >Предметы (ЦТ/ЦЭ)</label
+              >
+              <div id="subjectsFilter" class="d-flex flex-column gap-1">
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Математика"
+                    id="subMath"
+                  /><label class="form-check-label text-light" for="subMath"
+                    >Математика</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Физика"
+                    id="subPhys"
+                  /><label class="form-check-label text-light" for="subPhys"
+                    >Физика</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Биология"
+                    id="subBio"
+                  /><label class="form-check-label text-light" for="subBio"
+                    >Биология</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Химия"
+                    id="subChem"
+                  /><label class="form-check-label text-light" for="subChem"
+                    >Химия</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Информатика"
+                    id="subInf"
+                  /><label class="form-check-label text-light" for="subInf"
+                    >Информатика</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="История"
+                    id="subHist"
+                  /><label class="form-check-label text-light" for="subHist"
+                    >История</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input subject-cb"
+                    type="checkbox"
+                    value="Языки"
+                    id="subLang"
+                  /><label class="form-check-label text-light" for="subLang"
+                    >Иностранный язык</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold d-flex justify-content-between"
+              >
+                Зарплата (BYN)
+                <span id="salaryAmount" class="text-primary-custom fw-bold"
+                  >0 - 5000+</span
+                >
+              </label>
+              <div id="salarySlider" class="mt-2 mb-3"></div>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="form-label text-muted-custom small text-uppercase fw-bold mb-2"
+                >Востребованность</label
+              >
+              <div class="form-check mb-1">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="demandFilter"
+                  value="Все"
+                  checked
+                />
+                <label class="form-check-label text-light">Все</label>
+              </div>
+              <div class="form-check mb-1">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="demandFilter"
+                  value="Растущий"
+                />
+                <label class="form-check-label text-light"
+                  >Растущий спрос</label
+                >
+              </div>
+              <div class="form-check mb-1">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="demandFilter"
+                  value="Новый"
+                />
+                <label class="form-check-label text-light">Новая ниша</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input bg-dark border-secondary"
+                  type="radio"
+                  name="demandFilter"
+                  value="Стабильный"
+                />
+                <label class="form-check-label text-light">Стабильный</label>
+              </div>
+            </div>
+
+            <button id="resetFilters" class="btn btn-outline-cyan w-100 mt-2">
+              Сбросить фильтры
+            </button>
+          </div>
+        </aside>
+
+        <div class="col-lg-9">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="mb-0 text-muted-custom">
+              Найдено профессий:
+              <span id="resultsCount" class="text-white fw-bold">20</span>
+            </p>
+          </div>
+
+          <div id="catalogGrid" class="row g-4"></div>
+
+          <div id="noResults" class="text-center py-5 d-none">
+            <i class="fas fa-search fa-3x text-muted-custom mb-3"></i>
+            <h3 class="fw-bold">Ничего не найдено</h3>
+            <p class="text-muted-custom">
+              Попробуйте изменить параметры фильтров.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ФУТЕР -->
+    <footer class="custom-footer mt-auto pt-5 pb-3">
+      <div class="container">
+        <div class="row gy-4 mb-4">
+          <div class="col-lg-4 col-md-6 pe-lg-4">
+            <a class="navbar-brand logo d-inline-block mb-3" href="index.html"
+              >Prof<span>Bel</span></a
+            >
+            <p class="text-muted-custom small mb-4">
+              Твой персональный гид в мире профессий будущего. Помогаем
+              школьникам и студентам Беларуси сделать правильный выбор и найти
+              свое призвание в IT, науке и инженерии.
+            </p>
+            <div class="social-links d-flex gap-3">
+              <a href="#" class="social-icon"
+                ><i class="fab fa-telegram-plane"></i
+              ></a>
+              <a href="#" class="social-icon"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Навигация</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Главная
+                  страница</a
+                >
+              </li>
+              <li>
+                <a href="catalog.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Каталог
+                  профессий</a
+                >
+              </li>
+              <li>
+                <a href="stories.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Истории
+                  успеха</a
+                >
+              </li>
+              <li>
+                <a href="test.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Пройти тест</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Проект</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>О нас</a
+                >
+              </li>
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Методология</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Связь с нами</h3>
+            <ul
+              class="list-unstyled footer-contact text-muted-custom small mb-4"
+            >
+              <li class="mb-3 d-flex align-items-center">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <span>info@profbel.by</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <div class="contact-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span>г. Минск, Беларусь</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="footer-bottom pt-4 border-top custom-border d-flex flex-column flex-md-row justify-content-between align-items-center"
+        >
+          <p class="mb-0 text-muted-custom small">
+            &copy; 2026 ProfBel. Практический проект по веб-разработке.
+          </p>
+          <div class="footer-bottom-links mt-2 mt-md-0">
+            <a
+              href="#"
+              class="text-muted-custom small text-decoration-none hover-primary transition-all"
+              >Политика конфиденциальности</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/catalog.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
