@@ -1,6 +1,4 @@
-/* =========================================
-   1. ПЕРЕМЕННЫЕ ЦВЕТОВ И ШРИФТОВ
-========================================== */
+/*   ПЕРЕМЕННЫЕ ЦВЕТОВ И ШРИФТОВ */
 :root {
   --bg-dark: #0a192f;
   --bg-surface: #112240;
@@ -12,9 +10,7 @@
   --font-body: "Outfit", sans-serif;
 }
 
-/* =========================================
-   2. БАЗОВЫЕ НАСТРОЙКИ
-========================================== */
+/*   БАЗОВЫЕ НАСТРОЙКИ */
 body.bg-main {
   background-color: var(--bg-dark);
   font-family: var(--font-body);
@@ -71,9 +67,7 @@ h6 {
   border: 1px solid rgba(138, 43, 226, 0.4) !important;
 }
 
-/* =========================================
-   3. НАВИГАЦИЯ (HEADER)
-========================================== */
+/*  НАВИГАЦИЯ (HEADER) */
 .custom-navbar {
   background-color: rgba(10, 25, 47, 0.95);
   backdrop-filter: blur(10px);
@@ -102,9 +96,7 @@ h6 {
   pointer-events: none;
 }
 
-/* =========================================
-   4. КНОПКИ
-========================================== */
+/*  КНОПКИ */
 .btn {
   font-family: var(--font-heading);
   border-radius: 30px;
@@ -166,9 +158,7 @@ h6 {
   color: var(--primary-cyan) !important;
 }
 
-/* =========================================
-   5. ГЛАВНАЯ СТРАНИЦА (HERO & CTA)
-========================================== */
+/*  ГЛАВНАЯ СТРАНИЦА (HERO & CTA) */
 .futuristic-img {
   position: relative;
   z-index: 2;
@@ -234,9 +224,7 @@ h6 {
   border: 1px solid rgba(100, 255, 218, 0.2);
 }
 
-/* =========================================
-   6. КАТАЛОГ И ФИЛЬТРЫ
-========================================== */
+/*  КАТАЛОГ И ФИЛЬТРЫ */
 .filters-block {
   background-color: var(--bg-surface);
 }
@@ -257,7 +245,7 @@ h6 {
   background-color: var(--bg-surface);
   border: none;
   border-radius: 15px;
-  overflow: hidden;
+  overflow: visible;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s;
@@ -289,9 +277,7 @@ h6 {
   z-index: 10;
 }
 
-/* =========================================
-   7. КАРТОЧКА ПРОФЕССИИ
-========================================== */
+/*   КАРТОЧКА ПРОФЕССИИ */
 .detail-card {
   background-color: var(--bg-surface);
   border: 1px solid rgba(100, 255, 218, 0.1);
@@ -315,9 +301,7 @@ h6 {
   margin-top: 4px;
 }
 
-/* =========================================
-   8. ФУТЕР
-========================================== */
+/*  ФУТЕР */
 .custom-footer {
   background-color: var(--bg-surface);
   border-top: 2px solid rgba(138, 43, 226, 0.2);
@@ -394,9 +378,7 @@ h6 {
   transition: all 0.3s ease;
 }
 
-/* =========================================
-   9. СЛАЙДЕР ИСТОРИЙ И ФОРМА
-========================================== */
+/*   СЛАЙДЕР ИСТОРИЙ И ФОРМА*/
 .slider-container {
   width: 100%;
   padding: 10px 0;
@@ -467,7 +449,7 @@ h6 {
 }
 .story-text-preview {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: text;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -497,4 +479,395 @@ h6 {
   border-bottom: none !important;
   padding-bottom: 0 !important;
   margin-bottom: 0 !important;
+}
+.text-main.fw-bold {
+  color: #64ffda;
+}
+
+/* ПОЛОСА И ОСНОВА СЛАЙДЕРА JQUERY UI */
+.ui-slider {
+  background: var(--bg-dark) !important;
+  border: 1px solid rgba(100, 255, 218, 0.2) !important;
+  border-radius: 10px !important;
+  height: 8px !important;
+}
+.ui-slider-range {
+  background: linear-gradient(
+    90deg,
+    var(--primary-cyan),
+    var(--accent-purple)
+  ) !important;
+  border-radius: 10px !important;
+}
+
+/* АДАПТИВНЫЕ ШАРИКИ ПОЛЗУНКА (Фикс прыжков + цвета + темы) */
+.ui-slider-horizontal .ui-slider-handle,
+.ui-slider .ui-slider-handle,
+.ui-slider .ui-slider-handle.ui-state-default,
+.ui-slider .ui-slider-handle.ui-state-hover,
+.ui-slider .ui-slider-handle.ui-state-focus,
+.ui-slider .ui-slider-handle.ui-state-active {
+  /* Убиваем дефолтные текстуры jQuery UI */
+  background-image: none !important;
+
+  /* Цвета завязаны на переменные (работает для обеих тем) */
+  background-color: var(--bg-surface) !important;
+  border: 2px solid var(--primary-cyan) !important;
+
+  /* Размеры и форма */
+  border-radius: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  top: -6px !important;
+  cursor: grab !important;
+  outline: none !important;
+
+  /* ФИКС "ПРЫЖКА" - строгое центрирование */
+  margin-left: 0 !important;
+  transform: translateX(-50%) scale(1) !important;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+/* Эффекты при наведении и удержании ползунка */
+.ui-slider .ui-slider-handle:hover,
+.ui-slider .ui-slider-handle:active,
+.ui-slider .ui-slider-handle.ui-state-hover,
+.ui-slider .ui-slider-handle.ui-state-active,
+.ui-slider .ui-slider-handle.ui-state-focus {
+  /* Жестко фиксируем цвета, чтобы они не пропадали при клике */
+  background-color: var(--bg-surface) !important;
+  border: 2px solid var(--primary-cyan) !important;
+
+  /* Увеличение шарика и тень, центровка сохраняется */
+  transform: translateX(-50%) scale(1.3) !important;
+  box-shadow: 0 0 12px var(--primary-cyan) !important;
+  cursor: grabbing !important;
+}
+
+/* Кастомный стиль для jQuery UI Автокомплита */
+.ui-autocomplete {
+  background: var(--bg-surface) !important;
+  border: 1px solid rgba(100, 255, 218, 0.2) !important;
+  border-radius: 12px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 1000 !important;
+}
+
+.ui-menu-item {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ui-menu-item-wrapper {
+  padding: 12px 16px !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid rgba(100, 255, 218, 0.05) !important;
+}
+
+.ui-menu-item-wrapper.ui-state-active,
+.ui-menu-item-wrapper:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(100, 255, 218, 0.1),
+    rgba(138, 43, 226, 0.05)
+  ) !important;
+  border-left: 3px solid var(--primary-cyan) !important;
+  margin: 0 !important;
+}
+
+.custom-autocomplete-item {
+  width: 100%;
+}
+
+.ui-autocomplete::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ui-autocomplete::-webkit-scrollbar-track {
+  background: rgba(100, 255, 218, 0.05);
+}
+
+.ui-autocomplete::-webkit-scrollbar-thumb {
+  background: var(--primary-cyan);
+  border-radius: 3px;
+}
+/* JQUERY UI СТИЛИ ДЛЯ КАТАЛОГА */
+
+/* Поле поиска */
+.search-autocomplete {
+  padding-right: 40px !important;
+  transition: all 0.3s ease;
+}
+
+.search-autocomplete:focus {
+  border-color: var(--primary-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1) !important;
+}
+
+.search-input-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.search-input-icon:hover {
+  color: var(--primary-cyan);
+}
+
+/* Контейнер выпадающих подсказок jQuery UI */
+.ui-autocomplete {
+  background: var(--bg-surface) !important;
+  border: 1px solid rgba(100, 255, 218, 0.25) !important;
+  border-radius: 12px !important;
+  max-height: 320px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px);
+  z-index: 9999 !important;
+  font-family: var(--font-body) !important;
+  padding: 8px 0 !important;
+}
+
+/* Стилизация скроллбара */
+.ui-autocomplete::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ui-autocomplete::-webkit-scrollbar-track {
+  background: rgba(100, 255, 218, 0.05);
+  border-radius: 10px;
+}
+
+.ui-autocomplete::-webkit-scrollbar-thumb {
+  background: rgba(100, 255, 218, 0.3);
+  border-radius: 10px;
+}
+
+.ui-autocomplete::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 255, 218, 0.6);
+}
+
+/* Элемент подсказки */
+.ui-menu-item {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ui-menu-item-wrapper {
+  padding: 12px 16px !important;
+  margin: 4px 8px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+  color: var(--text-main) !important;
+  font-size: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+}
+
+.ui-menu-item-wrapper:hover {
+  background: rgba(100, 255, 218, 0.1) !important;
+  transform: translateX(4px);
+}
+
+.ui-state-active,
+.ui-state-focus {
+  background: linear-gradient(
+    90deg,
+    rgba(100, 255, 218, 0.15),
+    transparent
+  ) !important;
+  border-left: 3px solid var(--primary-cyan) !important;
+  margin: 4px 8px !important;
+}
+
+/* Кастомное содержимое подсказки */
+.autocomplete-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.autocomplete-suggestion-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(138, 43, 226, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-cyan);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.autocomplete-suggestion-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.autocomplete-suggestion-title {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.autocomplete-suggestion-direction {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.autocomplete-suggestion-direction i {
+  font-size: 10px;
+  color: var(--primary-cyan);
+}
+
+.autocomplete-suggestion-salary {
+  font-size: 12px;
+  color: var(--primary-cyan);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Выделение совпадений */
+.ui-autocomplete mark {
+  background: linear-gradient(90deg, var(--primary-cyan), var(--accent-purple));
+  color: var(--bg-dark);
+  padding: 0 4px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Статистика поиска */
+#searchStats {
+  font-size: 12px;
+  margin-top: 6px;
+  transition: all 0.3s ease;
+  min-height: 24px;
+}
+
+/* Анимация */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* СВЕТЛАЯ ТЕМА (ПОЛНАЯ АДАПТАЦИЯ) */
+body.light-theme {
+  --bg-dark: #f0f2f5; /* Светло-серый фон сайта */
+  --bg-surface: #ffffff; /* Белый цвет для карточек */
+  --primary-cyan: #007a7a; /* Темно-бирюзовый (для читаемости) */
+  --accent-purple: #6a0dad; /* Глубокий фиолетовый */
+  --text-main: #212529; /* Темно-серый текст */
+  --text-muted: #495057; /* Приглушенный серый текст */
+}
+
+/* Перекрашиваем заголовки в темный цвет */
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme h5,
+body.light-theme h6,
+body.light-theme .logo {
+  color: #212529 !important;
+}
+
+body.light-theme .text-light,
+body.light-theme .text-white {
+  color: #212529 !important;
+}
+
+/* Навбар */
+body.light-theme .custom-navbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+body.light-theme .custom-toggler i {
+  color: #111827 !important;
+}
+
+/* Поля ввода (Инпуты) */
+body.light-theme .custom-input,
+body.light-theme .custom-select {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  color: #212529;
+}
+body.light-theme .custom-input::placeholder {
+  color: #6c757d;
+}
+
+/* Темные блоки (например, проходной балл или радиокнопки) */
+body.light-theme .bg-dark {
+  background-color: #e9ecef !important;
+  color: #212529 !important;
+}
+body.light-theme .border-secondary {
+  border-color: #ced4da !important;
+}
+
+/* Карточки и тени */
+body.light-theme .feature-card,
+body.light-theme .custom-card,
+body.light-theme .detail-card,
+body.light-theme .form-card {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+body.light-theme .feature-card:hover,
+body.light-theme .custom-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 122, 122, 0.15);
+}
+
+/* Слайдер jQuery UI (Полоса цен) */
+body.light-theme .ui-slider {
+  background: #e9ecef !important;
+  border: 1px solid #ced4da !important;
+}
+
+/* Свечение на фоне */
+body.light-theme .glow-backdrop-large {
+  background: radial-gradient(
+    circle,
+    rgba(0, 122, 122, 0.05) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+body.light-theme .cta-bg-glow {
+  background: radial-gradient(
+    circle,
+    rgba(106, 13, 173, 0.05) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+}
+
+/* Футер */
+body.light-theme .custom-footer::before {
+  opacity: 0.05;
 }
