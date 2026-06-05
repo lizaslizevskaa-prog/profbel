@@ -364,3 +364,29 @@ window.openFullArticle = function (id) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 };
+//
+// 6. ПЕРЕКЛЮЧЕНИЕ ФОРМ В МОДАЛКЕ АВТОРИЗАЦИИ
+//
+document.addEventListener("DOMContentLoaded", () => {
+  const showRegisterBtn = document.getElementById("showRegisterBtn");
+  const showLoginBtn = document.getElementById("showLoginBtn");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const authModalTitle = document.getElementById("authModalTitle");
+
+  if (showRegisterBtn && showLoginBtn) {
+    showRegisterBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      loginForm.classList.replace("d-block", "d-none");
+      registerForm.classList.replace("d-none", "d-block");
+      authModalTitle.textContent = "Регистрация";
+    });
+
+    showLoginBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      registerForm.classList.replace("d-block", "d-none");
+      loginForm.classList.replace("d-none", "d-block");
+      authModalTitle.textContent = "Вход в личный кабинет";
+    });
+  }
+});
