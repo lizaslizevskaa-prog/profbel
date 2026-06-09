@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProfBel | Личный кабинет</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-main text-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+      <div class="container">
+        <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav gap-4 align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Главная</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="catalog.html">Каталог</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="test.html">Пройти тест</a>
+            </li>
+
+            <!-- Скрытая ссылка на админку -->
+            <li class="nav-item d-none" id="adminPanelLink">
+              <a class="nav-link text-warning fw-bold" href="admin.html"
+                ><i class="fas fa-crown me-1"></i> Админ</a
+              >
+            </li>
+
+            <li class="nav-item ms-lg-3">
+              <button
+                id="logoutProfileBtn"
+                class="btn btn-outline-danger btn-sm rounded-pill px-3"
+              >
+                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+              </button>
+            </li>
+
+            <!-- Кнопка смены темы -->
+            <li class="nav-item ms-lg-2">
+              <button
+                id="themeToggle"
+                class="btn btn-outline-secondary rounded-circle"
+                style="
+                  width: 42px;
+                  height: 42px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-color: rgba(100, 255, 218, 0.3);
+                "
+              >
+                <i class="fas fa-sun text-warning fs-5"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-5 flex-grow-1">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div
+            class="detail-card p-4 rounded-4 text-center h-100 position-relative"
+          >
+            <div class="position-relative z-index-2">
+              <div class="mb-4 position-relative d-inline-block">
+                <img
+                  id="profileAvatar"
+                  src="img/default-avatar.png"
+                  alt="Аватар"
+                  class="rounded-circle border border-cyan border-3"
+                  style="width: 140px; height: 140px; object-fit: cover"
+                />
+                <input
+                  type="file"
+                  id="avatarInput"
+                  accept="image/*"
+                  class="d-none"
+                />
+                <button
+                  class="btn btn-primary rounded-circle position-absolute bottom-0 end-0 shadow"
+                  onclick="document.getElementById('avatarInput').click()"
+                  title="Изменить фото"
+                  style="width: 40px; height: 40px"
+                >
+                  <i class="fas fa-camera"></i>
+                </button>
+              </div>
+
+              <h3 id="profileName" class="fw-bold h4 mb-1">Загрузка...</h3>
+              <p id="profileEmail" class="text-muted-custom small mb-4">
+                загрузка...
+              </p>
+
+              <div class="row g-3 text-start mb-4">
+                <div class="col-6">
+                  <div
+                    class="p-3 rounded-4 border custom-border h-100"
+                    style="background-color: var(--bg-dark)"
+                  >
+                    <i class="fas fa-venus-mars text-cyan mb-2 fs-5"></i>
+                    <div class="text-muted-custom small mb-1">Пол</div>
+                    <div id="profileGender" class="fw-bold text-light">-</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div
+                    class="p-3 rounded-4 border custom-border h-100"
+                    style="background-color: var(--bg-dark)"
+                  >
+                    <i class="fas fa-birthday-cake text-purple mb-2 fs-5"></i>
+                    <div class="text-muted-custom small mb-1">Возраст</div>
+                    <div id="profileAge" class="fw-bold text-light">-</div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div
+                    class="p-3 rounded-4 border custom-border"
+                    style="background-color: var(--bg-dark)"
+                  >
+                    <i
+                      class="fas fa-user-graduate text-primary-custom mb-2 fs-5"
+                    ></i>
+                    <div class="text-muted-custom small mb-1">Образование</div>
+                    <div id="profileEdu" class="fw-bold text-light">-</div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="btn btn-outline-cyan w-100 mt-2"
+                data-bs-toggle="modal"
+                data-bs-target="#editProfileModal"
+              >
+                <i class="fas fa-pen me-2"></i> Редактировать данные
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="detail-card p-4 rounded-4 h-100">
+            <h4 class="fw-bold mb-4 border-bottom custom-border pb-3">
+              <i class="fas fa-history text-cyan me-2"></i> История тестирования
+            </h4>
+            <div id="profileResultsContainer" class="d-flex flex-column gap-3">
+              <div
+                class="text-center py-5 text-muted-custom"
+                id="emptyResultsMsg"
+              >
+                <i class="fas fa-clipboard-list fa-3x mb-3 opacity-50"></i>
+                <h5>Вы еще не проходили тест</h5>
+                <a href="test.html" class="btn btn-outline-cyan mt-3"
+                  >Пройти сейчас</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content text-light border custom-border"
+          style="
+            background-color: var(--bg-surface) !important;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          "
+        >
+          <div
+            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
+          >
+            <h4 class="h5 modal-title fw-bold w-100 text-center">
+              Редактировать профиль
+            </h4>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute end-0 me-4"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4 p-md-5">
+            <form id="editProfileForm">
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Имя и Фамилия</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-user position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="text"
+                    id="editName"
+                    class="form-control custom-input text-light"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                  <label
+                    class="form-label text-muted-custom small text-uppercase fw-bold"
+                    >Возраст</label
+                  >
+                  <input
+                    type="number"
+                    id="editAge"
+                    min="14"
+                    max="100"
+                    class="form-control custom-input text-light text-center"
+                    style="
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+                <div class="col-6">
+                  <label
+                    class="form-label text-muted-custom small text-uppercase fw-bold"
+                    >Пол</label
+                  >
+                  <select
+                    id="editGender"
+                    class="form-select custom-select text-light"
+                    style="
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  >
+                    <option value="Мужской">Мужской</option>
+                    <option value="Женский">Женский</option>
+                    <option value="Не указан">Не указан</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-5">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Образование</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-graduation-cap position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <select
+                    id="editEdu"
+                    class="form-select custom-select text-light"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  >
+                    <option value="Школа">Школа</option>
+                    <option value="Колледж / ССО">Колледж / ССО</option>
+                    <option value="ВУЗ">ВУЗ</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-accent-glow w-100 py-3 fs-5">
+                Сохранить изменения
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
+    >
+      <div class="container">
+        <p class="text-muted-custom small mb-0">&copy; 2026 ProfBel.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+    <!-- Важно: main.js отвечает за смену темы на этой странице! -->
+    <script src="js/main.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return (window.location.href = "index.html");
+
+        // 1. ЗАГРУЗКА ДАННЫХ ИЗ БАЗЫ
+        try {
+          const res = await fetch("/api/profile/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const user = await res.json();
+
+          document.getElementById("profileName").textContent = user.name;
+          document.getElementById("profileEmail").textContent = user.email;
+          document.getElementById("profileGender").textContent =
+            user.gender || "Не указан";
+          document.getElementById("profileAge").textContent = user.age
+            ? user.age + " лет"
+            : "Не указан";
+          document.getElementById("profileEdu").textContent =
+            user.education || "Не указано";
+
+          // Показ кнопки админа, если роль совпадает
+          if (user.role === "admin") {
+            document
+              .getElementById("adminPanelLink")
+              .classList.remove("d-none");
+          }
+
+          if (user.avatar && user.avatar !== "default-avatar.png") {
+            document.getElementById("profileAvatar").src = user.avatar;
+          } else {
+            document.getElementById("profileAvatar").src =
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=64ffda&color=0a192f&size=128`;
+          }
+
+          document.getElementById("editName").value = user.name;
+          document.getElementById("editAge").value = user.age || "";
+          document.getElementById("editGender").value =
+            user.gender || "Мужской";
+          document.getElementById("editEdu").value = user.education || "Школа";
+
+          // 4. ИСТОРИЯ ТЕСТОВ ИЗ БАЗЫ ДАННЫХ MONGODB
+          const container = document.getElementById("profileResultsContainer");
+          if (user.testResults && user.testResults.length > 0) {
+            document.getElementById("emptyResultsMsg").classList.add("d-none");
+            user.testResults.forEach((result, index) => {
+              const attemptNum = user.testResults.length - index;
+              const formattedDate = new Date(result.date).toLocaleDateString(
+                "ru-RU",
+              );
+              const profsHtml = result.topProfessions
+                .map(
+                  (p) =>
+                    `<span class="badge border custom-border text-light me-2 mb-2 p-2" style="background-color: var(--bg-surface);">${p}</span>`,
+                )
+                .join("");
+
+              const card = document.createElement("div");
+              card.className =
+                "p-4 rounded-4 border custom-border transition-all";
+              card.style.backgroundColor = "var(--bg-dark)";
+              card.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-purple-soft text-purple px-3 py-2 rounded-pill">Попытка ${attemptNum}</span>
+                <span class="text-muted-custom small"><i class="far fa-clock me-1"></i> ${formattedDate}</span>
+              </div>
+              <div>
+                <p class="text-light small mb-3 fw-bold">Рекомендованные профессии:</p>
+                ${profsHtml}
+              </div>
+            `;
+              container.appendChild(card);
+            });
+          }
+        } catch (err) {
+          console.error("Ошибка загрузки профиля", err);
+        }
+
+        // 2. ЗАГРУЗКА НОВОЙ АВАТАРКИ
+        document
+          .getElementById("avatarInput")
+          .addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("avatar", file);
+
+            try {
+              const res = await fetch("/api/profile/avatar", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+              });
+              const data = await res.json();
+              if (res.ok) {
+                document.getElementById("profileAvatar").src = data.avatar;
+                const localUser = JSON.parse(localStorage.getItem("user"));
+                localUser.avatar = data.avatar;
+                localStorage.setItem("user", JSON.stringify(localUser));
+              } else {
+                alert(`Ошибка при загрузке: ${data.message}`);
+              }
+            } catch (err) {
+              alert("Произошла ошибка при соединении с сервером");
+              console.error(err);
+            }
+          });
+
+        // 3. СОХРАНЕНИЕ РЕДАКТИРОВАНИЯ
+        document
+          .getElementById("editProfileForm")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("editName").value;
+            const age = document.getElementById("editAge").value;
+            const gender = document.getElementById("editGender").value;
+            const education = document.getElementById("editEdu").value;
+
+            try {
+              const res = await fetch("/api/profile/update", {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name, age, gender, education }),
+              });
+              if (res.ok) {
+                window.location.reload();
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          });
+
+        // Выход
+        document
+          .getElementById("logoutProfileBtn")
+          .addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+          });
+      });
+    </script>
+  </body>
+</html>

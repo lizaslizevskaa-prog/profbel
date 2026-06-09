@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProfBel | Истории успеха</title>
+    <meta
+      name="description"
+      content="ProfBel - твой персональный гид в мире профессий будущего в Беларуси."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-main text-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+      <div class="container">
+        <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
+        <button
+          class="navbar-toggler custom-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="fas fa-bars text-light"></i>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav gap-4 align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Главная</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="catalog.html">Каталог</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="stories.html">Истории успеха</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
+            </li>
+            <li class="nav-item ms-lg-3">
+              <button
+                class="btn btn-outline-cyan"
+                data-bs-toggle="modal"
+                data-bs-target="#authModal"
+              >
+                <i class="fas fa-user me-2"></i>Войти
+              </button>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <button
+                id="themeToggle"
+                class="btn btn-outline-secondary rounded-circle"
+                style="
+                  width: 42px;
+                  height: 42px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-color: rgba(100, 255, 218, 0.3);
+                "
+              >
+                <i class="fas fa-sun text-warning fs-5"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-5 flex-grow-1 position-relative">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3">
+          Истории <span class="gradient-text">успеха</span>
+        </h1>
+        <p class="lead text-muted-custom">
+          Узнайте, как наши герои нашли себя в профессиях будущего.
+        </p>
+      </div>
+
+      <!-- Сетка карточек -->
+      <div id="storiesGridView" class="row g-4"></div>
+
+      <!-- Полный вид статьи -->
+      <div id="fullArticleView" class="d-none">
+        <button id="backToGridBtn" class="btn btn-outline-cyan mb-4">
+          <i class="fas fa-arrow-left me-2"></i>Назад к списку
+        </button>
+        <div
+          class="detail-card p-4 p-md-5 rounded-4 position-relative overflow-hidden"
+        >
+          <div class="glow-backdrop-large" style="opacity: 0.2"></div>
+          <div class="position-relative z-index-2">
+            <div
+              class="row align-items-center mb-5 pb-4 border-bottom custom-border"
+            >
+              <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                <img
+                  id="articlePagePhoto"
+                  src=""
+                  alt=""
+                  class="img-fluid rounded-circle border border-primary border-3"
+                  style="max-width: 180px; height: 180px; object-fit: cover"
+                />
+              </div>
+              <div class="col-md-9">
+                <h2 id="articlePageName" class="display-5 fw-bold mb-3">
+                  Подробнее
+                </h2>
+                <span
+                  id="articlePageProfession"
+                  class="badge bg-purple-soft text-purple fs-5 px-4 py-2 rounded-pill border border-purple d-inline-block"
+                ></span>
+              </div>
+            </div>
+
+            <!-- Текст статьи -->
+            <div
+              id="articlePageContent"
+              class="fs-5 text-muted-custom mb-5"
+              style="line-height: 1.8"
+            ></div>
+
+            <!-- БЛОК КОММЕНТАРИЕВ СТРОГО ВНИЗУ ПОД ТЕКСТОМ -->
+            <div
+              class="detail-card p-4 p-md-5 rounded-4 mt-5 bg-surface border custom-border border-opacity-25"
+              style="background-color: var(--bg-surface) !important"
+            >
+              <h3 class="h4 fw-bold mb-4 border-bottom custom-border pb-3">
+                <i class="fas fa-comments text-cyan me-2"></i>Вопросы герою
+                истории
+              </h3>
+              <div id="commentFormContainer" class="mb-4"></div>
+              <div id="commentsList" class="d-flex flex-column gap-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer
+      class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
+    >
+      <div class="container">
+        <p class="text-muted-custom small mb-0">&copy; 2026 ProfBel.</p>
+      </div>
+    </footer>
+
+    <!-- Модалка входа (ТЕМНАЯ) -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content text-light border custom-border"
+          style="
+            background-color: var(--bg-surface) !important;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          "
+        >
+          <div
+            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
+          >
+            <h3
+              class="h5 modal-title fw-bold w-100 text-center"
+              id="authModalTitle"
+            >
+              Вход в личный кабинет
+            </h3>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute end-0 me-4"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-4 p-md-5">
+            <form id="loginForm" class="d-block">
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Email</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-envelope position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="email"
+                    class="form-control custom-input text-light"
+                    placeholder="Введите ваш email"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-5">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold d-flex justify-content-between"
+                >
+                  Пароль
+                  <a
+                    href="#"
+                    id="showForgotBtn"
+                    class="text-muted-custom text-decoration-none text-lowercase fw-normal hover-primary transition-all"
+                    >Забыли пароль?</a
+                  >
+                </label>
+                <div class="position-relative">
+                  <i
+                    class="fas fa-lock position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="password"
+                    class="form-control custom-input text-light"
+                    placeholder="Введите пароль"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-accent-glow w-100 mb-4 py-3 fs-5"
+              >
+                Войти
+              </button>
+              <div class="text-center text-muted-custom small">
+                Нет аккаунта?
+                <a
+                  href="#"
+                  id="showRegisterBtn"
+                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
+                  >Зарегистрироваться</a
+                >
+              </div>
+            </form>
+            <form id="registerForm" class="d-none">
+              <div class="mb-3">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Имя и Фамилия</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-user position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="text"
+                    id="regName"
+                    class="form-control custom-input text-light"
+                    placeholder="Иван Иванов"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Email</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-envelope position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="email"
+                    id="regEmail"
+                    class="form-control custom-input text-light"
+                    placeholder="Введите ваш email"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label
+                    class="form-label text-muted-custom small text-uppercase fw-bold"
+                    >Возраст</label
+                  >
+                  <input
+                    type="number"
+                    id="regAge"
+                    class="form-control custom-input text-light text-center"
+                    min="14"
+                    style="
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+                <div class="col-6">
+                  <label
+                    class="form-label text-muted-custom small text-uppercase fw-bold"
+                    >Пол</label
+                  >
+                  <select
+                    id="regGender"
+                    class="form-select custom-select text-light"
+                    style="
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  >
+                    <option value="Мужской">Мужской</option>
+                    <option value="Женский">Женский</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Образование</label
+                >
+                <select
+                  id="regEdu"
+                  class="form-select custom-select text-light"
+                  style="
+                    height: 50px;
+                    border-radius: 12px;
+                    background-color: var(--bg-dark) !important;
+                  "
+                  required
+                >
+                  <option value="Школа">Школа</option>
+                  <option value="Колледж / ССО">Колледж / ССО</option>
+                  <option value="ВУЗ">ВУЗ</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Придумайте пароль</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-shield-alt position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="password"
+                    id="regPassword"
+                    class="form-control custom-input text-light"
+                    placeholder="Минимум 6 символов"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-outline-cyan w-100 mb-3 py-3 fs-5"
+              >
+                Создать аккаунт
+              </button>
+              <div class="text-center text-muted-custom small">
+                Уже есть аккаунт?
+                <a
+                  href="#"
+                  id="showLoginBtn"
+                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
+                  >Войти</a
+                >
+              </div>
+            </form>
+            <form id="forgotForm" class="d-none">
+              <p class="text-muted-custom small mb-4 text-center">
+                Введите ваш Email. Мы отправим на него новый временный пароль.
+              </p>
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Email</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-envelope position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="email"
+                    id="forgotEmail"
+                    class="form-control custom-input text-light"
+                    placeholder="Введите ваш email"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-accent-glow w-100 mb-4 py-3 fs-5"
+              >
+                Отправить пароль
+              </button>
+              <div class="text-center text-muted-custom small">
+                Вспомнили пароль?
+                <a
+                  href="#"
+                  id="backToLoginBtn"
+                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
+                  >Войти</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
