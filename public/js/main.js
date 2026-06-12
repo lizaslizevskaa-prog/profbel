@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   } catch (error) {
-    console.error("Ошибка в логике темы:", error);
+    console.error(error);
   }
 
-  // 2. ФОРМА ОБРАТНОЙ СВЯЗИ
+  // 2. ФОРМА ОБРАТНОЙ СВЯЗИ (Контакты)
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", function (e) {
@@ -42,14 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formAlert = document.getElementById("formAlert");
 
       let isValid = true;
-      const nameValue = nameInput.value.trim();
-      const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s\-\.'`,&\(\)]+$/;
-
-      if (
-        nameValue === "" ||
-        nameValue.length < 2 ||
-        !nameRegex.test(nameValue)
-      ) {
+      if (nameInput.value.trim().length < 2) {
         nameInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -57,9 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
         nameInput.classList.add("is-valid");
       }
 
-      const emailValue = emailInput.value.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (emailValue === "" || !emailRegex.test(emailValue)) {
+      if (!emailRegex.test(emailInput.value.trim())) {
         emailInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -77,16 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (isValid) {
         formAlert.className = "alert alert-success mt-3";
-        formAlert.innerHTML = `<i class="fas fa-check-circle me-2"></i> Спасибо, ${nameValue}! Сообщение успешно отправлено.`;
+        formAlert.innerHTML = `<i class="fas fa-check-circle me-2"></i> Сообщение успешно отправлено.`;
         formAlert.classList.remove("d-none");
         contactForm.reset();
-        [nameInput, emailInput, messageInput].forEach((el) => {
-          el.classList.remove("is-valid");
-        });
         setTimeout(() => formAlert.classList.add("d-none"), 5000);
       }
     });
-
     document.querySelectorAll(".custom-input").forEach((input) => {
       input.addEventListener("input", function () {
         this.classList.remove("is-invalid", "is-valid");
@@ -115,83 +103,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const originalCards = [...sliderTrack.children];
-    for (let i = 0; i < 2; i++) {
-      originalCards.forEach((card) => {
-        sliderTrack.appendChild(card.cloneNode(true));
-      });
-    }
+    for (let i = 0; i < 2; i++)
+      originalCards.forEach((card) =>
+        sliderTrack.appendChild(card.cloneNode(true)),
+      );
 
     let currentTranslateX = 0;
     let isPaused = false;
     let isManualMoving = false;
-    const FIXED_SPEED = 0.3;
-
-    const getOriginalWidth = () => {
-      const slides = document.querySelectorAll(".story-slide");
-      let totalWidth = 0;
-      for (let i = 0; i < storiesData.length; i++) {
-        if (slides[i]) totalWidth += slides[i].offsetWidth + 20;
-      }
-      return totalWidth;
-    };
 
     function autoSlide() {
       if (!isPaused && !isManualMoving) {
-        const originalWidth = getOriginalWidth();
-        currentTranslateX += FIXED_SPEED;
-        if (currentTranslateX >= originalWidth) {
-          currentTranslateX -= originalWidth;
+        currentTranslateX += 0.3;
+        const slides = document.querySelectorAll(".story-slide");
+        let totalW = 0;
+        for (let i = 0; i < storiesData.length; i++)
+          if (slides[i]) totalW += slides[i].offsetWidth + 20;
+
+        if (currentTranslateX >= totalW) {
+          currentTranslateX -= totalW;
           sliderTrack.style.transition = "none";
         }
         sliderTrack.style.transform = `translateX(-${currentTranslateX}px)`;
       }
-      animationId = requestAnimationFrame(autoSlide);
-    }
-
-    function manualMove(direction) {
-      isManualMoving = true;
-      const slides = document.querySelectorAll(".story-slide");
-      if (slides.length === 0) return;
-
-      const slideWidth = slides[0].offsetWidth + 20;
-      const originalWidth = getOriginalWidth();
-      let targetPosition =
-        direction === "next"
-          ? currentTranslateX + slideWidth
-          : currentTranslateX - slideWidth;
-
-      if (targetPosition >= originalWidth) targetPosition -= originalWidth;
-      else if (targetPosition < 0) targetPosition += originalWidth;
-
-      sliderTrack.style.transition = "transform 0.3s ease";
-      sliderTrack.style.transform = `translateX(-${targetPosition}px)`;
-      currentTranslateX = targetPosition;
-
-      setTimeout(() => {
-        sliderTrack.style.transition = "none";
-        isManualMoving = false;
-      }, 300);
-    }
-
-    const prevBtn = document.getElementById("sliderPrev");
-    const nextBtn = document.getElementById("sliderNext");
-
-    if (prevBtn && nextBtn) {
-      prevBtn.addEventListener("click", () => manualMove("prev"));
-      nextBtn.addEventListener("click", () => manualMove("next"));
-    }
-
-    const sliderContainer = document.querySelector(".slider-container");
-    if (sliderContainer) {
-      sliderContainer.addEventListener("mouseenter", () => (isPaused = true));
-      sliderContainer.addEventListener("mouseleave", () => (isPaused = false));
+      requestAnimationFrame(autoSlide);
     }
     requestAnimationFrame(autoSlide);
   }
 
-  // ==========================================
-  // 4. СТРАНИЦА ИСТОРИЙ УСПЕХА (ГРИД И КОММЕНТАРИИ)
-  // ==========================================
+  // 4. СТРАНИЦА ИСТОРИЙ УСПЕХА (ГРИД)
   const storiesGridView = document.getElementById("storiesGridView");
   const fullArticleView = document.getElementById("fullArticleView");
   const backToGridBtn = document.getElementById("backToGridBtn");
@@ -218,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
       backToGridBtn.addEventListener("click", () => {
         fullArticleView.classList.add("d-none");
         storiesGridView.classList.remove("d-none");
-        window.history.pushState({}, document.title, window.location.pathname);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
     }
@@ -228,9 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (storyId) openFullArticle(storyId);
   }
 
-  // ==========================================
   // 5. ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ НА ГЛАВНОЙ (ДЛЯ ГОСТЯ И ЮЗЕРА)
-  // ==========================================
   const pastResultsSection = document.getElementById("pastResultsSection");
   const pastResultsContainer = document.getElementById("pastResultsContainer");
 
@@ -264,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
             user.testResults.forEach((result, index) => {
               const col = document.createElement("div");
               col.className = "col-md-4 mt-4";
-
               const formattedDate = new Date(result.date).toLocaleDateString(
                 "ru-RU",
               );
@@ -278,9 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               col.innerHTML = `
                 <div class="custom-card card p-4 h-100 border border-secondary shadow-sm position-relative mt-2" style="background-color: var(--bg-dark);">
-                  <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-cyan text-dark shadow">
-                    Попытка ${attemptNum}
-                  </div>
+                  <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-cyan text-dark shadow">Попытка ${attemptNum}</div>
                   <div class="d-flex justify-content-between align-items-center mt-2 mb-3 border-bottom custom-border pb-2">
                     <span class="text-main fw-bold">Топ-3:</span>
                     <span class="text-muted-custom small"><i class="far fa-calendar-alt me-1"></i> ${formattedDate}</span>
@@ -297,7 +231,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================
-  // 6. МОДАЛКА АВТОРИЗАЦИИ: ПЕРЕКЛЮЧЕНИЕ ФОРМ
+  // ГЕНЕРАТОР КРАСИВЫХ УВЕДОМЛЕНИЙ (ВМЕСТО ALERT)
+  // ==========================================
+  function showNotification(message, type = "success") {
+    let container = document.getElementById("toast-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "toast-container";
+      container.className = "position-fixed top-0 end-0 p-3";
+      container.style.zIndex = "10000";
+      document.body.appendChild(container);
+    }
+
+    const bgClass = type === "success" ? "bg-success" : "bg-danger";
+    const iconClass =
+      type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
+
+    const toast = document.createElement("div");
+    toast.className = `toast align-items-center text-white ${bgClass} border-0 mb-2 show`;
+    toast.style.transition = "opacity 0.3s ease";
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body fw-bold fs-6">
+          <i class="fas ${iconClass} me-2"></i> ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button>
+      </div>
+    `;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  // ==========================================
+  // 6. МОДАЛКА АВТОРИЗАЦИИ: ПЕРЕКЛЮЧЕНИЕ И ОТПРАВКА
   // ==========================================
   const showRegisterBtn = document.getElementById("showRegisterBtn");
   const showLoginBtn = document.getElementById("showLoginBtn");
@@ -307,44 +277,95 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
   const forgotForm = document.getElementById("forgotForm");
+  const verifyForm = document.getElementById("verifyForm");
   const authModalTitle = document.getElementById("authModalTitle");
+
+  let currentRegEmail = "";
 
   const swap = (hides, show, title) => {
     hides.forEach((f) => f && f.classList.replace("d-block", "d-none"));
-    show.classList.replace("d-none", "d-block");
+    if (show) show.classList.replace("d-none", "d-block");
     authModalTitle.textContent = title;
   };
 
   if (showRegisterBtn && showLoginBtn && showForgotBtn) {
     showRegisterBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      swap([loginForm, forgotForm], registerForm, "Регистрация");
+      swap([loginForm, forgotForm, verifyForm], registerForm, "Регистрация");
     });
     showLoginBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      swap([registerForm, forgotForm], loginForm, "Вход в личный кабинет");
+      swap(
+        [registerForm, forgotForm, verifyForm],
+        loginForm,
+        "Вход в личный кабинет",
+      );
     });
     showForgotBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      swap([loginForm, registerForm], forgotForm, "Восстановление пароля");
+      swap(
+        [loginForm, registerForm, verifyForm],
+        forgotForm,
+        "Восстановление пароля",
+      );
     });
-    backToLoginBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      swap([forgotForm, registerForm], loginForm, "Вход в личный кабинет");
-    });
+    if (backToLoginBtn)
+      backToLoginBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        swap(
+          [forgotForm, registerForm, verifyForm],
+          loginForm,
+          "Вход в личный кабинет",
+        );
+      });
   }
 
+  // РЕГИСТРАЦИЯ -> Вызов кода
   if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = document.getElementById("regName").value;
-      const email = document.getElementById("regEmail").value;
-      const age = document.getElementById("regAge").value;
-      const gender = document.getElementById("regGender").value;
-      const education = document.getElementById("regEdu").value;
-      const password = document.getElementById("regPassword").value;
 
+      const name = document.getElementById("regName")
+        ? document.getElementById("regName").value
+        : registerForm.querySelectorAll("input")[0].value;
+      const email = document.getElementById("regEmail")
+        ? document.getElementById("regEmail").value
+        : registerForm.querySelectorAll("input")[1].value;
+      const age = document.getElementById("regAge")
+        ? document.getElementById("regAge").value
+        : 18;
+      const gender = document.getElementById("regGender")
+        ? document.getElementById("regGender").value
+        : "Не указан";
+      const education = document.getElementById("regEdu")
+        ? document.getElementById("regEdu").value
+        : "Школа";
+
+      // ПРОВЕРКА ПАРОЛЯ ПРЯМО В ФОРМЕ
+      const passwordInput = document.getElementById("regPassword");
+      const password = passwordInput.value;
+      const passwordRegex =
+        /^(?=.*[A-Za-zА-Яа-я])(?=.*\d)[A-Za-zА-Яа-я\d]{6,}$/;
+
+      if (!passwordRegex.test(password)) {
+        passwordInput.classList.add("is-invalid");
+        showNotification(
+          "Пароль должен быть от 6 символов и содержать минимум 1 букву и 1 цифру",
+          "error",
+        );
+        return; // Останавливаем отправку
+      } else {
+        passwordInput.classList.remove("is-invalid");
+      }
+
+      // Если всё ок - отправляем
       try {
+        // Меняем текст кнопки на "Загрузка..."
+        const btn = registerForm.querySelector('button[type="submit"]');
+        const oldText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+        btn.disabled = true;
+
         const response = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -359,20 +380,59 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const data = await response.json();
 
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+
         if (response.ok) {
-          alert("Регистрация успешна! Теперь вы можете войти.");
-          showLoginBtn.click();
-          registerForm.reset();
+          currentRegEmail = email;
+          showNotification(data.message, "success");
+          swap([registerForm], verifyForm, "Подтверждение Email");
         } else {
-          alert(`Ошибка: ${data.message}`);
+          showNotification(data.message, "error");
         }
       } catch (err) {
-        console.error(err);
-        alert("Ошибка соединения с сервером");
+        showNotification("Ошибка соединения с сервером", "error");
+      }
+    });
+
+    // Сброс красной рамки при вводе пароля
+    document
+      .getElementById("regPassword")
+      ?.addEventListener("input", function () {
+        this.classList.remove("is-invalid");
+      });
+  }
+
+  // ВВОД КОДА
+  if (verifyForm) {
+    verifyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("verifyCode").value;
+      try {
+        const response = await fetch("/api/auth/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: currentRegEmail, code }),
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          showNotification(
+            "Почта успешно подтверждена! Теперь войдите с вашим паролем.",
+            "success",
+          );
+          verifyForm.reset();
+          swap([verifyForm], loginForm, "Вход в личный кабинет");
+        } else {
+          showNotification(data.message, "error");
+        }
+      } catch (err) {
+        showNotification("Ошибка соединения с сервером", "error");
       }
     });
   }
 
+  // ВХОД В АККАУНТ
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -390,40 +450,54 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
-          window.location.reload();
+          showNotification("Успешный вход!", "success");
+          setTimeout(() => window.location.reload(), 1000);
         } else {
-          alert(`Ошибка: ${data.message}`);
+          showNotification(data.message, "error");
         }
       } catch (err) {
-        console.error(err);
-        alert("Ошибка соединения с сервером");
+        showNotification("Ошибка соединения с сервером", "error");
       }
     });
   }
 
-  // ОТПРАВКА ВОССТАНОВЛЕНИЯ ПАРОЛЯ
+  // ЗАБЫЛИ ПАРОЛЬ
   if (forgotForm) {
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("forgotEmail").value;
       try {
+        const btn = forgotForm.querySelector('button[type="submit"]');
+        const oldText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+        btn.disabled = true;
+
         const res = await fetch("/api/auth/forgot-password", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
         });
         const data = await res.json();
-        alert(data.message);
-        if (res.ok) backToLoginBtn.click();
+
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+
+        if (res.ok) {
+          showNotification(data.message, "success");
+          forgotForm.reset();
+          setTimeout(
+            () => swap([forgotForm], loginForm, "Вход в личный кабинет"),
+            2000,
+          );
+        } else {
+          showNotification(data.message, "error");
+        }
       } catch {
-        alert("Ошибка соединения с сервером");
+        showNotification("Ошибка соединения с сервером", "error");
       }
     });
   }
-
-  // ==========================================
   // 7. ГЛОБАЛЬНАЯ ПРОВЕРКА АВТОРИЗАЦИИ (ШАПКА САЙТА)
-  // ==========================================
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const authBtns = document.querySelectorAll(
@@ -458,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ HTML
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ИСТОРИЙ
 window.openStoryModal = function (id) {
   const story = storiesData.find((s) => s.id === id);
   if (story) {
@@ -475,7 +549,6 @@ window.openStoryModal = function (id) {
   }
 };
 
-// Функция загрузки и отправки вопросов героям
 async function loadComments(storyId) {
   const commentsList = document.getElementById("commentsList");
   const formContainer = document.getElementById("commentFormContainer");
@@ -484,7 +557,6 @@ async function loadComments(storyId) {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // 1. Форма ввода (если авторизован) или призыв войти (если гость)
   if (!token || !user) {
     formContainer.innerHTML = `
       <div class="p-3 rounded-3 border custom-border text-center" style="background-color: var(--bg-dark);">
@@ -495,10 +567,9 @@ async function loadComments(storyId) {
     formContainer.innerHTML = `
       <form id="addCommentForm" class="d-flex gap-2">
         <input type="text" id="commentText" class="form-control custom-input text-light" placeholder="Задайте ваш вопрос..." style="background-color: var(--bg-dark) !important; border-radius: 12px; height: 50px;" required>
-        <button type="submit" class="btn btn-accent-glow py-2">Спросить</button>
+        <button type="submit" class="btn btn-accent-glow py-2 px-4">Спросить</button>
       </form>
     `;
-
     document
       .getElementById("addCommentForm")
       .addEventListener("submit", async (e) => {
@@ -515,7 +586,7 @@ async function loadComments(storyId) {
           });
           if (res.ok) {
             document.getElementById("commentText").value = "";
-            loadComments(storyId); // Обновляем комментарии
+            loadComments(storyId);
           }
         } catch (err) {
           console.error(err);
@@ -523,7 +594,6 @@ async function loadComments(storyId) {
       });
   }
 
-  // 2. Загружаем вопросы с сервера
   try {
     const res = await fetch(`/api/comments/${storyId}`);
     const comments = await res.json();
@@ -534,23 +604,21 @@ async function loadComments(storyId) {
     }
 
     const currentUserId = user ? user.id : null;
+    const isAdmin = user ? user.role === "admin" : false;
 
     commentsList.innerHTML = comments
       .map((c) => {
-        // Кнопка удаления показывается ТОЛЬКО создателю комментария
-        const isOwner = currentUserId === c.userId;
+        const isOwner = currentUserId === c.userId || isAdmin;
         const deleteBtn = isOwner
           ? `
-        <button class="btn btn-link text-danger p-0 ms-auto delete-comment-btn" data-id="${c._id}" title="Удалить вопрос">
-          <i class="fas fa-trash-alt"></i>
-        </button>
+        <button class="btn btn-link text-danger p-0 ms-auto delete-comment-btn" data-id="${c._id}" title="Удалить вопрос"><i class="fas fa-trash-alt"></i></button>
       `
           : "";
 
         return `
         <div class="p-3 rounded-4 border custom-border text-start d-flex flex-column" style="background-color: var(--bg-dark);">
           <div class="d-flex align-items-center mb-2">
-            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.userName)}&background=64ffda&color=0a192f&size=32" class="rounded-circle me-2" style="width: 32px; height: 32px;">
+            <i class="fas fa-user-circle fs-4 text-cyan me-2"></i>
             <span class="fw-bold text-light small">${c.userName}</span>
             <span class="text-muted-custom small ms-2">${new Date(c.date).toLocaleDateString("ru-RU")}</span>
             ${deleteBtn}
@@ -561,21 +629,16 @@ async function loadComments(storyId) {
       })
       .join("");
 
-    // Вешаем слушатели клика на все кнопки удаления
     document.querySelectorAll(".delete-comment-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const commentId = e.currentTarget.getAttribute("data-id");
-        if (confirm("Вы действительно хотите удалить свой вопрос?")) {
+        if (confirm("Удалить этот комментарий?")) {
           try {
             const res = await fetch(`/api/comments/${commentId}`, {
               method: "DELETE",
               headers: { Authorization: `Bearer ${token}` },
             });
-            if (res.ok) {
-              loadComments(storyId); // Обновляем список вопросов
-            } else {
-              alert("Не удалось удалить комментарий.");
-            }
+            if (res.ok) loadComments(storyId);
           } catch (err) {
             console.error(err);
           }
@@ -599,7 +662,7 @@ window.openFullArticle = function (id) {
     document.getElementById("fullArticleView").classList.remove("d-none");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Загружаем комментарии строго ПОД статьей
+    // Грузим комменты ПОД статьей
     loadComments(id);
   }
 };
