@@ -19,9 +19,18 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body class="bg-main text-light d-flex flex-column min-vh-100">
+    <!-- ЕДИНАЯ НАВИГАЦИЯ ДЛЯ ВСЕХ СТРАНИЦ -->
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
       <div class="container">
         <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
+        <button
+          class="navbar-toggler custom-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="fas fa-bars text-light"></i>
+        </button>
         <div
           class="collapse navbar-collapse justify-content-end"
           id="navbarNav"
@@ -31,29 +40,27 @@
               <a class="nav-link" href="index.html">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="catalog.html">Каталог</a>
+              <a class="nav-link" href="catalog.html">Каталог профессий</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="test.html">Пройти тест</a>
+              <a class="nav-link" href="stories.html">Истории успеха</a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
             </li>
 
-            <!-- Скрытая ссылка на админку -->
-            <li class="nav-item d-none" id="adminPanelLink">
-              <a class="nav-link text-warning fw-bold" href="admin.html"
-                ><i class="fas fa-crown me-1"></i> Админ</a
-              >
-            </li>
-
+            <!-- Кнопка Войти (main.js автоматически превратит ее в выпадающее меню с вашим именем) -->
             <li class="nav-item ms-lg-3">
               <button
-                id="logoutProfileBtn"
-                class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                class="btn btn-outline-cyan"
+                data-bs-toggle="modal"
+                data-bs-target="#authModal"
               >
-                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                <i class="fas fa-user me-2"></i>Войти
               </button>
             </li>
 
-            <!-- Кнопка смены темы -->
+            <!-- Смена темы -->
             <li class="nav-item ms-lg-2">
               <button
                 id="themeToggle"
@@ -77,11 +84,13 @@
 
     <main class="container py-5 flex-grow-1">
       <div class="row g-4">
+        <!-- ЛЕВАЯ КОЛОНКА (Инфо о пользователе) -->
         <div class="col-lg-4">
           <div
             class="detail-card p-4 rounded-4 text-center h-100 position-relative"
           >
             <div class="position-relative z-index-2">
+              <!-- Аватарка с кнопкой загрузки -->
               <div class="mb-4 position-relative d-inline-block">
                 <img
                   id="profileAvatar"
@@ -111,6 +120,7 @@
                 загрузка...
               </p>
 
+              <!-- КРАСИВЫЕ КАРТОЧКИ АНКЕТЫ -->
               <div class="row g-3 text-start mb-4">
                 <div class="col-6">
                   <div
@@ -146,17 +156,26 @@
                 </div>
               </div>
 
+              <!-- КНОПКИ УПРАВЛЕНИЯ -->
               <button
-                class="btn btn-outline-cyan w-100 mt-2"
+                class="btn btn-outline-cyan w-100 mb-2"
                 data-bs-toggle="modal"
                 data-bs-target="#editProfileModal"
               >
                 <i class="fas fa-pen me-2"></i> Редактировать данные
               </button>
+              <button
+                class="btn btn-outline-warning w-100"
+                data-bs-toggle="modal"
+                data-bs-target="#changePasswordModal"
+              >
+                <i class="fas fa-key me-2"></i> Изменить пароль
+              </button>
             </div>
           </div>
         </div>
 
+        <!-- ПРАВАЯ КОЛОНКА (История тестов) -->
         <div class="col-lg-8">
           <div class="detail-card p-4 rounded-4 h-100">
             <h4 class="fw-bold mb-4 border-bottom custom-border pb-3">
@@ -179,6 +198,7 @@
       </div>
     </main>
 
+    <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ АНКЕТЫ -->
     <div class="modal fade" id="editProfileModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -227,6 +247,7 @@
                   />
                 </div>
               </div>
+
               <div class="row mb-4">
                 <div class="col-6">
                   <label
@@ -268,6 +289,7 @@
                   </select>
                 </div>
               </div>
+
               <div class="mb-5">
                 <label
                   class="form-label text-muted-custom small text-uppercase fw-bold"
@@ -304,6 +326,117 @@
       </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО СМЕНЫ ПАРОЛЯ -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content text-light border custom-border"
+          style="
+            background-color: var(--bg-surface) !important;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          "
+        >
+          <div
+            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
+          >
+            <h4 class="h5 modal-title fw-bold w-100 text-center text-warning">
+              Изменить пароль
+            </h4>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute end-0 me-4"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4 p-md-5">
+            <form id="changePasswordForm">
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Текущий (или временный) пароль</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-lock position-absolute text-muted-custom"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    class="form-control custom-input text-light"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Новый пароль</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-key position-absolute text-warning"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    class="form-control custom-input text-light"
+                    placeholder="Буквы и цифры (мин 6)"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-5">
+                <label
+                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  >Повторите новый пароль</label
+                >
+                <div class="position-relative">
+                  <i
+                    class="fas fa-check position-absolute text-warning"
+                    style="left: 18px; top: 50%; transform: translateY(-50%)"
+                  ></i>
+                  <input
+                    type="password"
+                    id="confirmNewPassword"
+                    class="form-control custom-input text-light"
+                    placeholder="Повторите пароль"
+                    style="
+                      padding-left: 50px;
+                      height: 50px;
+                      border-radius: 12px;
+                      background-color: var(--bg-dark) !important;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-outline-warning w-100 py-3 fs-5"
+              >
+                Обновить пароль
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer
       class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
     >
@@ -314,21 +447,47 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/data.js"></script>
-    <!-- Важно: main.js отвечает за смену темы на этой странице! -->
+    <!-- ВАЖНО: Подключили main.js, который сам создаст выпадающее меню в шапке -->
     <script src="js/main.js"></script>
 
     <script>
+      // ГЕНЕРАТОР КРАСИВЫХ УВЕДОМЛЕНИЙ ДЛЯ ПРОФИЛЯ
+      function showProfileNotification(message, type = "success") {
+        let container = document.getElementById("toast-container");
+        if (!container) {
+          container = document.createElement("div");
+          container.id = "toast-container";
+          container.className = "position-fixed top-0 end-0 p-3";
+          container.style.zIndex = "10000";
+          document.body.appendChild(container);
+        }
+        const bgClass = type === "success" ? "bg-success" : "bg-danger";
+        const iconClass =
+          type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
+        const toast = document.createElement("div");
+        toast.className = `toast align-items-center text-white ${bgClass} border-0 mb-2 show`;
+        toast.style.transition = "opacity 0.3s ease";
+        toast.innerHTML = `<div class="d-flex"><div class="toast-body fw-bold fs-6"><i class="fas ${iconClass} me-2"></i> ${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button></div>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      }
+
       document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
+        // Если токена нет, отправляем на главную
         if (!token) return (window.location.href = "index.html");
 
-        // 1. ЗАГРУЗКА ДАННЫХ ИЗ БАЗЫ
+        // 1. ЗАГРУЗКА ДАННЫХ ИЗ БАЗЫ MONGODB
         try {
           const res = await fetch("/api/profile/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const user = await res.json();
 
+          // Заполняем профиль
           document.getElementById("profileName").textContent = user.name;
           document.getElementById("profileEmail").textContent = user.email;
           document.getElementById("profileGender").textContent =
@@ -339,13 +498,7 @@
           document.getElementById("profileEdu").textContent =
             user.education || "Не указано";
 
-          // Показ кнопки админа, если роль совпадает
-          if (user.role === "admin") {
-            document
-              .getElementById("adminPanelLink")
-              .classList.remove("d-none");
-          }
-
+          // Аватарка
           if (user.avatar && user.avatar !== "default-avatar.png") {
             document.getElementById("profileAvatar").src = user.avatar;
           } else {
@@ -353,13 +506,14 @@
               `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=64ffda&color=0a192f&size=128`;
           }
 
+          // Заполняем форму редактирования
           document.getElementById("editName").value = user.name;
           document.getElementById("editAge").value = user.age || "";
           document.getElementById("editGender").value =
             user.gender || "Мужской";
           document.getElementById("editEdu").value = user.education || "Школа";
 
-          // 4. ИСТОРИЯ ТЕСТОВ ИЗ БАЗЫ ДАННЫХ MONGODB
+          // ИСТОРИЯ ТЕСТОВ
           const container = document.getElementById("profileResultsContainer");
           if (user.testResults && user.testResults.length > 0) {
             document.getElementById("emptyResultsMsg").classList.add("d-none");
@@ -418,12 +572,12 @@
                 const localUser = JSON.parse(localStorage.getItem("user"));
                 localUser.avatar = data.avatar;
                 localStorage.setItem("user", JSON.stringify(localUser));
+                showProfileNotification("Аватар успешно обновлен!");
               } else {
-                alert(`Ошибка при загрузке: ${data.message}`);
+                showProfileNotification(data.message, "error");
               }
             } catch (err) {
-              alert("Произошла ошибка при соединении с сервером");
-              console.error(err);
+              showProfileNotification("Ошибка сервера", "error");
             }
           });
 
@@ -446,21 +600,52 @@
                 },
                 body: JSON.stringify({ name, age, gender, education }),
               });
-              if (res.ok) {
-                window.location.reload();
-              }
+              if (res.ok) window.location.reload();
             } catch (err) {
               console.error(err);
             }
           });
 
-        // Выход
+        // 4. СМЕНА ПАРОЛЯ
         document
-          .getElementById("logoutProfileBtn")
-          .addEventListener("click", () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "index.html";
+          .getElementById("changePasswordForm")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const currentPassword =
+              document.getElementById("currentPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmNewPassword =
+              document.getElementById("confirmNewPassword").value;
+
+            if (newPassword !== confirmNewPassword) {
+              showProfileNotification("Новые пароли не совпадают!", "error");
+              return;
+            }
+
+            try {
+              const res = await fetch("/api/profile/change-password", {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ currentPassword, newPassword }),
+              });
+              const data = await res.json();
+
+              if (res.ok) {
+                showProfileNotification("Пароль успешно изменен!");
+                document.getElementById("changePasswordForm").reset();
+                const modal = bootstrap.Modal.getInstance(
+                  document.getElementById("changePasswordModal"),
+                );
+                setTimeout(() => modal.hide(), 1500);
+              } else {
+                showProfileNotification(data.message, "error");
+              }
+            } catch (err) {
+              showProfileNotification("Ошибка сервера", "error");
+            }
           });
       });
     </script>

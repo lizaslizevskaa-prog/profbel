@@ -19,6 +19,7 @@ app.use("/api/profile", require("./Routes/profile.Route"));
 app.use("/api/comments", require("./Routes/comment.Route")); // Подключили комментарии!
 
 // Подключение к базе данных MongoDB
+console.log("ЧТО ВИДИТ СЕРВЕР:", process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ База данных успешно подключена!"))
