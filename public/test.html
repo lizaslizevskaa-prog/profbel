@@ -9,7 +9,6 @@
       content="ProfBel - твой персональный гид в мире профессий будущего в Беларуси."
     />
 
-    <!-- Шрифты, иконки и Bootstrap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,7 +25,6 @@
     />
     <link rel="stylesheet" href="css/style.css" />
 
-    <!-- Подключаем Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <style>
@@ -63,7 +61,6 @@
     </style>
   </head>
   <body class="bg-main text-light d-flex flex-column min-vh-100">
-    <!-- НАВИГАЦИЯ -->
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
       <div class="container">
         <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
@@ -84,13 +81,12 @@
               <a class="nav-link" href="index.html">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="catalog.html">Каталог профессий</a>
+              <a class="nav-link" href="catalog.html">Каталог</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="stories.html">Истории успеха</a>
             </li>
 
-            <!-- Кнопка Войти -->
             <li class="nav-item ms-lg-3">
               <button
                 class="btn btn-outline-cyan"
@@ -100,7 +96,6 @@
                 <i class="fas fa-user me-2"></i>Войти
               </button>
             </li>
-            <!-- Смена темы -->
             <li class="nav-item ms-lg-2">
               <button
                 id="themeToggle"
@@ -122,12 +117,10 @@
       </div>
     </nav>
 
-    <!-- ТЕСТ (Vue.js) -->
     <main
       id="testApp"
       class="container py-5 flex-grow-1 d-flex flex-column justify-content-center"
     >
-      <!-- СТАРТОВЫЙ ЭКРАН -->
       <div v-if="step === 0" class="text-center py-5">
         <h1 class="display-4 fw-bold mb-4">
           Узнай свою профессию <span class="gradient-text">будущего</span>
@@ -142,7 +135,6 @@
         </button>
       </div>
 
-      <!-- ВОПРОСЫ -->
       <div
         v-if="step > 0 && step <= totalSteps"
         class="max-w-700 mx-auto w-100"
@@ -159,7 +151,6 @@
             <i class="fas fa-arrow-left me-1"></i> Назад
           </button>
         </div>
-
         <div class="progress mb-5">
           <div
             class="progress-bar"
@@ -167,9 +158,7 @@
             :style="{ width: progressPercent + '%' }"
           ></div>
         </div>
-
         <h2 class="fw-bold mb-4 fs-3">{{ currentQuestion.text }}</h2>
-
         <div class="answers-list">
           <button
             v-for="(answer, index) in currentQuestion.answers"
@@ -182,7 +171,6 @@
         </div>
       </div>
 
-      <!-- РЕЗУЛЬТАТЫ -->
       <div v-if="step > totalSteps" class="text-center">
         <h2 class="display-5 fw-bold mb-3">
           Твои идеальные <span class="gradient-text">профессии</span>
@@ -196,7 +184,7 @@
           <div
             class="col-md-4"
             v-for="(prof, idx) in recommendedProfessions"
-            :key="prof.id"
+            :key="prof._id"
           >
             <div
               class="custom-card card h-100 border border-secondary shadow-lg text-light position-relative"
@@ -215,8 +203,9 @@
                 <p class="card-text text-muted-custom small mb-4 flex-grow-1">
                   {{ prof.description }}
                 </p>
+                <!-- ИСПРАВЛЕНО: prof._id -->
                 <a
-                  :href="'profession.html?id=' + prof.id"
+                  :href="'profession.html?id=' + prof._id"
                   class="btn btn-outline-cyan w-100 mt-auto"
                   >Подробнее о профессии</a
                 >
@@ -239,30 +228,41 @@
           </button>
           <a href="catalog.html" class="btn btn-outline-secondary">В каталог</a>
         </div>
-
-        <div
-          v-if="saved"
-          class="alert alert-success mt-4 d-inline-block border-0 bg-purple-soft text-light border border-purple"
-        >
-          <i class="fas fa-check-circle me-2 text-primary-custom"></i>
-          Результаты сохранены в личном кабинете!
-        </div>
       </div>
     </main>
 
-    <!-- ФУТЕР -->
     <footer
       class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
     >
       <div class="container">
-        <p class="text-muted-custom small mb-0">
-          &copy; 2026 ProfBel. Проект по веб-разработке.
-        </p>
+        <div class="social-links d-flex gap-3 justify-content-center mb-3">
+          <a
+            href="https://t.me/Bogdachkaa"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-icon"
+            ><i class="fab fa-telegram-plane"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/ssfilt?igsh=bzB0em13NjN0eHls"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-icon"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a
+            href="https://vk.ru/vatashinay"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-icon"
+            ><i class="fab fa-vk"></i
+          ></a>
+        </div>
+        <p class="text-muted-custom small mb-0">&copy; 2026 ProfBel.</p>
       </div>
     </footer>
-    <!-- ========================================== -->
-    <!-- ПОЛНОЕ МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ (100 СТРОК) -->
-    <!-- ========================================== -->
+
+    <!-- МОДАЛКА АВТОРИЗАЦИИ (С ВОЗРАСТОМ MIN 14 И ПАРОЛЯМИ) -->
     <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -286,30 +286,24 @@
               type="button"
               class="btn-close btn-close-white position-absolute end-0 me-4"
               data-bs-dismiss="modal"
-              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body p-4 p-md-5">
-            <!-- 1. ВХОД -->
+            <!-- ВХОД -->
             <form id="loginForm" class="d-block">
               <div class="mb-4">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Email</label
-                >
                 <div class="position-relative">
                   <i
                     class="fas fa-envelope position-absolute text-muted-custom"
                     style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
+                  ></i
+                  ><input
                     type="email"
                     class="form-control custom-input text-light"
-                    placeholder="Введите ваш email"
+                    placeholder="Email"
                     style="
                       padding-left: 50px;
                       height: 50px;
-                      border-radius: 12px;
                       background-color: var(--bg-dark) !important;
                     "
                     required
@@ -317,34 +311,35 @@
                 </div>
               </div>
               <div class="mb-5">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold d-flex justify-content-between"
-                >
-                  Пароль
-                  <a
-                    href="#"
-                    id="showForgotBtn"
-                    class="text-muted-custom text-decoration-none text-lowercase fw-normal hover-primary transition-all"
-                    >Забыли пароль?</a
-                  >
-                </label>
                 <div class="position-relative">
                   <i
                     class="fas fa-lock position-absolute text-muted-custom"
                     style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
+                  ></i
+                  ><input
                     type="password"
                     class="form-control custom-input text-light"
-                    placeholder="Введите пароль"
+                    placeholder="Пароль"
                     style="
                       padding-left: 50px;
                       height: 50px;
-                      border-radius: 12px;
                       background-color: var(--bg-dark) !important;
                     "
                     required
-                  />
+                  /><i
+                    class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                    style="
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      cursor: pointer;
+                    "
+                  ></i>
+                </div>
+                <div class="text-end mt-2">
+                  <a href="#" id="showForgotBtn" class="small text-muted-custom"
+                    >Забыли пароль?</a
+                  >
                 </div>
               </div>
               <button
@@ -358,239 +353,115 @@
                 <a
                   href="#"
                   id="showRegisterBtn"
-                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
-                  >Зарегистрироваться</a
+                  class="text-primary-custom text-decoration-none fw-bold ms-1"
+                  >Создать</a
                 >
               </div>
             </form>
-
-            <!-- 2. РЕГИСТРАЦИЯ -->
+            <!-- РЕГИСТРАЦИЯ -->
             <form id="registerForm" class="d-none">
-              <div class="mb-3">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Имя и Фамилия</label
-                >
-                <div class="position-relative">
-                  <i
-                    class="fas fa-user position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="text"
-                    id="regName"
-                    class="form-control custom-input text-light"
-                    placeholder="Иван Иванов"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                </div>
-              </div>
-              <div class="mb-3">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Email</label
-                >
-                <div class="position-relative">
-                  <i
-                    class="fas fa-envelope position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="email"
-                    id="regEmail"
-                    class="form-control custom-input text-light"
-                    placeholder="Введите ваш email"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                </div>
-              </div>
+              <input
+                type="text"
+                id="regName"
+                class="form-control custom-input mb-3"
+                placeholder="Имя"
+                required
+              />
+              <input
+                type="email"
+                id="regEmail"
+                class="form-control custom-input mb-3"
+                placeholder="Email"
+                required
+              />
               <div class="row mb-3">
                 <div class="col-6">
-                  <label
-                    class="form-label text-muted-custom small text-uppercase fw-bold"
-                    >Возраст</label
-                  >
                   <input
                     type="number"
                     id="regAge"
-                    class="form-control custom-input text-light text-center"
+                    class="form-control custom-input"
+                    placeholder="Возраст"
                     min="14"
-                    style="
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
+                    max="100"
                     required
                   />
                 </div>
                 <div class="col-6">
-                  <label
-                    class="form-label text-muted-custom small text-uppercase fw-bold"
-                    >Пол</label
-                  >
-                  <select
-                    id="regGender"
-                    class="form-select custom-select text-light"
-                    style="
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  >
+                  <select id="regGender" class="form-select custom-select">
                     <option value="Мужской">Мужской</option>
                     <option value="Женский">Женский</option>
                   </select>
                 </div>
               </div>
-              <div class="mb-3">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Образование</label
-                >
-                <select
-                  id="regEdu"
-                  class="form-select custom-select text-light"
-                  style="
-                    height: 50px;
-                    border-radius: 12px;
-                    background-color: var(--bg-dark) !important;
-                  "
-                  required
-                >
-                  <option value="Школа">Школа</option>
-                  <option value="Колледж / ССО">Колледж / ССО</option>
-                  <option value="ВУЗ">ВУЗ</option>
-                </select>
-              </div>
-              <div class="mb-4">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Придумайте пароль</label
-                >
-                <div class="position-relative">
-                  <i
-                    class="fas fa-shield-alt position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="password"
-                    id="regPassword"
-                    class="form-control custom-input text-light"
-                    placeholder="Минимум 6 символов"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-outline-cyan w-100 mb-3 py-3 fs-5"
-              >
-                Создать аккаунт
-              </button>
-              <div class="text-center text-muted-custom small">
-                Уже есть аккаунт?
-                <a
-                  href="#"
-                  id="showLoginBtn"
-                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
-                  >Войти</a
-                >
-              </div>
-            </form>
-
-            <!-- 3. ПОДТВЕРЖДЕНИЕ КОДА -->
-            <form id="verifyForm" class="d-none">
-              <div class="text-center mb-4">
-                <i class="fas fa-envelope-open-text fa-3x text-cyan mb-3"></i>
-                <h5 class="text-light fw-bold">Подтвердите Email</h5>
-                <p class="small text-muted-custom">
-                  Мы отправили 4-значный код на вашу почту (код выведен в
-                  терминале Node.js).
-                </p>
-              </div>
-              <div class="mb-4">
+              <select id="regEdu" class="form-select custom-select mb-3">
+                <option value="Школа">Школа</option>
+                <option value="Колледж">Колледж</option>
+                <option value="ВУЗ">ВУЗ</option>
+              </select>
+              <div class="position-relative mb-4">
                 <input
-                  type="text"
-                  id="verifyCode"
-                  class="form-control custom-input text-light text-center fs-3 fw-bold"
-                  placeholder="0000"
-                  maxlength="4"
-                  style="
-                    height: 60px;
-                    letter-spacing: 15px;
-                    border-radius: 12px;
-                    background-color: var(--bg-dark) !important;
-                  "
+                  type="password"
+                  id="regPassword"
+                  class="form-control custom-input"
+                  placeholder="Пароль (мин 6 симв, 1 загл, 1 цифра)"
                   required
                 />
+                <i
+                  class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                  style="
+                    right: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+                  "
+                ></i>
               </div>
-              <button type="submit" class="btn btn-accent-glow w-100 py-3 fs-5">
-                Подтвердить код
+              <button type="submit" class="btn btn-outline-cyan w-100 py-3">
+                Зарегистрироваться
+              </button>
+              <div class="text-center mt-3">
+                <a href="#" class="small text-primary-custom backToLoginBtn"
+                  >Назад ко входу</a
+                >
+              </div>
+            </form>
+            <!-- ПОДТВЕРЖДЕНИЕ ПОЧТЫ -->
+            <form id="verifyForm" class="d-none text-center">
+              <h5 class="mb-3">Подтвердите почту</h5>
+              <p class="small text-muted-custom mb-4">
+                Код выслан на вашу почту.
+              </p>
+              <input
+                type="text"
+                id="verifyCode"
+                class="form-control custom-input text-center fs-3 mb-4"
+                placeholder="0000"
+                maxlength="4"
+                style="height: 60px; letter-spacing: 10px"
+                required
+              />
+              <button type="submit" class="btn btn-accent-glow w-100 py-3">
+                Подтвердить
               </button>
             </form>
-
-            <!-- 4. ЗАБЫЛИ ПАРОЛЬ -->
+            <!-- ЗАБЫЛИ ПАРОЛЬ -->
             <form id="forgotForm" class="d-none">
-              <p class="text-muted-custom small mb-4 text-center">
-                Введите ваш Email. Мы отправим на него новый временный пароль.
+              <p class="small text-muted-custom mb-4 text-center">
+                Введите Email для сброса пароля
               </p>
-              <div class="mb-4">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Email</label
-                >
-                <div class="position-relative">
-                  <i
-                    class="fas fa-envelope position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="email"
-                    id="forgotEmail"
-                    class="form-control custom-input text-light"
-                    placeholder="Введите ваш email"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      border-radius: 12px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-accent-glow w-100 mb-4 py-3 fs-5"
-              >
+              <input
+                type="email"
+                id="forgotEmail"
+                class="form-control custom-input mb-4"
+                placeholder="Email"
+                required
+              />
+              <button type="submit" class="btn btn-accent-glow w-100 mb-3 py-3">
                 Отправить пароль
               </button>
-              <div class="text-center text-muted-custom small">
-                Вспомнили пароль?
-                <a
-                  href="#"
-                  id="backToLoginBtn"
-                  class="text-primary-custom text-decoration-none fw-bold transition-all ms-1"
-                  >Войти</a
+              <div class="text-center">
+                <a href="#" class="small text-primary-custom backToLoginBtn"
+                  >Назад ко входу</a
                 >
               </div>
             </form>
@@ -598,10 +469,15 @@
         </div>
       </div>
     </div>
-    <!-- ========================================== -->
+
+    <!-- Уведомления -->
+    <div
+      id="toast-container"
+      class="position-fixed top-0 end-0 p-3"
+      style="z-index: 10000"
+    ></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/data.js"></script>
     <script src="js/main.js"></script>
     <script src="js/test.js"></script>
   </body>

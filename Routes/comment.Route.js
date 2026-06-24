@@ -1,9 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const Comment = require("../Models/comment.Model");
+const User = require("../Models/user.Model"); // Подключили юзера, чтобы брать email
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
-// Middleware для проверки авторизации
+// Настройка почты для уведомлений
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
+
 const protect = (req, res, next) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(" ")[1];
@@ -17,55 +24,113 @@ const protect = (req, res, next) => {
   }
 };
 
-// 1. Получить все вопросы к конкретной истории
+// Получить все вопросы к истории (вместе с ответами)
 router.get("/:storyId", async (req, res) => {
   try {
-    const comments = await Comment.find({ storyId: req.params.storyId }).sort({
-      date: -1,
-    });
-    res.json(comments);
+    res.json(
+      await Comment.find({ storyId: req.params.storyId }).sort({ date: -1 }),
+    );
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Ошибка сервера при загрузке комментариев" });
+    res.status(500).json({ message: "Ошибка" });
   }
 });
 
-// 2. Отправить новый вопрос
+// Отправить новый вопрос
 router.post("/", protect, async (req, res) => {
   try {
-    const { storyId, text, userName } = req.body;
-    const newComment = new Comment({
-      storyId,
-      text,
-      userName,
-      userId: req.user.id, // Записываем ID создателя, чтобы он мог удалить
-    });
+    const newComment = new Comment({ ...req.body, userId: req.user.id });
     await newComment.save();
     res.status(201).json(newComment);
   } catch (err) {
-    res.status(500).json({ message: "Ошибка сохранения комментария" });
+    res.status(500).json({ message: "Ошибка" });
   }
 });
 
-// 3. Удалить свой комментарий
-router.delete("/:id", protect, async (req, res) => {
+// ==========================================
+// НОВОЕ: ОТВЕТИТЬ НА КОММЕНТАРИЙ
+// ==========================================
+router.post("/:id/reply", protect, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
     if (!comment)
       return res.status(404).json({ message: "Комментарий не найден" });
 
-    // Проверяем, является ли пользователь владельцем этого комментария
+    const reply = {
+      userId: req.user.id,
+      userName: req.body.userName,
+      text: req.body.text,
+    };
+
+    comment.replies.push(reply);
+    await comment.save();
+
+    // Отправка уведомления автору оригинального комментария
     if (comment.userId !== req.user.id) {
-      return res
-        .status(403)
-        .json({ message: "Вы можете удалять только свои комментарии!" });
+      // Не отправляем, если ответил сам себе
+      const originalUser = await User.findById(comment.userId);
+      if (originalUser && process.env.EMAIL_USER) {
+        try {
+          await transporter.sendMail({
+            from: `"ProfBel" <${process.env.EMAIL_USER}>`,
+            to: originalUser.email,
+            subject: "Новый ответ на ваш комментарий - ProfBel",
+            html: `<h3>Здравствуйте, ${originalUser.name}!</h3>
+                               <p>Пользователь <b>${req.body.userName}</b> ответил на ваш комментарий в Историях успеха:</p>
+                               <blockquote style="border-left: 3px solid #64ffda; padding-left: 10px; color: #555; background: #f9f9f9; padding: 10px;">${comment.text}</blockquote>
+                               <p><b>Ответ:</b> ${req.body.text}</p>
+                               <p>Зайдите на сайт ProfBel, чтобы продолжить обсуждение!</p>`,
+          });
+        } catch (e) {
+          console.error("Ошибка отправки письма об ответе:", e);
+        }
+      }
     }
 
-    await Comment.findByIdAndDelete(req.params.id);
-    res.json({ message: "Комментарий успешно удален!" });
+    res.status(201).json(comment);
   } catch (err) {
-    res.status(500).json({ message: "Ошибка при удалении комментария" });
+    res.status(500).json({ message: "Ошибка при добавлении ответа" });
+  }
+});
+
+// Удаление вопроса (и всех ответов к нему)
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ message: "Не найдено" });
+
+    // Админ может удалять любые
+    const userObj = await User.findById(req.user.id);
+    const isAdmin = userObj && userObj.role === "admin";
+
+    if (comment.userId !== req.user.id && !isAdmin)
+      return res.status(403).json({ message: "Нет прав" });
+    await Comment.findByIdAndDelete(req.params.id);
+    res.json({ message: "Удалено" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка" });
+  }
+});
+
+// НОВОЕ: Удаление конкретного ответа
+router.delete("/:id/reply/:replyId", protect, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) return res.status(404).json({ message: "Не найдено" });
+
+    const reply = comment.replies.id(req.params.replyId);
+    if (!reply) return res.status(404).json({ message: "Ответ не найден" });
+
+    const userObj = await User.findById(req.user.id);
+    const isAdmin = userObj && userObj.role === "admin";
+
+    if (reply.userId !== req.user.id && !isAdmin)
+      return res.status(403).json({ message: "Нет прав" });
+
+    comment.replies.pull(req.params.replyId);
+    await comment.save();
+    res.json({ message: "Ответ удален" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка" });
   }
 });
 

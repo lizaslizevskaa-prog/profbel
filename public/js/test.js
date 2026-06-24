@@ -6,6 +6,7 @@ const testApp = createApp({
       step: 0,
       totalSteps: 10,
       saved: false,
+      professionsFromDb: [],
       userScores: {
         IT: 0,
         Инженерия: 0,
@@ -27,25 +28,25 @@ const testApp = createApp({
           text: "1. Что тебе больше всего нравится делать в свободное время?",
           answers: [
             {
-              text: "Писать код, собирать компьютеры или играть в сложные стратегии",
+              text: "Писать код, собирать компьютеры",
               points: { IT: 3, Креатив: 1 },
             },
             {
-              text: "Чинить технику, собирать конструкторы, паять",
+              text: "Чинить технику, собирать конструкторы",
               points: { Инженерия: 3, "Беспилотные системы": 2 },
             },
             {
-              text: "Читать про космос, природу, работу человеческого тела",
-              points: { Медицина: 3, Biotehnologii: 2, Экология: 2 },
+              text: "Читать про космос, работу тела",
+              points: { Медицина: 3, Биотехнологии: 2, Экология: 2 },
             },
             {
-              text: "Организовывать мероприятия, быть лидером в компании",
+              text: "Организовывать мероприятия",
               points: { Управление: 3, Логистика: 2 },
             },
           ],
         },
         {
-          text: "2. Какой школьный предмет дается тебе легче всего (или наиболее интересен)?",
+          text: "2. Какой школьный предмет дается тебе легче всего?",
           answers: [
             {
               text: "Информатика и Математика",
@@ -69,19 +70,19 @@ const testApp = createApp({
           text: "3. Как ты подходишь к решению сложной проблемы?",
           answers: [
             {
-              text: "Собираю данные, анализирую и ищу системную ошибку",
+              text: "Собираю данные, ищу ошибку",
               points: { IT: 2, Инженерия: 2, Логистика: 2 },
             },
             {
-              text: "Ищу креативный и нестандартный выход",
+              text: "Ищу креативный выход",
               points: { Креатив: 3, Образование: 1 },
             },
             {
-              text: "Распределяю задачи между другими людьми, чтобы решить всё быстрее",
+              text: "Распределяю задачи между другими",
               points: { Управление: 3 },
             },
             {
-              text: "Изучаю инструкции, чертежи или научные статьи",
+              text: "Изучаю инструкции, чертежи",
               points: { Медицина: 2, Энергетика: 2, Биотехнологии: 2 },
             },
           ],
@@ -90,20 +91,20 @@ const testApp = createApp({
           text: "4. Где бы ты хотел(а) работать в будущем?",
           answers: [
             {
-              text: "В современном офисе или вообще удаленно из дома",
+              text: "В современном офисе или удаленно",
               points: { IT: 3, Креатив: 2, Управление: 1 },
             },
             {
-              text: "В высокотехнологичной лаборатории в белом халате",
+              text: "В лаборатории в белом халате",
               points: { Биотехнологии: 3, Медицина: 3 },
             },
             {
-              text: "На масштабных объектах: стройки, заводы, электростанции",
+              text: "На стройках, заводах, электростанциях",
               points: { Строительство: 3, Энергетика: 3, Инженерия: 2 },
             },
             {
-              text: "На свежем воздухе или в современных теплицах",
-              points: { Экология: 3, Агропром: 3, "Беспилотные системы": 1 },
+              text: "На свежем воздухе или в теплицах",
+              points: { Экология: 3, Агропром: 3 },
             },
           ],
         },
@@ -116,32 +117,32 @@ const testApp = createApp({
               points: { Медицина: 3, Биотехнологии: 3 },
             },
             {
-              text: "Сделать планету чистой, спасти природу",
+              text: "Сделать планету чистой",
               points: { Экология: 3, Энергетика: 2 },
             },
             {
-              text: "Построить умные города и удобную инфраструктуру",
-              points: { Строительство: 3, Логистика: 2, Управление: 1 },
+              text: "Построить умные города",
+              points: { Строительство: 3, Логистика: 2 },
             },
           ],
         },
         {
-          text: "6. Как ты относишься к рутинной работе и четким инструкциям?",
+          text: "6. Как ты относишься к рутинной работе и правилам?",
           answers: [
             {
-              text: "Люблю точность. Ошибка может стоить дорого, поэтому правила важны",
+              text: "Люблю точность. Правила важны",
               points: { Медицина: 3, Энергетика: 2, Строительство: 2 },
             },
             {
-              text: "Ненавижу рутину, я за творчество и свободу",
+              text: "Ненавижу рутину, я за творчество",
               points: { Креатив: 3, Образование: 1 },
             },
             {
-              text: "Готов выполнять ее, если это необходимо для масштабного проекта",
+              text: "Готов выполнять ее ради проекта",
               points: { Управление: 2, Инженерия: 1 },
             },
             {
-              text: "Предпочитаю написать скрипт/программу, которая сделает рутину за меня",
+              text: "Напишу программу, которая сделает всё за меня",
               points: { IT: 3, "Беспилотные системы": 2 },
             },
           ],
@@ -150,19 +151,16 @@ const testApp = createApp({
           text: "7. Какое достижение техники кажется тебе самым крутым?",
           answers: [
             {
-              text: "Роботы-хирурги и печать органов на 3D-принтере",
+              text: "Роботы-хирурги и 3D-печать органов",
               points: { Медицина: 3, Биотехнологии: 3 },
             },
             {
-              text: "Автономные дроны и беспилотные автомобили",
+              text: "Автономные дроны и авто",
               points: { "Беспилотные системы": 3, Логистика: 2 },
             },
+            { text: "Умные теплицы", points: { Агропром: 3, Экология: 2 } },
             {
-              text: "Умные теплицы и вертикальные фермы в небоскребах",
-              points: { Агропром: 3, Экология: 2 },
-            },
-            {
-              text: "Виртуальная реальность и метавселенные",
+              text: "Виртуальная реальность",
               points: { IT: 2, Креатив: 2, Образование: 2 },
             },
           ],
@@ -171,40 +169,28 @@ const testApp = createApp({
           text: "8. Какой формат работы тебе ближе?",
           answers: [
             {
-              text: "Одиночка: мне дали задачу, я ее сделал(а) сам(а)",
+              text: "Одиночка: мне дали задачу, я ее сделал",
               points: { IT: 2, Инженерия: 1 },
             },
-            {
-              text: "Командный игрок: обсуждаем идеи, проводим мозговые штурмы",
-              points: { Креатив: 3, Управление: 1 },
-            },
-            {
-              text: "Руководитель: я говорю, кто и что должен делать",
-              points: { Управление: 3, Логистика: 1 },
-            },
-            {
-              text: "Наставник: люблю объяснять другим, как всё устроено",
-              points: { Образование: 3, Медицина: 1 },
-            },
+            { text: "Командный игрок", points: { Креатив: 3, Управление: 1 } },
+            { text: "Руководитель", points: { Управление: 3, Логистика: 1 } },
+            { text: "Наставник", points: { Образование: 3, Медицина: 1 } },
           ],
         },
         {
-          text: "9. Представь, что тебе дали миллион долларов на бизнес. Что откроешь?",
+          text: "9. Представь, что тебе дали миллион долларов. Что откроешь?",
           answers: [
+            { text: "ИТ-стартап", points: { IT: 3 } },
             {
-              text: "ИТ-стартап по разработке софта или нейросетей",
-              points: { IT: 3 },
-            },
-            {
-              text: "Завод по производству возобновляемой энергии или переработке мусора",
+              text: "Завод по производству энергии",
               points: { Энергетика: 3, Экология: 3 },
             },
             {
-              text: "Агрохолдинг с дронами и автоматическим поливом",
+              text: "Агрохолдинг с дронами",
               points: { Агропром: 3, "Беспилотные системы": 2 },
             },
             {
-              text: "Онлайн-университет или медиа-портал нового поколения",
+              text: "Онлайн-университет",
               points: { Образование: 3, Креатив: 2 },
             },
           ],
@@ -213,20 +199,20 @@ const testApp = createApp({
           text: "10. Главный критерий успеха для тебя — это...",
           answers: [
             {
-              text: "Высокая зарплата и востребованность в любой точке мира",
+              text: "Высокая зарплата и востребованность",
               points: { IT: 3, Инженерия: 2 },
             },
             {
-              text: "Ощущение, что моя работа реально спасает жизни людей",
+              text: "Ощущение, что моя работа спасает жизни",
               points: { Медицина: 3, Биотехнологии: 2 },
             },
             {
-              text: "Возможность постоянно учиться и создавать что-то новое",
+              text: "Возможность создавать новое",
               points: { Креатив: 2, Образование: 2 },
             },
             {
-              text: "Видимый физический результат: построенный мост, работающий завод",
-              points: { Строительство: 3, Энергетика: 2, Агропром: 1 },
+              text: "Видимый физический результат",
+              points: { Строительство: 3, Энергетика: 2 },
             },
           ],
         },
@@ -234,17 +220,16 @@ const testApp = createApp({
       answersHistory: [],
     };
   },
-  computed: {
-    currentQuestion() {
-      return this.questions[this.step - 1];
-    },
-    progressPercent() {
-      return ((this.step - 1) / this.totalSteps) * 100;
-    },
-  },
   methods: {
+    async loadProfessions() {
+      try {
+        const res = await fetch("/api/professions");
+        this.professionsFromDb = await res.json();
+      } catch (err) {
+        console.error("Ошибка загрузки:", err);
+      }
+    },
     startTest() {
-      // ЗАПРЕТ ДЛЯ ГОСТЕЙ (Показываем модалку, если нет токена)
       const token = localStorage.getItem("token");
       if (!token) {
         if (typeof bootstrap !== "undefined") {
@@ -289,23 +274,25 @@ const testApp = createApp({
       const usedIds = new Set();
 
       top3Categories.forEach((category) => {
-        const availableProfs = professions.filter(
-          (p) => p.direction === category && !usedIds.has(p.id),
+        const availableProfs = this.professionsFromDb.filter(
+          (p) => p.direction === category && !usedIds.has(p._id),
         );
         if (availableProfs.length > 0) {
           const randomIndex = Math.floor(Math.random() * availableProfs.length);
           const randomProf = availableProfs[randomIndex];
           this.recommendedProfessions.push(randomProf);
-          usedIds.add(randomProf.id);
+          usedIds.add(randomProf._id);
         } else {
-          const fallbackProfs = professions.filter((p) => !usedIds.has(p.id));
+          const fallbackProfs = this.professionsFromDb.filter(
+            (p) => !usedIds.has(p._id),
+          );
           if (fallbackProfs.length > 0) {
             const randomIndex = Math.floor(
               Math.random() * fallbackProfs.length,
             );
             const fallback = fallbackProfs[randomIndex];
             this.recommendedProfessions.push(fallback);
-            usedIds.add(fallback.id);
+            usedIds.add(fallback._id);
           }
         }
       });
@@ -316,7 +303,6 @@ const testApp = createApp({
       const token = localStorage.getItem("token");
 
       if (token) {
-        // СОХРАНЯЕМ В БД
         try {
           const res = await fetch("/api/profile/test-result", {
             method: "POST",
@@ -328,30 +314,22 @@ const testApp = createApp({
           });
           if (res.ok) {
             this.saved = true;
+            alert("Результаты сохранены в личном кабинете!");
           } else {
             alert("Ошибка при сохранении на сервер.");
           }
         } catch (err) {
           console.error(err);
         }
-      } else {
-        // ЕСЛИ ГОСТЬ
-        let pastResults =
-          JSON.parse(localStorage.getItem("profbel_results")) || [];
-        const newResult = {
-          date: new Date().toLocaleDateString("ru-RU"),
-          professions: professionsList,
-        };
-        pastResults.unshift(newResult);
-        if (pastResults.length > 3) pastResults.pop();
-        localStorage.setItem("profbel_results", JSON.stringify(pastResults));
-        this.saved = true;
       }
     },
     restartTest() {
       this.startTest();
       window.scrollTo(0, 0);
     },
+  },
+  mounted() {
+    this.loadProfessions();
   },
 });
 

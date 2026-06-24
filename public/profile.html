@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProfBel | Личный кабинет</title>
+
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
       rel="stylesheet"
@@ -19,7 +20,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body class="bg-main text-light d-flex flex-column min-vh-100">
-    <!-- ЕДИНАЯ НАВИГАЦИЯ ДЛЯ ВСЕХ СТРАНИЦ -->
+    <!-- НАВИГАЦИЯ -->
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
       <div class="container">
         <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
@@ -40,27 +41,27 @@
               <a class="nav-link" href="index.html">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="catalog.html">Каталог профессий</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="stories.html">Истории успеха</a>
+              <a class="nav-link" href="catalog.html">Каталог</a>
             </li>
             <li class="nav-item">
               <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
             </li>
 
-            <!-- Кнопка Войти (main.js автоматически превратит ее в выпадающее меню с вашим именем) -->
+            <li class="nav-item d-none" id="adminPanelLink">
+              <a class="nav-link text-warning fw-bold" href="admin.html"
+                ><i class="fas fa-crown me-1"></i> Админ</a
+              >
+            </li>
+
             <li class="nav-item ms-lg-3">
               <button
-                class="btn btn-outline-cyan"
-                data-bs-toggle="modal"
-                data-bs-target="#authModal"
+                id="logoutProfileBtn"
+                class="btn btn-outline-danger btn-sm rounded-pill px-3"
               >
-                <i class="fas fa-user me-2"></i>Войти
+                <i class="fas fa-sign-out-alt me-2"></i>Выйти
               </button>
             </li>
 
-            <!-- Смена темы -->
             <li class="nav-item ms-lg-2">
               <button
                 id="themeToggle"
@@ -87,16 +88,16 @@
         <!-- ЛЕВАЯ КОЛОНКА (Инфо о пользователе) -->
         <div class="col-lg-4">
           <div
-            class="detail-card p-4 rounded-4 text-center h-100 position-relative"
+            class="detail-card p-4 rounded-4 text-center h-100 position-relative shadow-lg"
           >
             <div class="position-relative z-index-2">
-              <!-- Аватарка с кнопкой загрузки -->
+              <!-- Аватарка -->
               <div class="mb-4 position-relative d-inline-block">
                 <img
                   id="profileAvatar"
                   src="img/default-avatar.png"
                   alt="Аватар"
-                  class="rounded-circle border border-cyan border-3"
+                  class="rounded-circle border border-cyan border-3 shadow-cyan"
                   style="width: 140px; height: 140px; object-fit: cover"
                 />
                 <input
@@ -120,7 +121,7 @@
                 загрузка...
               </p>
 
-              <!-- КРАСИВЫЕ КАРТОЧКИ АНКЕТЫ -->
+              <!-- Карточки анкеты -->
               <div class="row g-3 text-start mb-4">
                 <div class="col-6">
                   <div
@@ -156,7 +157,6 @@
                 </div>
               </div>
 
-              <!-- КНОПКИ УПРАВЛЕНИЯ -->
               <button
                 class="btn btn-outline-cyan w-100 mb-2"
                 data-bs-toggle="modal"
@@ -175,22 +175,83 @@
           </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА (История тестов) -->
+        <!-- ПРАВАЯ КОЛОНКА (Вкладки) -->
         <div class="col-lg-8">
-          <div class="detail-card p-4 rounded-4 h-100">
-            <h4 class="fw-bold mb-4 border-bottom custom-border pb-3">
-              <i class="fas fa-history text-cyan me-2"></i> История тестирования
-            </h4>
-            <div id="profileResultsContainer" class="d-flex flex-column gap-3">
-              <div
-                class="text-center py-5 text-muted-custom"
-                id="emptyResultsMsg"
-              >
-                <i class="fas fa-clipboard-list fa-3x mb-3 opacity-50"></i>
-                <h5>Вы еще не проходили тест</h5>
-                <a href="test.html" class="btn btn-outline-cyan mt-3"
-                  >Пройти сейчас</a
+          <div class="detail-card p-4 rounded-4 h-100 shadow-lg">
+            <ul
+              class="nav nav-pills mb-4 border-bottom custom-border pb-2"
+              id="profileTabs"
+              role="tablist"
+            >
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active bg-transparent text-light fw-bold"
+                  id="history-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#history"
+                  type="button"
+                  role="tab"
+                  style="
+                    border-bottom: 2px solid var(--primary-cyan);
+                    border-radius: 0;
+                  "
                 >
+                  <i class="fas fa-history text-cyan me-2"></i> История тестов
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link bg-transparent text-muted-custom fw-bold hover-primary"
+                  id="favorites-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#favorites"
+                  type="button"
+                  role="tab"
+                  style="border-radius: 0"
+                >
+                  <i class="fas fa-heart text-danger me-2"></i> Избранное
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="profileTabsContent">
+              <!-- ИСТОРИЯ ТЕСТОВ -->
+              <div
+                class="tab-pane fade show active"
+                id="history"
+                role="tabpanel"
+              >
+                <div
+                  id="profileResultsContainer"
+                  class="d-flex flex-column gap-3"
+                >
+                  <div
+                    class="text-center py-5 text-muted-custom"
+                    id="emptyResultsMsg"
+                  >
+                    <i class="fas fa-clipboard-list fa-3x mb-3 opacity-50"></i>
+                    <h5>Вы еще не проходили тест</h5>
+                    <a href="test.html" class="btn btn-outline-cyan mt-3"
+                      >Пройти сейчас</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- ИЗБРАННОЕ -->
+              <div class="tab-pane fade" id="favorites" role="tabpanel">
+                <div id="favoriteProfsContainer" class="row g-3">
+                  <div
+                    class="col-12 text-center py-5 text-muted-custom"
+                    id="emptyFavsMsg"
+                  >
+                    <i class="far fa-heart fa-3x mb-3 opacity-50"></i>
+                    <h5>У вас пока нет избранных профессий</h5>
+                    <a href="catalog.html" class="btn btn-outline-cyan mt-3"
+                      >Перейти в каталог</a
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -198,7 +259,7 @@
       </div>
     </main>
 
-    <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ АНКЕТЫ -->
+    <!-- МОДАЛКА: РЕДАКТИРОВАТЬ ПРОФИЛЬ -->
     <div class="modal fade" id="editProfileModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -247,7 +308,6 @@
                   />
                 </div>
               </div>
-
               <div class="row mb-4">
                 <div class="col-6">
                   <label
@@ -289,7 +349,6 @@
                   </select>
                 </div>
               </div>
-
               <div class="mb-5">
                 <label
                   class="form-label text-muted-custom small text-uppercase fw-bold"
@@ -326,7 +385,7 @@
       </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СМЕНЫ ПАРОЛЯ -->
+    <!-- МОДАЛКА: ИЗМЕНИТЬ ПАРОЛЬ -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -337,9 +396,7 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
           "
         >
-          <div
-            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
-          >
+          <div class="modal-header border-bottom custom-border pb-3 pt-4">
             <h4 class="h5 modal-title fw-bold w-100 text-center text-warning">
               Изменить пароль
             </h4>
@@ -354,7 +411,7 @@
               <div class="mb-4">
                 <label
                   class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Текущий (или временный) пароль</label
+                  >Текущий пароль</label
                 >
                 <div class="position-relative">
                   <i
@@ -373,11 +430,20 @@
                     "
                     required
                   />
+                  <i
+                    class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                    style="
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      cursor: pointer;
+                    "
+                  ></i>
                 </div>
               </div>
               <div class="mb-4">
                 <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
+                  class="form-label text-muted-custom small text-uppercase fw-bold text-warning"
                   >Новый пароль</label
                 >
                 <div class="position-relative">
@@ -389,7 +455,7 @@
                     type="password"
                     id="newPassword"
                     class="form-control custom-input text-light"
-                    placeholder="Буквы и цифры (мин 6)"
+                    placeholder="Мин 6 симв, 1 загл, 1 цифра"
                     style="
                       padding-left: 50px;
                       height: 50px;
@@ -398,12 +464,21 @@
                     "
                     required
                   />
+                  <i
+                    class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                    style="
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      cursor: pointer;
+                    "
+                  ></i>
                 </div>
               </div>
               <div class="mb-5">
                 <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold"
-                  >Повторите новый пароль</label
+                  class="form-label text-muted-custom small text-uppercase fw-bold text-warning"
+                  >Повтор пароля</label
                 >
                 <div class="position-relative">
                   <i
@@ -414,7 +489,6 @@
                     type="password"
                     id="confirmNewPassword"
                     class="form-control custom-input text-light"
-                    placeholder="Повторите пароль"
                     style="
                       padding-left: 50px;
                       height: 50px;
@@ -423,6 +497,15 @@
                     "
                     required
                   />
+                  <i
+                    class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                    style="
+                      right: 18px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      cursor: pointer;
+                    "
+                  ></i>
                 </div>
               </div>
               <button
@@ -437,6 +520,12 @@
       </div>
     </div>
 
+    <div
+      id="toast-container"
+      class="position-fixed top-0 end-0 p-3"
+      style="z-index: 10000"
+    ></div>
+
     <footer
       class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
     >
@@ -446,48 +535,20 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/data.js"></script>
-    <!-- ВАЖНО: Подключили main.js, который сам создаст выпадающее меню в шапке -->
     <script src="js/main.js"></script>
 
     <script>
-      // ГЕНЕРАТОР КРАСИВЫХ УВЕДОМЛЕНИЙ ДЛЯ ПРОФИЛЯ
-      function showProfileNotification(message, type = "success") {
-        let container = document.getElementById("toast-container");
-        if (!container) {
-          container = document.createElement("div");
-          container.id = "toast-container";
-          container.className = "position-fixed top-0 end-0 p-3";
-          container.style.zIndex = "10000";
-          document.body.appendChild(container);
-        }
-        const bgClass = type === "success" ? "bg-success" : "bg-danger";
-        const iconClass =
-          type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
-        const toast = document.createElement("div");
-        toast.className = `toast align-items-center text-white ${bgClass} border-0 mb-2 show`;
-        toast.style.transition = "opacity 0.3s ease";
-        toast.innerHTML = `<div class="d-flex"><div class="toast-body fw-bold fs-6"><i class="fas ${iconClass} me-2"></i> ${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button></div>`;
-        container.appendChild(toast);
-        setTimeout(() => {
-          toast.style.opacity = "0";
-          setTimeout(() => toast.remove(), 300);
-        }, 4000);
-      }
-
       document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
-        // Если токена нет, отправляем на главную
         if (!token) return (window.location.href = "index.html");
 
-        // 1. ЗАГРУЗКА ДАННЫХ ИЗ БАЗЫ MONGODB
         try {
+          // 1. ПОЛУЧАЕМ ДАННЫЕ ЮЗЕРА
           const res = await fetch("/api/profile/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const user = await res.json();
 
-          // Заполняем профиль
           document.getElementById("profileName").textContent = user.name;
           document.getElementById("profileEmail").textContent = user.email;
           document.getElementById("profileGender").textContent =
@@ -498,99 +559,118 @@
           document.getElementById("profileEdu").textContent =
             user.education || "Не указано";
 
-          // Аватарка
-          if (user.avatar && user.avatar !== "default-avatar.png") {
-            document.getElementById("profileAvatar").src = user.avatar;
-          } else {
-            document.getElementById("profileAvatar").src =
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=64ffda&color=0a192f&size=128`;
-          }
+          if (user.role === "admin")
+            document
+              .getElementById("adminPanelLink")
+              .classList.remove("d-none");
 
-          // Заполняем форму редактирования
+          const avatarImg = document.getElementById("profileAvatar");
+          avatarImg.src =
+            user.avatar && user.avatar !== "default-avatar.png"
+              ? user.avatar
+              : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=64ffda&color=0a192f&size=128`;
+
           document.getElementById("editName").value = user.name;
           document.getElementById("editAge").value = user.age || "";
           document.getElementById("editGender").value =
-            user.gender || "Мужской";
+            user.gender || "Не указан";
           document.getElementById("editEdu").value = user.education || "Школа";
 
-          // ИСТОРИЯ ТЕСТОВ
-          const container = document.getElementById("profileResultsContainer");
-          if (user.testResults && user.testResults.length > 0) {
+          // 2. ИСТОРИЯ ТЕСТОВ
+          const histContainer = document.getElementById(
+            "profileResultsContainer",
+          );
+          if (user.testResults?.length > 0) {
             document.getElementById("emptyResultsMsg").classList.add("d-none");
             user.testResults.forEach((result, index) => {
-              const attemptNum = user.testResults.length - index;
-              const formattedDate = new Date(result.date).toLocaleDateString(
-                "ru-RU",
-              );
-              const profsHtml = result.topProfessions
+              const attempt = user.testResults.length - index;
+              const profs = result.topProfessions
                 .map(
                   (p) =>
                     `<span class="badge border custom-border text-light me-2 mb-2 p-2" style="background-color: var(--bg-surface);">${p}</span>`,
                 )
                 .join("");
+              histContainer.innerHTML += `
+              <div class="p-4 rounded-4 border custom-border" style="background-color: var(--bg-dark);">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="badge bg-purple-soft text-purple px-3 py-2 rounded-pill">Попытка ${attempt}</span>
+                  <span class="text-muted-custom small"><i class="far fa-clock me-1"></i> ${new Date(result.date).toLocaleDateString("ru-RU")}</span>
+                </div>
+                <div>${profs}</div>
+              </div>`;
+            });
+          }
 
-              const card = document.createElement("div");
-              card.className =
-                "p-4 rounded-4 border custom-border transition-all";
-              card.style.backgroundColor = "var(--bg-dark)";
-              card.innerHTML = `
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge bg-purple-soft text-purple px-3 py-2 rounded-pill">Попытка ${attemptNum}</span>
-                <span class="text-muted-custom small"><i class="far fa-clock me-1"></i> ${formattedDate}</span>
-              </div>
-              <div>
-                <p class="text-light small mb-3 fw-bold">Рекомендованные профессии:</p>
-                ${profsHtml}
-              </div>
-            `;
-              container.appendChild(card);
+          // 3. ИЗБРАННОЕ (ИСПРАВЛЕНО: БЕРЕМ ИЗ БАЗЫ ДАННЫХ)
+          const favContainer = document.getElementById(
+            "favoriteProfsContainer",
+          );
+          if (user.favoriteProfessions && user.favoriteProfessions.length > 0) {
+            document.getElementById("emptyFavsMsg").classList.add("d-none");
+
+            // Скачиваем актуальные профессии из базы
+            const profsRes = await fetch("/api/professions");
+            const allProfessions = await profsRes.json();
+
+            user.favoriteProfessions.forEach((profId) => {
+              // Ищем по строковому _id
+              const prof = allProfessions.find(
+                (p) => String(p._id) === String(profId),
+              );
+              if (prof) {
+                const col = document.createElement("div");
+                col.className = "col-md-6";
+                col.innerHTML = `
+                <div class="p-4 rounded-4 border custom-border h-100 d-flex flex-column" style="background-color: var(--bg-dark);">
+                  <span class="badge bg-purple-soft text-purple mb-3 align-self-start">${prof.direction}</span>
+                  <h5 class="fw-bold text-light mb-2">${prof.title}</h5>
+                  <div class="text-primary-custom small fw-bold mt-auto mb-3"><i class="fas fa-wallet me-2"></i>${prof.salaryMin} - ${prof.salaryMax} BYN</div>
+                  <a href="profession.html?id=${prof._id}" class="btn btn-outline-cyan btn-sm w-100">Подробнее</a>
+                </div>
+              `;
+                favContainer.appendChild(col);
+              }
             });
           }
         } catch (err) {
-          console.error("Ошибка загрузки профиля", err);
+          console.error(err);
         }
 
-        // 2. ЗАГРУЗКА НОВОЙ АВАТАРКИ
+        // 4. ЗАГРУЗКА АВАТАРА
         document
           .getElementById("avatarInput")
           .addEventListener("change", async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            const formData = new FormData();
-            formData.append("avatar", file);
-
+            const fd = new FormData();
+            fd.append("avatar", file);
             try {
               const res = await fetch("/api/profile/avatar", {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
-                body: formData,
+                body: fd,
               });
               const data = await res.json();
               if (res.ok) {
                 document.getElementById("profileAvatar").src = data.avatar;
-                const localUser = JSON.parse(localStorage.getItem("user"));
-                localUser.avatar = data.avatar;
-                localStorage.setItem("user", JSON.stringify(localUser));
-                showProfileNotification("Аватар успешно обновлен!");
-              } else {
-                showProfileNotification(data.message, "error");
+                window.showNotification("Аватар обновлен!");
               }
             } catch (err) {
-              showProfileNotification("Ошибка сервера", "error");
+              window.showNotification("Ошибка загрузки", "error");
             }
           });
 
-        // 3. СОХРАНЕНИЕ РЕДАКТИРОВАНИЯ
+        // 5. РЕДАКТИРОВАНИЕ АНКЕТЫ
         document
           .getElementById("editProfileForm")
           .addEventListener("submit", async (e) => {
             e.preventDefault();
-            const name = document.getElementById("editName").value;
-            const age = document.getElementById("editAge").value;
-            const gender = document.getElementById("editGender").value;
-            const education = document.getElementById("editEdu").value;
-
+            const body = {
+              name: document.getElementById("editName").value,
+              age: document.getElementById("editAge").value,
+              gender: document.getElementById("editGender").value,
+              education: document.getElementById("editEdu").value,
+            };
             try {
               const res = await fetch("/api/profile/update", {
                 method: "PUT",
@@ -598,30 +678,24 @@
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ name, age, gender, education }),
+                body: JSON.stringify(body),
               });
               if (res.ok) window.location.reload();
             } catch (err) {
-              console.error(err);
+              window.showNotification("Ошибка обновления", "error");
             }
           });
 
-        // 4. СМЕНА ПАРОЛЯ
+        // 6. СМЕНА ПАРОЛЯ
         document
           .getElementById("changePasswordForm")
           .addEventListener("submit", async (e) => {
             e.preventDefault();
-            const currentPassword =
-              document.getElementById("currentPassword").value;
-            const newPassword = document.getElementById("newPassword").value;
-            const confirmNewPassword =
-              document.getElementById("confirmNewPassword").value;
-
-            if (newPassword !== confirmNewPassword) {
-              showProfileNotification("Новые пароли не совпадают!", "error");
-              return;
-            }
-
+            const cp = document.getElementById("currentPassword").value;
+            const np = document.getElementById("newPassword").value;
+            const cnp = document.getElementById("confirmNewPassword").value;
+            if (np !== cnp)
+              return window.showNotification("Пароли не совпадают", "error");
             try {
               const res = await fetch("/api/profile/change-password", {
                 method: "PUT",
@@ -629,23 +703,44 @@
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ currentPassword, newPassword }),
+                body: JSON.stringify({ currentPassword: cp, newPassword: np }),
               });
               const data = await res.json();
-
               if (res.ok) {
-                showProfileNotification("Пароль успешно изменен!");
+                window.showNotification("Пароль изменен!");
                 document.getElementById("changePasswordForm").reset();
-                const modal = bootstrap.Modal.getInstance(
+                bootstrap.Modal.getInstance(
                   document.getElementById("changePasswordModal"),
-                );
-                setTimeout(() => modal.hide(), 1500);
-              } else {
-                showProfileNotification(data.message, "error");
-              }
+                ).hide();
+              } else window.showNotification(data.message, "error");
             } catch (err) {
-              showProfileNotification("Ошибка сервера", "error");
+              window.showNotification("Ошибка сервера", "error");
             }
+          });
+
+        // 7. ВЫХОД
+        document
+          .getElementById("logoutProfileBtn")
+          .addEventListener("click", () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+          });
+
+        // Переключение вкладок
+        document
+          .querySelectorAll('button[data-bs-toggle="pill"]')
+          .forEach((btn) => {
+            btn.addEventListener("shown.bs.tab", (e) => {
+              document
+                .querySelectorAll('button[data-bs-toggle="pill"]')
+                .forEach((b) => {
+                  b.style.borderBottom = "none";
+                  b.classList.replace("text-light", "text-muted-custom");
+                });
+              e.target.style.borderBottom = "2px solid var(--primary-cyan)";
+              e.target.classList.replace("text-muted-custom", "text-light");
+            });
           });
       });
     </script>

@@ -2,12 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProfBel | Панель Администратора</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>Админ | ProfBel</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -17,103 +12,331 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .admin-tab-btn.active {
+        background: var(--primary-cyan) !important;
+        color: var(--bg-dark) !important;
+      }
+      .table-dark {
+        --bs-table-bg: var(--bg-surface);
+      }
+    </style>
   </head>
-  <body class="bg-main text-light min-vh-100">
-    <div class="container py-5">
+  <body class="bg-main text-light py-5">
+    <div class="container">
       <div
         class="d-flex justify-content-between align-items-center mb-5 border-bottom custom-border pb-3"
       >
         <h1 class="fw-bold">
-          <i class="fas fa-crown text-warning me-3"></i>Панель Администратора
+          <i class="fas fa-crown text-warning me-3"></i>Админ-панель
         </h1>
-        <a href="index.html" class="btn btn-outline-cyan">Вернуться на сайт</a>
+        <a href="index.html" class="btn btn-outline-cyan">На сайт</a>
       </div>
 
-      <div class="row g-4">
-        <div class="col-md-6">
-          <div class="detail-card p-4 rounded-4 h-100 bg-surface">
-            <h4 class="fw-bold mb-4 text-cyan">Добавить новую профессию</h4>
-            <form id="addProfForm">
-              <div class="mb-3">
+      <div class="d-flex gap-2 mb-4 flex-wrap">
+        <button
+          class="btn btn-dark admin-tab-btn active"
+          onclick="showSection('professions', event)"
+        >
+          Профессии
+        </button>
+        <button
+          class="btn btn-dark admin-tab-btn"
+          onclick="showSection('stories', event)"
+        >
+          Истории
+        </button>
+        <button
+          class="btn btn-dark admin-tab-btn"
+          onclick="showSection('feedback', event)"
+        >
+          Обращения
+        </button>
+      </div>
+
+      <!-- ПРОФЕССИИ -->
+      <div id="section-professions" class="admin-section">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <div class="detail-card p-4 rounded-4 bg-surface shadow">
+              <h4 class="fw-bold mb-4 text-cyan" id="profFormTitle">
+                Новая профессия
+              </h4>
+              <form id="adminAddProfForm">
+                <h6 class="text-muted-custom border-bottom custom-border pb-1">
+                  Основная информация
+                </h6>
                 <input
                   type="text"
-                  id="profTitle"
-                  class="form-control custom-input text-light"
+                  id="pTitle"
+                  class="form-control custom-input mb-2"
                   placeholder="Название профессии"
                   required
                 />
-              </div>
-              <div class="mb-3">
                 <input
                   type="text"
-                  id="profDir"
-                  class="form-control custom-input text-light"
-                  placeholder="Направление (например: IT)"
+                  id="pDir"
+                  class="form-control custom-input mb-2"
+                  placeholder="Направление (IT, Медицина...)"
                   required
                 />
-              </div>
-              <div class="mb-3">
+                <div class="row g-2 mb-2">
+                  <div class="col-6">
+                    <select
+                      id="pEduLevel"
+                      class="form-select custom-select"
+                      required
+                    >
+                      <option value="Вуз">Вуз</option>
+                      <option value="Колледж">Колледж</option>
+                      <option value="Вуз/Колледж">Вуз/Колледж</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <select
+                      id="pDemand"
+                      class="form-select custom-select"
+                      required
+                    >
+                      <option value="Растущий">Спрос: Растущий</option>
+                      <option value="Стабильный">Спрос: Стабильный</option>
+                      <option value="Новый">Спрос: Новый</option>
+                    </select>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  id="pImage"
+                  class="form-control custom-input mb-2"
+                  placeholder="Ссылка на фото (Unsplash)"
+                  required
+                />
                 <textarea
-                  id="profDesc"
-                  class="form-control custom-input text-light"
+                  id="pDesc"
+                  class="form-control custom-input mb-2"
+                  placeholder="Описание"
                   rows="3"
-                  placeholder="Описание профессии"
                   required
                 ></textarea>
-              </div>
-              <div class="row mb-3">
-                <div class="col-6">
-                  <input
-                    type="number"
-                    id="salMin"
-                    class="form-control custom-input text-light"
-                    placeholder="ЗП от (BYN)"
-                    required
-                  />
+                <textarea
+                  id="pPersp"
+                  class="form-control custom-input mb-3"
+                  placeholder="Перспективы в РБ"
+                  rows="2"
+                  required
+                ></textarea>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <input
+                      type="number"
+                      id="pMin"
+                      class="form-control custom-input"
+                      placeholder="ЗП от"
+                      required
+                    />
+                  </div>
+                  <div class="col-6">
+                    <input
+                      type="number"
+                      id="pMax"
+                      class="form-control custom-input"
+                      placeholder="ЗП до"
+                      required
+                    />
+                  </div>
                 </div>
-                <div class="col-6">
-                  <input
-                    type="number"
-                    id="salMax"
-                    class="form-control custom-input text-light"
-                    placeholder="ЗП до (BYN)"
-                    required
-                  />
-                </div>
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Где учиться (ВУЗ)
+                </h6>
+                <input
+                  type="text"
+                  id="pUniName"
+                  class="form-control custom-input mb-2"
+                  placeholder="Название ВУЗа (напр. БГУИР)"
+                />
+                <input
+                  type="text"
+                  id="pUniFac"
+                  class="form-control custom-input mb-2"
+                  placeholder="Факультет"
+                />
+                <input
+                  type="text"
+                  id="pUniSpec"
+                  class="form-control custom-input mb-3"
+                  placeholder="Специальность"
+                />
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Где учиться (Колледж)
+                </h6>
+                <input
+                  type="text"
+                  id="pColName"
+                  class="form-control custom-input mb-2"
+                  placeholder="Название Колледжа"
+                />
+                <input
+                  type="text"
+                  id="pColSpec"
+                  class="form-control custom-input mb-3"
+                  placeholder="Специальность"
+                />
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Экзамены (ЦТ/ЦЭ)
+                </h6>
+                <input
+                  type="text"
+                  id="pSub1"
+                  class="form-control custom-input mb-2"
+                  placeholder="Предмет 1 (напр. Математика)"
+                />
+                <input
+                  type="text"
+                  id="pSub2"
+                  class="form-control custom-input mb-2"
+                  placeholder="Предмет 2"
+                />
+                <input
+                  type="text"
+                  id="pSub3"
+                  class="form-control custom-input mb-2"
+                  placeholder="Предмет 3 (Язык)"
+                />
+                <input
+                  type="text"
+                  id="pScore"
+                  class="form-control custom-input mb-3"
+                  placeholder="Проходной балл (от ...)"
+                />
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Навыки (через запятую)
+                </h6>
+                <textarea
+                  id="pSkills"
+                  class="form-control custom-input mb-2"
+                  placeholder="Хард-скиллы"
+                ></textarea>
+                <textarea
+                  id="pSoft"
+                  class="form-control custom-input mb-2"
+                  placeholder="Софт-скиллы"
+                ></textarea>
+                <textarea
+                  id="pCareer"
+                  class="form-control custom-input mb-4"
+                  placeholder="Карьера"
+                ></textarea>
+
+                <button
+                  type="submit"
+                  class="btn btn-accent-glow w-100"
+                  id="adminAddProfBtn"
+                >
+                  Добавить в каталог
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary w-100 mt-2 d-none"
+                  id="cancelEditBtn"
+                  onclick="cancelEdit()"
+                >
+                  Отменить редактирование
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="detail-card p-4 rounded-4 bg-surface h-100">
+              <h4 class="fw-bold mb-4">Текущий каталог</h4>
+              <div
+                class="table-responsive"
+                style="max-height: 800px; overflow-y: auto"
+              >
+                <table class="table table-dark table-hover align-middle">
+                  <thead>
+                    <tr>
+                      <th>Профессия</th>
+                      <th>Зарплата</th>
+                      <th>Действие</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminProfTable"></tbody>
+                </table>
               </div>
-              <button type="submit" class="btn btn-accent-glow w-100">
-                Добавить в базу
-              </button>
-            </form>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-6">
-          <div class="detail-card p-4 rounded-4 h-100 bg-surface">
-            <h4 class="fw-bold mb-4 text-purple">Статистика платформы</h4>
-            <ul class="list-unstyled">
-              <li
-                class="mb-3 p-3 bg-dark rounded-3 border custom-border d-flex justify-content-between"
-                style="background-color: var(--bg-dark) !important"
-              >
-                <span>Зарегистрировано пользователей:</span
-                ><span class="fw-bold text-cyan">24</span>
-              </li>
-              <li
-                class="mb-3 p-3 bg-dark rounded-3 border custom-border d-flex justify-content-between"
-                style="background-color: var(--bg-dark) !important"
-              >
-                <span>Пройдено тестов:</span
-                ><span class="fw-bold text-purple">156</span>
-              </li>
-            </ul>
-            <div
-              class="alert alert-warning mt-4 small border-purple bg-purple-soft text-light"
+      <!-- ИСТОРИИ -->
+      <div id="section-stories" class="admin-section d-none">
+        <div class="detail-card p-4 rounded-4 bg-surface">
+          <h4 class="fw-bold mb-4 text-purple">Модерация историй</h4>
+          <div id="adminStoriesList" class="row g-3"></div>
+        </div>
+      </div>
+
+      <!-- ОБРАЩЕНИЯ -->
+      <div id="section-feedback" class="admin-section d-none">
+        <div class="detail-card p-4 rounded-4 bg-surface">
+          <h4 class="fw-bold mb-4 text-cyan">Сообщения из формы контактов</h4>
+          <div id="adminFeedbackList" class="d-flex flex-column gap-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- МОДАЛКА ОТВЕТА НА ПОЧТУ (ТЕМНЫЙ ФОН) -->
+    <div class="modal fade" id="replyModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content bg-surface text-light border custom-border"
+          style="
+            background-color: var(--bg-surface) !important;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          "
+        >
+          <div
+            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
+          >
+            <h5 class="modal-title fw-bold w-100 text-center text-cyan">
+              Ответ пользователю
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute end-0 me-4"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4 p-md-5">
+            <textarea
+              id="replyText"
+              class="form-control custom-input mb-4 text-light"
+              style="
+                background-color: var(--bg-dark) !important;
+                border-radius: 12px;
+              "
+              rows="5"
+              placeholder="Напишите ответ..."
+            ></textarea>
+            <button
+              class="btn btn-accent-glow w-100 py-3 fs-5"
+              onclick="sendReply()"
             >
-              <i class="fas fa-info-circle me-2"></i> Внимание! Чтобы изменения
-              появлялись на сайте динамически, на следующем этапе мы перенесем
-              файл <code>data.js</code> в базу данных MongoDB.
-            </div>
+              Отправить на почту
+            </button>
           </div>
         </div>
       </div>
@@ -121,23 +344,281 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        // Блокировка доступа для не-админов
-        if (!user || user.role !== "admin") {
-          document.body.innerHTML =
-            '<div class="text-center mt-5 py-5"><h1 class="text-danger fw-bold mb-3"><i class="fas fa-exclamation-triangle"></i> ДОСТУП ЗАПРЕЩЕН</h1><a href="index.html" class="btn btn-outline-cyan">На главную</a></div>';
-        }
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      let editingProfId = null;
+      let replyingToId = null;
 
+      if (!user || user.role !== "admin")
+        document.body.innerHTML =
+          '<div class="text-center mt-5"><h1 class="text-danger">ДОСТУП ЗАПРЕЩЕН</h1><a href="index.html" class="btn btn-outline-cyan">На главную</a></div>';
+
+      function showSection(id, event) {
         document
-          .getElementById("addProfForm")
-          ?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            alert(
-              "Запрос на добавление отправлен! На следующем этапе мы свяжем эту форму с MongoDB.",
-            );
+          .querySelectorAll(".admin-section")
+          .forEach((s) => s.classList.add("d-none"));
+        document.getElementById("section-" + id).classList.remove("d-none");
+        document
+          .querySelectorAll(".admin-tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        if (event) event.target.classList.add("active");
+        if (id === "feedback") loadFeedback();
+        if (id === "stories") loadStories();
+        if (id === "professions") loadProfessions();
+      }
+
+      async function loadProfessions() {
+        const res = await fetch("/api/professions");
+        const data = await res.json();
+        document.getElementById("adminProfTable").innerHTML = data
+          .map(
+            (p) =>
+              `<tr><td>${p.title}</td><td>${p.salaryMin}-${p.salaryMax}</td><td style="min-width: 100px;"><button class="btn btn-sm btn-outline-info me-1" onclick="editProf('${p._id}')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteProf('${p._id}')"><i class="fas fa-trash"></i></button></td></tr>`,
+          )
+          .join("");
+      }
+
+      async function deleteProf(id) {
+        if (confirm("Точно удалить?")) {
+          await fetch(`/api/professions/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
           });
-      });
+          loadProfessions();
+        }
+      }
+
+      async function editProf(id) {
+        const res = await fetch(`/api/professions/${id}`);
+        const p = await res.json();
+        editingProfId = id;
+        document.getElementById("profFormTitle").textContent =
+          "Редактировать профессию";
+        document.getElementById("adminAddProfBtn").textContent =
+          "Сохранить изменения";
+        document.getElementById("cancelEditBtn").classList.remove("d-none");
+
+        document.getElementById("pTitle").value = p.title;
+        document.getElementById("pDir").value = p.direction;
+        document.getElementById("pEduLevel").value = p.educationLevel;
+        document.getElementById("pDemand").value = p.demand || "Растущий";
+        document.getElementById("pImage").value = p.image;
+        document.getElementById("pDesc").value = p.description;
+        document.getElementById("pPersp").value = p.perspectives;
+        document.getElementById("pMin").value = p.salaryMin;
+        document.getElementById("pMax").value = p.salaryMax;
+        if (p.universities && p.universities.length > 0) {
+          document.getElementById("pUniName").value =
+            p.universities[0].name || "";
+          document.getElementById("pUniFac").value =
+            p.universities[0].faculty || "";
+          document.getElementById("pUniSpec").value =
+            p.universities[0].specialty || "";
+        } else {
+          document.getElementById("pUniName").value = "";
+          document.getElementById("pUniFac").value = "";
+          document.getElementById("pUniSpec").value = "";
+        }
+        if (p.colleges && p.colleges.length > 0) {
+          document.getElementById("pColName").value = p.colleges[0].name || "";
+          document.getElementById("pColSpec").value =
+            p.colleges[0].specialty || "";
+        } else {
+          document.getElementById("pColName").value = "";
+          document.getElementById("pColSpec").value = "";
+        }
+        if (p.entranceExams) {
+          document.getElementById("pSub1").value =
+            p.entranceExams.subject1 || "";
+          document.getElementById("pSub2").value =
+            p.entranceExams.subject2 || "";
+          document.getElementById("pSub3").value =
+            p.entranceExams.subject3 || "";
+          document.getElementById("pScore").value =
+            p.entranceExams.passingScore || "";
+        }
+        document.getElementById("pSkills").value = p.skills
+          ? p.skills.join(", ")
+          : "";
+        document.getElementById("pSoft").value = p.softSkills
+          ? p.softSkills.join(", ")
+          : "";
+        document.getElementById("pCareer").value = p.careerPath
+          ? p.careerPath.join(", ")
+          : "";
+        window.scrollTo(0, 0);
+      }
+
+      function cancelEdit() {
+        editingProfId = null;
+        document.getElementById("adminAddProfForm").reset();
+        document.getElementById("profFormTitle").textContent =
+          "Новая профессия";
+        document.getElementById("adminAddProfBtn").textContent =
+          "Добавить в каталог";
+        document.getElementById("cancelEditBtn").classList.add("d-none");
+      }
+
+      document
+        .getElementById("adminAddProfForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const universities = [];
+          if (document.getElementById("pUniName").value) {
+            universities.push({
+              name: document.getElementById("pUniName").value,
+              faculty: document.getElementById("pUniFac").value,
+              specialty: document.getElementById("pUniSpec").value,
+            });
+          }
+          const colleges = [];
+          if (document.getElementById("pColName").value) {
+            colleges.push({
+              name: document.getElementById("pColName").value,
+              specialty: document.getElementById("pColSpec").value,
+            });
+          }
+          const body = {
+            title: document.getElementById("pTitle").value,
+            direction: document.getElementById("pDir").value,
+            educationLevel: document.getElementById("pEduLevel").value,
+            demand: document.getElementById("pDemand").value,
+            image: document.getElementById("pImage").value,
+            description: document.getElementById("pDesc").value,
+            perspectives: document.getElementById("pPersp").value,
+            salaryMin: document.getElementById("pMin").value,
+            salaryMax: document.getElementById("pMax").value,
+            universities: universities,
+            colleges: colleges,
+            entranceExams: {
+              subject1: document.getElementById("pSub1").value,
+              subject2: document.getElementById("pSub2").value,
+              subject3: document.getElementById("pSub3").value,
+              passingScore: document.getElementById("pScore").value,
+            },
+            skills: document
+              .getElementById("pSkills")
+              .value.split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+            softSkills: document
+              .getElementById("pSoft")
+              .value.split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+            careerPath: document
+              .getElementById("pCareer")
+              .value.split(",")
+              .map((s) => s.trim())
+              .filter(Boolean),
+          };
+          const url = editingProfId
+            ? `/api/professions/${editingProfId}`
+            : "/api/professions";
+          const method = editingProfId ? "PUT" : "POST";
+          const res = await fetch(url, {
+            method,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            alert("Успешно сохранено!");
+            cancelEdit();
+            loadProfessions();
+          } else {
+            alert("Ошибка при сохранении");
+          }
+        });
+
+      async function loadFeedback() {
+        const res = await fetch("/api/feedback", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.length === 0)
+          return (document.getElementById("adminFeedbackList").innerHTML =
+            '<p class="text-muted-custom">Сообщений пока нет.</p>');
+        document.getElementById("adminFeedbackList").innerHTML = data
+          .map(
+            (f) => `
+      <div class="p-3 border custom-border rounded-3 bg-dark">
+        <div class="d-flex justify-content-between mb-2"><strong class="text-light">${f.userName} (${f.userEmail})</strong> <small class="text-muted-custom">${new Date(f.date).toLocaleString()}</small></div>
+        <p class="mb-3 text-muted-custom">${f.message}</p>
+        ${f.status === "replied" ? '<span class="badge bg-success">Отвечено</span>' : `<button class="btn btn-sm btn-outline-cyan" onclick="openReplyModal('${f._id}')">Ответить на почту</button>`}
+      </div>`,
+          )
+          .join("");
+      }
+
+      function openReplyModal(id) {
+        replyingToId = id;
+        new bootstrap.Modal(document.getElementById("replyModal")).show();
+      }
+
+      async function sendReply() {
+        const text = document.getElementById("replyText").value;
+        const res = await fetch(`/api/feedback/reply/${replyingToId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ replyText: text }),
+        });
+        if (res.ok) {
+          alert("Ответ отправлен!");
+          bootstrap.Modal.getInstance(
+            document.getElementById("replyModal"),
+          ).hide();
+          loadFeedback();
+        }
+      }
+
+      async function loadStories() {
+        const resP = await fetch("/api/stories/pending", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const pending = await resP.json();
+        const resA = await fetch("/api/stories/approved");
+        const approved = await resA.json();
+
+        let html = '<h5 class="text-warning mt-3">На модерации:</h5>';
+        if (pending.length === 0)
+          html += '<p class="small text-muted-custom">Пусто</p>';
+        html += pending
+          .map(
+            (s) =>
+              `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark"><h6 class="text-light">${s.name} - ${s.profession}</h6><p class="small text-muted-custom">${s.shortText}</p><div class="d-flex gap-2"><button class="btn btn-sm btn-success w-100" onclick="actStory('${s._id}', 'approve')">Одобрить</button><button class="btn btn-sm btn-danger w-100" onclick="actStory('${s._id}', 'delete')">Отклонить</button></div></div></div>`,
+          )
+          .join("");
+
+        html += '<h5 class="text-success mt-4">Опубликованные:</h5>';
+        html += approved
+          .map(
+            (s) =>
+              `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark"><h6 class="text-light">${s.name} - ${s.profession}</h6><button class="btn btn-sm btn-danger w-100 mt-2" onclick="actStory('${s._id}', 'delete')">Удалить с сайта</button></div></div>`,
+          )
+          .join("");
+        document.getElementById("adminStoriesList").innerHTML = html;
+      }
+
+      async function actStory(id, action) {
+        const method = action === "approve" ? "PUT" : "DELETE";
+        const url =
+          action === "approve"
+            ? `/api/stories/approve/${id}`
+            : `/api/stories/${id}`;
+        await fetch(url, {
+          method,
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        loadStories();
+      }
+
+      loadProfessions();
     </script>
   </body>
 </html>
