@@ -222,23 +222,14 @@ const testApp = createApp({
   },
   methods: {
     async loadProfessions() {
-      try {
-        const res = await fetch("/api/professions");
-        this.professionsFromDb = await res.json();
-      } catch (err) {
-        console.error("Ошибка загрузки:", err);
-      }
+      const res = await fetch("/api/professions");
+      this.professionsFromDb = await res.json();
     },
     startTest() {
       const token = localStorage.getItem("token");
       if (!token) {
-        if (typeof bootstrap !== "undefined") {
-          const modalEl = document.getElementById("authModal");
-          const modal =
-            bootstrap.Modal.getInstance(modalEl) ||
-            new bootstrap.Modal(modalEl);
-          modal.show();
-        }
+        if (typeof bootstrap !== "undefined")
+          new bootstrap.Modal(document.getElementById("authModal")).show();
         return;
       }
       this.step = 1;
@@ -254,9 +245,7 @@ const testApp = createApp({
         this.userScores[category] += answer.points[category];
       }
       this.step++;
-      if (this.step > this.totalSteps) {
-        this.calculateResult();
-      }
+      if (this.step > this.totalSteps) this.calculateResult();
     },
     prevStep() {
       this.step--;
@@ -266,20 +255,19 @@ const testApp = createApp({
       }
     },
     calculateResult() {
-      const sortedCategories = Object.keys(this.userScores).sort(
+      const sorted = Object.keys(this.userScores).sort(
         (a, b) => this.userScores[b] - this.userScores[a],
       );
-      const top3Categories = sortedCategories.slice(0, 3);
+      const top3 = sorted.slice(0, 3);
       this.recommendedProfessions = [];
       const usedIds = new Set();
-
-      top3Categories.forEach((category) => {
+      top3.forEach((cat) => {
         const availableProfs = this.professionsFromDb.filter(
-          (p) => p.direction === category && !usedIds.has(p._id),
+          (p) => p.direction === cat && !usedIds.has(p._id),
         );
         if (availableProfs.length > 0) {
-          const randomIndex = Math.floor(Math.random() * availableProfs.length);
-          const randomProf = availableProfs[randomIndex];
+          const randomProf =
+            availableProfs[Math.floor(Math.random() * availableProfs.length)];
           this.recommendedProfessions.push(randomProf);
           usedIds.add(randomProf._id);
         } else {
@@ -287,10 +275,8 @@ const testApp = createApp({
             (p) => !usedIds.has(p._id),
           );
           if (fallbackProfs.length > 0) {
-            const randomIndex = Math.floor(
-              Math.random() * fallbackProfs.length,
-            );
-            const fallback = fallbackProfs[randomIndex];
+            const fallback =
+              fallbackProfs[Math.floor(Math.random() * fallbackProfs.length)];
             this.recommendedProfessions.push(fallback);
             usedIds.add(fallback._id);
           }
@@ -299,9 +285,8 @@ const testApp = createApp({
     },
     async saveResults() {
       if (this.saved) return;
-      const professionsList = this.recommendedProfessions.map((p) => p.title);
       const token = localStorage.getItem("token");
-
+      const list = this.recommendedProfessions.map((p) => p.title);
       if (token) {
         try {
           const res = await fetch("/api/profile/test-result", {
@@ -310,13 +295,20 @@ const testApp = createApp({
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ professions: professionsList }),
+            body: JSON.stringify({ professions: list }),
           });
           if (res.ok) {
             this.saved = true;
-            alert("Результаты сохранены в личном кабинете!");
+            if (typeof window.showNotification !== "undefined")
+              window.showNotification(
+                "Результаты сохранены в личном кабинете!",
+              );
           } else {
-            alert("Ошибка при сохранении на сервер.");
+            if (typeof window.showNotification !== "undefined")
+              window.showNotification(
+                "Ошибка при сохранении на сервер.",
+                "error",
+              );
           }
         } catch (err) {
           console.error(err);
@@ -328,11 +320,15 @@ const testApp = createApp({
       window.scrollTo(0, 0);
     },
   },
+  computed: {
+    currentQuestion() {
+      return this.questions[this.step - 1];
+    },
+    progressPercent() {
+      return ((this.step - 1) / this.totalSteps) * 100;
+    },
+  },
   mounted() {
     this.loadProfessions();
   },
-});
-
-if (document.getElementById("testApp")) {
-  testApp.mount("#testApp");
-}
+}).mount("#testApp");

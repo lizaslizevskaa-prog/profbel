@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const catalogGrid = document.getElementById("catalogGrid");
   const noResults = document.getElementById("noResults");
   const resultsCount = document.getElementById("resultsCount");
+
   const searchFilter = document.getElementById("searchFilter");
   const directionFilter = document.getElementById("directionFilter");
   const eduRadios = document.querySelectorAll('input[name="eduFilter"]');
@@ -41,21 +42,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function applyFilters() {
     let filtered = allProfessions;
+
     const searchText = searchFilter.value.toLowerCase().trim();
-    if (searchText)
+    if (searchText) {
       filtered = filtered.filter(
         (p) =>
           p.title.toLowerCase().includes(searchText) ||
           p.description.toLowerCase().includes(searchText),
       );
+    }
+
     const dirVal = directionFilter.value;
     if (dirVal !== "Все")
       filtered = filtered.filter((p) => p.direction === dirVal);
+
     const eduVal = document.querySelector(
       'input[name="eduFilter"]:checked',
     ).value;
     if (eduVal !== "Все")
       filtered = filtered.filter((p) => p.educationLevel.includes(eduVal));
+
     const selectedSubjects = Array.from(subjectCheckboxes)
       .filter((cb) => cb.checked)
       .map((cb) => cb.value);
@@ -72,22 +78,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         return selectedSubjects.some((sub) => profSubjects.includes(sub));
       });
     }
+
     filtered = filtered.filter((p) => {
       const matchMin = p.salaryMax >= minSalary;
       const matchMax = maxSalary >= 5000 ? true : p.salaryMin <= maxSalary;
       return matchMin && matchMax;
     });
+
     const demandVal = document.querySelector(
       'input[name="demandFilter"]:checked',
     ).value;
     if (demandVal !== "Все")
       filtered = filtered.filter((p) => p.demand === demandVal);
+
     renderCatalog(filtered);
   }
 
   async function renderCatalog(data) {
     catalogGrid.innerHTML = "";
     resultsCount.textContent = data.length;
+
     if (data.length === 0) {
       noResults.classList.remove("d-none");
       return;
@@ -110,8 +120,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const fragment = document.createDocumentFragment();
+
     data.forEach((prof) => {
-      // ИСПРАВЛЕНО: Проверяем по строковому ID
       const isFav = userFavorites.includes(String(prof._id));
       const heartClass = isFav
         ? "fas fa-heart text-danger"
@@ -142,11 +152,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.querySelectorAll(".fav-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
-        if (!token)
-          return window.showNotification(
-            "Войдите в личный кабинет, чтобы сохранять профессии!",
-            "error",
-          );
+        if (!token) {
+          // ИСПОЛЬЗУЕМ КРАСИВОЕ УВЕДОМЛЕНИЕ ВМЕСТО ALERT
+          if (typeof window.showNotification !== "undefined") {
+            window.showNotification(
+              "Войдите в личный кабинет, чтобы сохранять профессии!",
+              "error",
+            );
+          }
+          return;
+        }
         const profId = String(e.currentTarget.getAttribute("data-id"));
         const icon = e.currentTarget.querySelector("i");
         try {
@@ -250,5 +265,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     });
   }
+
   applyFilters();
 });
