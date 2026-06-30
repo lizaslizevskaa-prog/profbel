@@ -63,11 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
         message: document.getElementById("userMessage").value.trim(),
       };
       try {
-        const res = await fetch("/api/feedback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/feedback",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          },
+        );
         const data = await res.json();
         if (res.ok) {
           showNotification(data.message, "success");
@@ -85,7 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentX = 0;
     let isPaused = false;
     const loadSlider = async () => {
-      const res = await fetch("/api/stories/approved");
+      const res = await fetch(
+        "https://profbel-production.up.railway.app/api/stories/approved",
+      );
       const stories = await res.json();
       if (stories.length === 0) return;
       sliderTrack.innerHTML = stories
@@ -126,7 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const storiesGridView = document.getElementById("storiesGridView");
   if (storiesGridView) {
     const loadGrid = async () => {
-      const res = await fetch("/api/stories/approved");
+      const res = await fetch(
+        "https://profbel-production.up.railway.app/api/stories/approved",
+      );
       globalStories = await res.json();
       storiesGridView.innerHTML = globalStories
         .map(
@@ -156,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pastResCont.parentElement.classList.remove("d-none");
       pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3><p class="text-muted-custom mb-4">Чтобы увидеть свои результаты.</p><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
     } else {
-      fetch("/api/profile/me", {
+      fetch("https://profbel-production.up.railway.app/api/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -164,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (u.testResults && u.testResults.length > 0) {
             if (pastResCont.parentElement)
               pastResCont.parentElement.classList.remove("d-none");
-            fetch("/api/professions")
+            fetch("https://profbel-production.up.railway.app/api/professions")
               .then((r) => r.json())
               .then((allProfs) => {
                 pastResCont.innerHTML = u.testResults
@@ -300,11 +307,14 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/auth/register",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          },
+        );
         const data = await res.json();
 
         submitBtn.innerHTML = originalText;
@@ -335,14 +345,17 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Проверка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: currentRegEmail,
-            code: document.getElementById("verifyCode").value,
-          }),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/auth/verify",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: currentRegEmail,
+              code: document.getElementById("verifyCode").value,
+            }),
+          },
+        );
 
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
@@ -375,11 +388,14 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/auth/login",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          },
+        );
         const data = await res.json();
 
         submitBtn.innerHTML = originalText;
@@ -412,11 +428,14 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Отправка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/forgot-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/auth/forgot-password",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          },
+        );
         const data = await res.json();
 
         submitBtn.innerHTML = originalText;
@@ -456,11 +475,14 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/reset-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/auth/reset-password",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          },
+        );
         const data = await res.json();
 
         submitBtn.innerHTML = originalText;
@@ -512,18 +534,21 @@ window.loadComments = async function (storyId) {
     document.getElementById("addCommentForm").onsubmit = async (e) => {
       e.preventDefault();
       try {
-        const res = await fetch("/api/comments", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/comments",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              storyId,
+              text: document.getElementById("commentText").value,
+              userName: user.name,
+            }),
           },
-          body: JSON.stringify({
-            storyId,
-            text: document.getElementById("commentText").value,
-            userName: user.name,
-          }),
-        });
+        );
         if (res.ok) {
           document.getElementById("commentText").value = "";
           loadComments(storyId);
@@ -535,7 +560,9 @@ window.loadComments = async function (storyId) {
   }
 
   try {
-    const res = await fetch(`/api/comments/${storyId}`);
+    const res = await fetch(
+      `https://profbel-production.up.railway.app/api/comments/${storyId}`,
+    );
     const comments = await res.json();
     if (comments.length === 0) {
       commentsList.innerHTML = `<div class="text-center text-muted-custom py-3">Вопросов пока нет.</div>`;
@@ -576,36 +603,45 @@ window.loadComments = async function (storyId) {
 window.sendReply = async function (e, commentId, storyId) {
   e.preventDefault();
   const text = document.querySelector(`.ri-${commentId}`).value;
-  const res = await fetch(`/api/comments/${commentId}/reply`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const res = await fetch(
+    `https://profbel-production.up.railway.app/api/comments/${commentId}/reply`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        text,
+        userName: JSON.parse(localStorage.getItem("user")).name,
+      }),
     },
-    body: JSON.stringify({
-      text,
-      userName: JSON.parse(localStorage.getItem("user")).name,
-    }),
-  });
+  );
   if (res.ok) loadComments(storyId);
 };
 
 window.deleteComment = async function (id, sId) {
   if (confirm("Удалить вопрос?")) {
-    await fetch(`/api/comments/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    await fetch(
+      `https://profbel-production.up.railway.app/api/comments/${id}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
     loadComments(sId);
   }
 };
 
 window.deleteReply = async function (cId, rId, sId) {
   if (confirm("Удалить ответ?")) {
-    await fetch(`/api/comments/${cId}/reply/${rId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    await fetch(
+      `https://profbel-production.up.railway.app/api/comments/${cId}/reply/${rId}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
     loadComments(sId);
   }
 };

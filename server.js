@@ -24,12 +24,30 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // 3. ПОДКЛЮЧЕНИЕ РОУТОВ
-app.use("/api/auth", require("./Routes/auth.Route"));
-app.use("/api/profile", require("./Routes/profile.Route"));
-app.use("/api/comments", require("./Routes/comment.Route"));
-app.use("/api/professions", require("./Routes/profession.Route"));
-app.use("/api/stories", require("./Routes/story.Route"));
-app.use("/api/feedback", require("./Routes/feedback.Route"));
+app.use(
+  "https://profbel-production.up.railway.app/api/auth",
+  require("./Routes/auth.Route"),
+);
+app.use(
+  "https://profbel-production.up.railway.app/api/profile",
+  require("./Routes/profile.Route"),
+);
+app.use(
+  "https://profbel-production.up.railway.app/api/comments",
+  require("./Routes/comment.Route"),
+);
+app.use(
+  "https://profbel-production.up.railway.app/api/professions",
+  require("./Routes/profession.Route"),
+);
+app.use(
+  "https://profbel-production.up.railway.app/api/stories",
+  require("./Routes/story.Route"),
+);
+app.use(
+  "https://profbel-production.up.railway.app/api/feedback",
+  require("./Routes/feedback.Route"),
+);
 
 // 4. ПОДКЛЮЧЕНИЕ К БАЗЕ
 mongoose

@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const res = await fetch(`/api/professions/${profId}`);
+    const res = await fetch(
+      `https://profbel-production.up.railway.app/api/professions/${profId}`,
+    );
     if (!res.ok) throw new Error("Профессия не найдена");
     const prof = await res.json();
 

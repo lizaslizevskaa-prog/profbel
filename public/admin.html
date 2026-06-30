@@ -368,7 +368,9 @@
       }
 
       async function loadProfessions() {
-        const res = await fetch("/api/professions");
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/professions",
+        );
         const data = await res.json();
         document.getElementById("adminProfTable").innerHTML = data
           .map(
@@ -380,7 +382,7 @@
 
       async function deleteProf(id) {
         if (confirm("Точно удалить?")) {
-          await fetch(`/api/professions/${id}`, {
+          await fetch("https://profbel-production.up.railway.app/api/professions/${id}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -389,7 +391,7 @@
       }
 
       async function editProf(id) {
-        const res = await fetch(`/api/professions/${id}`);
+        const res = await fetch(`https://profbel-production.up.railway.app/api/professions/${id}`);
         const p = await res.json();
         editingProfId = id;
         document.getElementById("profFormTitle").textContent =
@@ -513,8 +515,8 @@
               .filter(Boolean),
           };
           const url = editingProfId
-            ? `/api/professions/${editingProfId}`
-            : "/api/professions";
+            ? `https://profbel-production.up.railway.app/api/professions/${editingProfId}`
+            : "https://profbel-production.up.railway.app/api/professions";
           const method = editingProfId ? "PUT" : "POST";
           const res = await fetch(url, {
             method,
@@ -534,9 +536,12 @@
         });
 
       async function loadFeedback() {
-        const res = await fetch("/api/feedback", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/feedback",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
         const data = await res.json();
         if (data.length === 0)
           return (document.getElementById("adminFeedbackList").innerHTML =
@@ -560,7 +565,7 @@
 
       async function sendReply() {
         const text = document.getElementById("replyText").value;
-        const res = await fetch(`/api/feedback/reply/${replyingToId}`, {
+        const res = await fetch(`https://profbel-production.up.railway.app/api/feedback/reply/${replyingToId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -578,11 +583,16 @@
       }
 
       async function loadStories() {
-        const resP = await fetch("/api/stories/pending", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const resP = await fetch(
+          "https://profbel-production.up.railway.app/api/stories/pending",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
         const pending = await resP.json();
-        const resA = await fetch("/api/stories/approved");
+        const resA = await fetch(
+          "https://profbel-production.up.railway.app/api/stories/approved",
+        );
         const approved = await resA.json();
 
         let html = '<h5 class="text-warning mt-3">На модерации:</h5>';
@@ -609,8 +619,8 @@
         const method = action === "approve" ? "PUT" : "DELETE";
         const url =
           action === "approve"
-            ? `/api/stories/approve/${id}`
-            : `/api/stories/${id}`;
+            ? `https://profbel-production.up.railway.app/api/stories/approve/${id}`
+            : `https://profbel-production.up.railway.app/api/stories/${id}`;
         await fetch(url, {
           method,
           headers: { Authorization: `Bearer ${token}` },

@@ -222,7 +222,9 @@ const testApp = createApp({
   },
   methods: {
     async loadProfessions() {
-      const res = await fetch("/api/professions");
+      const res = await fetch(
+        "https://profbel-production.up.railway.app/api/professions",
+      );
       this.professionsFromDb = await res.json();
     },
     startTest() {
@@ -289,14 +291,17 @@ const testApp = createApp({
       const list = this.recommendedProfessions.map((p) => p.title);
       if (token) {
         try {
-          const res = await fetch("/api/profile/test-result", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+          const res = await fetch(
+            "https://profbel-production.up.railway.app/api/profile/test-result",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ professions: list }),
             },
-            body: JSON.stringify({ professions: list }),
-          });
+          );
           if (res.ok) {
             this.saved = true;
             if (typeof window.showNotification !== "undefined")

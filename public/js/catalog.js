@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   let allProfessions = [];
 
   try {
-    const res = await fetch("/api/professions");
+    const res = await fetch(
+      "https://profbel-production.up.railway.app/api/professions",
+    );
     allProfessions = await res.json();
   } catch (err) {
     console.error("Ошибка загрузки каталога:", err);
@@ -109,9 +111,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const res = await fetch("/api/profile/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://profbel-production.up.railway.app/api/profile/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
         if (res.ok) {
           const userData = await res.json();
           userFavorites = userData.favoriteProfessions || [];
@@ -165,14 +170,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         const profId = String(e.currentTarget.getAttribute("data-id"));
         const icon = e.currentTarget.querySelector("i");
         try {
-          const res = await fetch("/api/profile/favorites", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+          const res = await fetch(
+            "https://profbel-production.up.railway.app/api/profile/favorites",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ profId }),
             },
-            body: JSON.stringify({ profId }),
-          });
+          );
           if (res.ok) {
             if (icon.classList.contains("far")) {
               icon.className = "fas fa-heart text-danger";
@@ -230,14 +238,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             prof.direction.toLowerCase().includes(query),
         );
         response(
-          results
-            .slice(0, 8)
-            .map((prof) => ({
-              label: prof.title,
-              value: prof.title,
-              prof: prof,
-              query: query,
-            })),
+          results.slice(0, 8).map((prof) => ({
+            label: prof.title,
+            value: prof.title,
+            prof: prof,
+            query: query,
+          })),
         );
       },
       minLength: 1,

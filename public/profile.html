@@ -676,9 +676,12 @@
         if (!token) return (window.location.href = "index.html");
 
         try {
-          const res = await fetch("/api/profile/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await fetch(
+            "https://profbel-production.up.railway.app/api/profile/me",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
           const user = await res.json();
 
           // Основные данные
@@ -743,7 +746,9 @@
           if (user.favoriteProfessions?.length > 0) {
             document.getElementById("emptyFavsMsg").classList.add("d-none");
 
-            const profsRes = await fetch("/api/professions");
+            const profsRes = await fetch(
+              "https://profbel-production.up.railway.app/api/professions",
+            );
             const allProfessions = await profsRes.json();
 
             user.favoriteProfessions.forEach((profId) => {
@@ -774,11 +779,14 @@
             const fd = new FormData();
             fd.append("avatar", file);
             try {
-              const res = await fetch("/api/profile/avatar", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: fd,
-              });
+              const res = await fetch(
+                "https://profbel-production.up.railway.app/api/profile/avatar",
+                {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: fd,
+                },
+              );
               const data = await res.json();
               if (res.ok) {
                 document.getElementById("profileAvatar").src = data.avatar;
@@ -801,14 +809,17 @@
               education: document.getElementById("editEdu").value,
             };
             try {
-              const res = await fetch("/api/profile/update", {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
+              const res = await fetch(
+                "https://profbel-production.up.railway.app/api/profile/update",
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(body),
                 },
-                body: JSON.stringify(body),
-              });
+              );
               if (res.ok) window.location.reload();
             } catch (err) {
               window.showNotification("Ошибка обновления", "error");
@@ -834,14 +845,20 @@
               );
 
             try {
-              const res = await fetch("/api/profile/change-password", {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
+              const res = await fetch(
+                "https://profbel-production.up.railway.app/api/profile/change-password",
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    currentPassword: cp,
+                    newPassword: np,
+                  }),
                 },
-                body: JSON.stringify({ currentPassword: cp, newPassword: np }),
-              });
+              );
               const data = await res.json();
               if (res.ok) {
                 window.showNotification("Пароль изменен!");
