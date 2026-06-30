@@ -382,16 +382,21 @@
 
       async function deleteProf(id) {
         if (confirm("Точно удалить?")) {
-          await fetch("https://profbel-production.up.railway.app/api/professions/${id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          await fetch(
+            `https://profbel-production.up.railway.app/api/professions/${id}`,
+            {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
           loadProfessions();
         }
       }
 
       async function editProf(id) {
-        const res = await fetch(`https://profbel-production.up.railway.app/api/professions/${id}`);
+        const res = await fetch(
+          `https://profbel-production.up.railway.app/api/professions/${id}`,
+        );
         const p = await res.json();
         editingProfId = id;
         document.getElementById("profFormTitle").textContent =
@@ -565,14 +570,17 @@
 
       async function sendReply() {
         const text = document.getElementById("replyText").value;
-        const res = await fetch(`https://profbel-production.up.railway.app/api/feedback/reply/${replyingToId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const res = await fetch(
+          `https://profbel-production.up.railway.app/api/feedback/reply/${replyingToId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ replyText: text }),
           },
-          body: JSON.stringify({ replyText: text }),
-        });
+        );
         if (res.ok) {
           alert("Ответ отправлен!");
           bootstrap.Modal.getInstance(
