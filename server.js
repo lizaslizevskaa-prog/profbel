@@ -6,17 +6,16 @@ const path = require("path");
 
 const app = express();
 
-// 1. НАСТРОЙКИ (Middleware)
+// 1. НАСТРОЙКИ ДОСТУПА
 app.use(
   cors({
-    origin: ["https://profbel.vercel.app", "http://localhost:5173"], // Замени на свой адрес верселя
+    origin: "*",
     credentials: true,
   }),
 );
 app.use(express.json());
 
-// 2. РАБОТА С ФАЙЛАМИ
-// Раздача статики (если у тебя есть папки public и uploads в проекте)
+// 2. СТАТИЧЕСКИЕ ФАЙЛЫ
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -28,17 +27,14 @@ app.use("/api/professions", require("./Routes/profession.Route"));
 app.use("/api/stories", require("./Routes/story.Route"));
 app.use("/api/feedback", require("./Routes/feedback.Route"));
 
-// 4. ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
-// Используем переменную MONGO_URI, которую ты настроил в Railway
+// 4. ПОДКЛЮЧЕНИЕ К БАЗЕ
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ База данных успешно подключена!"))
   .catch((err) => console.error("❌ Ошибка подключения к БД:", err));
 
 // 5. ЗАПУСК СЕРВЕРА
-// Railway сам передает номер порта через переменную окружения PORT
-const PORT = process.env.PORT || 3000;
-
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Сервер успешно запущен на порту ${PORT}`);
 });
