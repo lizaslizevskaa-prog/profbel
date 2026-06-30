@@ -9,7 +9,12 @@ const app = express();
 // 1. НАСТРОЙКИ ДОСТУПА
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "https://profbel-ib2s7e106-lizaslizevskaa-progs-projects.vercel.app",
+      "https://profbel.vercel.app",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
