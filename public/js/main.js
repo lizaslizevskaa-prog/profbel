@@ -145,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       window.scrollTo(0, 0);
     });
   }
-
   // 7. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
   const pastResCont = document.getElementById("pastResultsContainer");
   const token = localStorage.getItem("token");
@@ -153,7 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (pastResCont) {
     if (!token) {
-      pastResCont.parentElement.classList.remove("d-none");
+      if (pastResCont.parentElement)
+        pastResCont.parentElement.classList.remove("d-none");
       pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3><p class="text-muted-custom mb-4">Чтобы увидеть свои результаты.</p><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
     } else {
       fetch("/api/profile/me", {
@@ -161,8 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((res) => res.json())
         .then((u) => {
-          if (u.testResults?.length > 0) {
-            pastResCont.parentElement.classList.remove("d-none");
+          if (u.testResults && u.testResults.length > 0) {
+            if (pastResCont.parentElement)
+              pastResCont.parentElement.classList.remove("d-none");
             fetch("/api/professions")
               .then((r) => r.json())
               .then((allProfs) => {
@@ -189,7 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   .join("");
               });
           }
-        });
+        })
+        .catch((err) => console.error("Ошибка загрузки профиля:", err));
     }
   }
 
