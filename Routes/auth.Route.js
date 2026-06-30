@@ -2,7 +2,16 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const User = require("../Models/user.Model");
+
+// Настройка почты для отправки через Gmail SMTP (на Vercel порты 465/587 полностью открыты)
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
 
 router.post("/register", async (req, res) => {
   try {
@@ -43,7 +52,7 @@ router.post("/register", async (req, res) => {
       await user.save();
     }
 
-    // Почта полностью отключена для регистрации. Всё происходит мгновенно.
+    // Регистрация происходит без кодов на почту
     res
       .status(201)
       .json({
@@ -101,15 +110,25 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).json({ message: "Email не найден" });
-
     const newPass = Math.random().toString(36).slice(-8) + "1A";
     user.password = await bcrypt.hash(newPass, 10);
     await user.save();
 
-    // Генерация и возвращение временного пароля прямо в ответе (без отправки на заблокированную почту)
-    res.json({
-      message: `Сброс пароля выполнен! Ваш новый временный пароль: <span class="text-primary-custom fw-bold">${newPass}</span>. Используйте его для входа и затем смените в личном кабинете.`,
-    });
+    if (process.env.EMAIL_USER) {
+      try {
+        // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
+        await transporter.sendMail({
+          from: `"ProfBel" <${process.env.EMAIL_USER}>`,
+          to: user.email,
+          subject: "Новый пароль ProfBel",
+          html: `<h3>Ваш новый пароль: <span style="color: #00bcd4;">${newPass}</span></h3><p>Используйте его для входа, а затем сможете сменить в личном кабинете.</p>`,
+        });
+        console.log("✅ Письмо с новым паролем успешно отправлено на Vercel!");
+      } catch (e) {
+        console.error("❌ Ошибка отправки письма при восстановлении:", e);
+      }
+    }
+    res.json({ message: "Новый пароль успешно отправлен на вашу почту!" });
   } catch (err) {
     res.status(500).json({ message: "Ошибка" });
   }
