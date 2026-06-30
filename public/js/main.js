@@ -20,8 +20,138 @@ window.showNotification = function (message, type = "success") {
   setTimeout(() => toast.remove(), 4000);
 };
 
+// ==========================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ (ИСТОРИИ И КОММЕНТАРИИ) - ВЕРНУЛ НА МЕСТО!
+// ==========================================
+window.openFullArticle = function (id) {
+  const story = globalStories.find((s) => s._id === id);
+  if (story) {
+    document.getElementById("articlePagePhoto").src = story.photo;
+    document.getElementById("articlePageName").textContent = story.name;
+    document.getElementById("articlePageProfession").textContent =
+      story.profession;
+    document.getElementById("articlePageContent").innerHTML = story.fullText;
+    document.getElementById("storiesGridView").classList.add("d-none");
+    const suggestBlock = document.getElementById("suggestStoryBlock");
+    if (suggestBlock) suggestBlock.classList.add("d-none");
+    document.getElementById("fullArticleView").classList.remove("d-none");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.loadComments(id);
+  }
+};
+
+window.loadComments = async function (storyId) {
+  const commentsList = document.getElementById("commentsList");
+  const formContainer = document.getElementById("commentFormContainer");
+  if (!commentsList || !formContainer) return;
+
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!token || !user) {
+    formContainer.innerHTML = `<div class="p-3 rounded-3 border custom-border text-center" style="background-color: var(--bg-dark);"><p class="text-muted-custom small mb-0">Войдите в личный кабинет, чтобы задать вопрос.</p></div>`;
+  } else {
+    formContainer.innerHTML = `<form id="addCommentForm" class="d-flex gap-2"><input type="text" id="commentText" class="form-control custom-input text-light" placeholder="Задайте ваш вопрос..." style="background-color: var(--bg-dark) !important; border-radius: 12px; height: 50px;" required><button type="submit" class="btn btn-accent-glow py-2 px-4">Спросить</button></form>`;
+    document.getElementById("addCommentForm").onsubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch("/api/comments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            storyId,
+            text: document.getElementById("commentText").value,
+            userName: user.name,
+          }),
+        });
+        if (res.ok) {
+          document.getElementById("commentText").value = "";
+          window.loadComments(storyId);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  }
+
+  try {
+    const res = await fetch(`/api/comments/${storyId}`);
+    const comments = await res.json();
+    if (comments.length === 0) {
+      commentsList.innerHTML = `<div class="text-center text-muted-custom py-3">Вопросов пока нет.</div>`;
+      return;
+    }
+    const currentUserId = user ? user.id : null;
+    const isAdmin = user ? user.role === "admin" : false;
+
+    commentsList.innerHTML = comments
+      .map((c) => {
+        const isOwner = currentUserId === c.userId || isAdmin;
+        const deleteBtn = isOwner
+          ? `<button class="btn btn-link text-danger p-0 ms-auto" onclick="window.deleteComment('${c._id}', '${storyId}')" title="Удалить"><i class="fas fa-trash-alt"></i></button>`
+          : "";
+        const repliesHtml = (c.replies || [])
+          .map((r) => {
+            const isReplyOwner = currentUserId === r.userId || isAdmin;
+            const delReplyBtn = isReplyOwner
+              ? `<button class="btn btn-link text-danger p-0 ms-auto" onclick="window.deleteReply('${c._id}', '${r._id}', '${storyId}')"><i class="fas fa-trash-alt"></i></button>`
+              : "";
+            return `<div class="p-3 mt-2 rounded-4 border custom-border" style="background-color: var(--bg-surface); margin-left: 30px;"><div class="d-flex align-items-center mb-2"><i class="fas fa-reply text-purple me-2"></i><span class="fw-bold text-light small">${r.userName}</span><span class="text-muted-custom small ms-2">${new Date(r.date).toLocaleDateString("ru-RU")}</span>${delReplyBtn}</div><p class="mb-0 text-muted-custom small ms-4">${r.text}</p></div>`;
+          })
+          .join("");
+        const replyFormHtml = token
+          ? `<div class="mt-3 d-none" id="rf-${c._id}"><form class="d-flex gap-2" onsubmit="window.sendReply(event, '${c._id}', '${storyId}')"><input type="text" class="form-control custom-input text-light ri-${c._id}" placeholder="Ответ..." style="background-color: var(--bg-surface)!important; height: 40px;" required><button type="submit" class="btn btn-accent-glow py-1 btn-sm">OK</button></form></div><button class="btn btn-link text-cyan p-0 mt-2 small text-decoration-none" onclick="document.getElementById('rf-${c._id}').classList.toggle('d-none')"><i class="fas fa-reply me-1"></i>Ответить</button>`
+          : "";
+        return `<div class="p-3 rounded-4 border custom-border text-start d-flex flex-column" style="background-color: var(--bg-dark);"><div class="d-flex align-items-center mb-2"><i class="fas fa-user-circle fs-4 text-cyan me-2"></i><span class="fw-bold text-light small">${c.userName}</span><span class="text-muted-custom small ms-2">${new Date(c.date).toLocaleDateString("ru-RU")}</span>${deleteBtn}</div><p class="mb-0 text-muted-custom small ms-1">${c.text}</p>${repliesHtml}${replyFormHtml}</div>`;
+      })
+      .join("");
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+window.sendReply = async function (e, commentId, storyId) {
+  e.preventDefault();
+  const text = document.querySelector(`.ri-${commentId}`).value;
+  const res = await fetch(`/api/comments/${commentId}/reply`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      text,
+      userName: JSON.parse(localStorage.getItem("user")).name,
+    }),
+  });
+  if (res.ok) window.loadComments(storyId);
+};
+
+window.deleteComment = async function (id, sId) {
+  if (confirm("Удалить вопрос?")) {
+    await fetch(`/api/comments/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    window.loadComments(sId);
+  }
+};
+
+window.deleteReply = async function (cId, rId, sId) {
+  if (confirm("Удалить ответ?")) {
+    await fetch(`/api/comments/${cId}/reply/${rId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    window.loadComments(sId);
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-  // 2. ТЕМА И ГЛАЗИКИ ПАРОЛЕЙ
+  // ТЕМА И ПАРОЛИ
   const themeBtn = document.getElementById("themeToggle");
   if (localStorage.getItem("profbel_theme") === "light")
     document.body.classList.add("light-theme");
@@ -42,14 +172,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3. ФОРМА ОБРАТНОЙ СВЯЗИ
+  // ФОРМА ОБРАТНОЙ СВЯЗИ (С ПРОВЕРКОЙ EMAIL)
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", async function (e) {
       e.preventDefault();
+      const emailVal = document.getElementById("userEmail").value.trim();
+      // Строгая проверка email
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+        alert("Пожалуйста, введите корректный Email адрес!");
+        return;
+      }
       const body = {
         userName: document.getElementById("userName").value.trim(),
-        userEmail: document.getElementById("userEmail").value.trim(),
+        userEmail: emailVal,
         message: document.getElementById("userMessage").value.trim(),
       };
       try {
@@ -59,16 +195,16 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify(body),
         });
         if (res.ok) {
-          alert("Сообщение отправлено!");
+          window.showNotification("Сообщение отправлено!", "success");
           contactForm.reset();
         }
       } catch (err) {
-        alert("Ошибка сервера!");
+        window.showNotification("Ошибка сервера!", "error");
       }
     });
   }
 
-  // 4. СЛАЙДЕР И ГРИД ИСТОРИЙ
+  // СЛАЙДЕР ИСТОРИЙ УСПЕХА
   const sliderTrack = document.getElementById("sliderTrack");
   if (sliderTrack) {
     let currentX = 0;
@@ -84,11 +220,38 @@ document.addEventListener("DOMContentLoaded", () => {
               `<div class="story-slide"><div class="d-flex align-items-center mb-3"><img src="${s.photo}" class="story-img me-3"><div><h5 class="mb-0 fw-bold text-light">${s.name}</h5><span class="text-primary-custom small fw-bold">${s.profession}</span></div></div><p class="text-muted-custom story-text-preview mb-3">${s.shortText}</p><a href="stories.html?id=${s._id}" class="btn btn-outline-cyan btn-sm">Подробнее</a></div>`,
           )
           .join("");
-      } catch (e) {}
+        sliderTrack.innerHTML += sliderTrack.innerHTML;
+        const animate = () => {
+          if (!isPaused) {
+            currentX += 0.5;
+            if (currentX >= sliderTrack.scrollWidth / 2) currentX = 0;
+            sliderTrack.style.transform = `translateX(-${currentX}px)`;
+          }
+          requestAnimationFrame(animate);
+        };
+        animate();
+      } catch (e) {
+        console.log(e);
+      }
     };
+    sliderTrack.parentElement.addEventListener(
+      "mouseenter",
+      () => (isPaused = true),
+    );
+    sliderTrack.parentElement.addEventListener(
+      "mouseleave",
+      () => (isPaused = false),
+    );
+    document
+      .getElementById("sliderNext")
+      ?.addEventListener("click", () => (currentX += 300));
+    document
+      .getElementById("sliderPrev")
+      ?.addEventListener("click", () => (currentX -= 300));
     loadSlider();
   }
 
+  // ИСТОРИИ (ГРИД)
   const storiesGridView = document.getElementById("storiesGridView");
   if (storiesGridView) {
     const loadGrid = async () => {
@@ -98,15 +261,26 @@ document.addEventListener("DOMContentLoaded", () => {
         storiesGridView.innerHTML = globalStories
           .map(
             (s) =>
-              `<div class="col-md-6 col-lg-4"><div class="feature-card p-4 rounded-4 h-100 d-flex flex-column text-start"><div class="d-flex align-items-center mb-3"><img src="${s.photo}" class="story-img me-3"><h5 class="mb-0 fw-bold">${s.name}</h5></div><p class="text-primary-custom fw-bold mb-2">${s.profession}</p><p class="text-muted-custom flex-grow-1">${s.shortText}</p><button class="btn btn-accent-glow mt-3 align-self-start" onclick="openFullArticle('${s._id}')">Подробнее</button></div></div>`,
+              `<div class="col-md-6 col-lg-4"><div class="feature-card p-4 rounded-4 h-100 d-flex flex-column text-start"><div class="d-flex align-items-center mb-3"><img src="${s.photo}" class="story-img me-3"><h5 class="mb-0 fw-bold">${s.name}</h5></div><p class="text-primary-custom fw-bold mb-2">${s.profession}</p><p class="text-muted-custom flex-grow-1">${s.shortText}</p><button class="btn btn-accent-glow mt-3 align-self-start" onclick="window.openFullArticle('${s._id}')">Подробнее</button></div></div>`,
           )
           .join("");
-      } catch (e) {}
+        const storyId = new URLSearchParams(window.location.search).get("id");
+        if (storyId) window.openFullArticle(storyId);
+      } catch (e) {
+        console.log(e);
+      }
     };
     loadGrid();
+    document.getElementById("backToGridBtn")?.addEventListener("click", () => {
+      document.getElementById("fullArticleView").classList.add("d-none");
+      storiesGridView.classList.remove("d-none");
+      const suggestBlock = document.getElementById("suggestStoryBlock");
+      if (suggestBlock) suggestBlock.classList.remove("d-none");
+      window.scrollTo(0, 0);
+    });
   }
 
-  // 5. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
+  // РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
   const pastResCont = document.getElementById("pastResultsContainer");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -145,11 +319,11 @@ document.addEventListener("DOMContentLoaded", () => {
               });
           }
         })
-        .catch((e) => console.error(e));
+        .catch((e) => console.log(e));
     }
   }
 
-  // 6. ШАПКА И ВЫХОД
+  // ШАПКА И ВЫХОД
   if (token && user) {
     document
       .querySelectorAll('button[data-bs-target="#authModal"]')
@@ -164,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 7. ЛОГИКА ФОРМ АВТОРИЗАЦИИ
+  // ЛОГИКА ФОРМ АВТОРИЗАЦИИ
   const loginForm = document.getElementById("loginForm");
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
@@ -208,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
   );
 
-  // --- РЕГИСТРАЦИЯ ---
   if (regForm) {
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -265,7 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- ПОДТВЕРЖДЕНИЕ ---
   if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -301,7 +473,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- ВХОД ---
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
