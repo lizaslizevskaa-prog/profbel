@@ -1,5 +1,6 @@
 let globalStories = [];
 
+// 1. ГЕНЕРАТОР УВЕДОМЛЕНИЙ
 window.showNotification = function (message, type = "success") {
   let container = document.getElementById("toast-container");
   if (!container) {
@@ -20,6 +21,7 @@ window.showNotification = function (message, type = "success") {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 2. ТЕМА И ГЛАЗИКИ ПАРОЛЕЙ
   const themeBtn = document.getElementById("themeToggle");
   if (localStorage.getItem("profbel_theme") === "light")
     document.body.classList.add("light-theme");
@@ -40,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 3. ФОРМА ОБРАТНОЙ СВЯЗИ
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", async function (e) {
@@ -65,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 4. СЛАЙДЕР И ГРИД ИСТОРИЙ
   const sliderTrack = document.getElementById("sliderTrack");
   if (sliderTrack) {
     let currentX = 0;
@@ -102,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadGrid();
   }
 
+  // 5. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
   const pastResCont = document.getElementById("pastResultsContainer");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -110,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!token) {
       if (pastResCont.parentElement)
         pastResCont.parentElement.classList.remove("d-none");
-      pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3></div></div>`;
+      pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3><p class="text-muted-custom mb-4">Чтобы увидеть свои результаты.</p><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
     } else {
       fetch("/api/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -144,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 6. ШАПКА И ВЫХОД
   if (token && user) {
     document
       .querySelectorAll('button[data-bs-target="#authModal"]')
@@ -158,19 +164,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 7. ЛОГИКА ФОРМ АВТОРИЗАЦИИ
   const loginForm = document.getElementById("loginForm");
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
+  const forgotForm = document.getElementById("forgotForm");
+  const resetPasswordForm = document.getElementById("resetPasswordForm");
   const authModalTitle = document.getElementById("authModalTitle");
   let currentRegEmail = "";
 
   const showF = (f, t) => {
-    [loginForm, regForm, verifyForm].forEach((el) => {
-      if (el) {
-        el.classList.add("d-none");
-        el.classList.remove("d-block");
-      }
-    });
+    [loginForm, regForm, verifyForm, forgotForm, resetPasswordForm].forEach(
+      (el) => {
+        if (el) {
+          el.classList.add("d-none");
+          el.classList.remove("d-block");
+        }
+      },
+    );
     if (f) {
       f.classList.remove("d-none");
       f.classList.add("d-block");
@@ -186,6 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     showF(loginForm, "Вход");
   });
+  document.getElementById("showForgotBtn")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showF(forgotForm, "Сброс пароля");
+  });
   document.querySelectorAll(".backToLoginBtn").forEach((btn) =>
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -193,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
   );
 
+  // --- РЕГИСТРАЦИЯ ---
   if (regForm) {
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -249,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- ПОДТВЕРЖДЕНИЕ ---
   if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -284,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- ВХОД ---
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
