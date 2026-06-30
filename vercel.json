@@ -1,13 +1,8 @@
 {
-  "version": 2,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "https://profbel-production.up.railway.app/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/public/$1"
     }
   ]
 }

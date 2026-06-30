@@ -13,13 +13,17 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
 
-// 2. СТАТИЧЕСКИЕ ФАЙЛЫ
+// РАЗРЕШАЕМ БОЛЬШИЕ ФАЙЛЫ (ДЛЯ КАРТИНОК BASE64)
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// 2. СЛУЖЕБНЫЕ ПАПКИ
 app.use(express.static(path.join(__dirname, "public")));
+// Оставим uploads на всякий случай, чтобы не ломался старый код
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// 3. API РОУТЫ
+// 3. ПОДКЛЮЧЕНИЕ РОУТОВ
 app.use("/api/auth", require("./Routes/auth.Route"));
 app.use("/api/profile", require("./Routes/profile.Route"));
 app.use("/api/comments", require("./Routes/comment.Route"));
@@ -36,5 +40,5 @@ mongoose
 // 5. ЗАПУСК СЕРВЕРА
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`🚀 Сервер успешно запущен на порту ${PORT}`);
+  console.log(`🚀 Сервер запущен на порту ${PORT}`);
 });
