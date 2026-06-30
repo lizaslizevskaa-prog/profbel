@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProfBel | Личный кабинет</title>
 
+    <!-- Шрифты и стили -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
       rel="stylesheet"
@@ -41,18 +44,23 @@
               <a class="nav-link" href="index.html">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="catalog.html">Каталог</a>
+              <a class="nav-link" href="catalog.html">Каталог профессий</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="stories.html">Истории успеха</a>
             </li>
             <li class="nav-item">
               <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
             </li>
 
+            <!-- Админ-панель -->
             <li class="nav-item d-none" id="adminPanelLink">
               <a class="nav-link text-warning fw-bold" href="admin.html"
                 ><i class="fas fa-crown me-1"></i> Админ</a
               >
             </li>
 
+            <!-- Кнопка Выхода -->
             <li class="nav-item ms-lg-3">
               <button
                 id="logoutProfileBtn"
@@ -62,6 +70,7 @@
               </button>
             </li>
 
+            <!-- Смена темы -->
             <li class="nav-item ms-lg-2">
               <button
                 id="themeToggle"
@@ -85,13 +94,13 @@
 
     <main class="container py-5 flex-grow-1">
       <div class="row g-4">
-        <!-- ЛЕВАЯ КОЛОНКА (Инфо о пользователе) -->
+        <!-- ЛЕВАЯ КОЛОНКА: ИНФО О ПОЛЬЗОВАТЕЛЕ -->
         <div class="col-lg-4">
           <div
             class="detail-card p-4 rounded-4 text-center h-100 position-relative shadow-lg"
           >
             <div class="position-relative z-index-2">
-              <!-- Аватарка -->
+              <!-- Аватар -->
               <div class="mb-4 position-relative d-inline-block">
                 <img
                   id="profileAvatar"
@@ -121,7 +130,7 @@
                 загрузка...
               </p>
 
-              <!-- Карточки анкеты -->
+              <!-- Анкета пользователя -->
               <div class="row g-3 text-start mb-4">
                 <div class="col-6">
                   <div
@@ -175,9 +184,10 @@
           </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА (Вкладки) -->
+        <!-- ПРАВАЯ КОЛОНКА: ВКЛАДКИ -->
         <div class="col-lg-8">
           <div class="detail-card p-4 rounded-4 h-100 shadow-lg">
+            <!-- Переключатель вкладок -->
             <ul
               class="nav nav-pills mb-4 border-bottom custom-border pb-2"
               id="profileTabs"
@@ -215,7 +225,7 @@
             </ul>
 
             <div class="tab-content" id="profileTabsContent">
-              <!-- ИСТОРИЯ ТЕСТОВ -->
+              <!-- Вкладка: ИСТОРИЯ ТЕСТОВ -->
               <div
                 class="tab-pane fade show active"
                 id="history"
@@ -238,7 +248,7 @@
                 </div>
               </div>
 
-              <!-- ИЗБРАННОЕ -->
+              <!-- Вкладка: ИЗБРАННОЕ -->
               <div class="tab-pane fade" id="favorites" role="tabpanel">
                 <div id="favoriteProfsContainer" class="row g-3">
                   <div
@@ -259,7 +269,7 @@
       </div>
     </main>
 
-    <!-- МОДАЛКА: РЕДАКТИРОВАТЬ ПРОФИЛЬ -->
+    <!-- МОДАЛКА: РЕДАКТИРОВАНИЕ АНКЕТЫ -->
     <div class="modal fade" id="editProfileModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -308,6 +318,7 @@
                   />
                 </div>
               </div>
+
               <div class="row mb-4">
                 <div class="col-6">
                   <label
@@ -349,6 +360,7 @@
                   </select>
                 </div>
               </div>
+
               <div class="mb-5">
                 <label
                   class="form-label text-muted-custom small text-uppercase fw-bold"
@@ -376,6 +388,7 @@
                   </select>
                 </div>
               </div>
+
               <button type="submit" class="btn btn-accent-glow w-100 py-3 fs-5">
                 Сохранить изменения
               </button>
@@ -385,7 +398,7 @@
       </div>
     </div>
 
-    <!-- МОДАЛКА: ИЗМЕНИТЬ ПАРОЛЬ -->
+    <!-- МОДАЛКА: СМЕНА ПАРОЛЯ -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -393,7 +406,6 @@
           style="
             background-color: var(--bg-surface) !important;
             border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
           "
         >
           <div class="modal-header border-bottom custom-border pb-3 pt-4">
@@ -455,7 +467,7 @@
                     type="password"
                     id="newPassword"
                     class="form-control custom-input text-light"
-                    placeholder="Мин 6 симв, 1 загл, 1 цифра"
+                    placeholder="Мин 6 симв, 1 заглавная, 1 цифра"
                     style="
                       padding-left: 50px;
                       height: 50px;
@@ -520,35 +532,156 @@
       </div>
     </div>
 
+    <!-- Контейнер для уведомлений -->
     <div
       id="toast-container"
       class="position-fixed top-0 end-0 p-3"
       style="z-index: 10000"
     ></div>
 
-    <footer
-      class="custom-footer mt-auto pt-4 pb-3 text-center border-top custom-border"
-    >
+    <!-- ФУТЕР -->
+    <footer class="custom-footer mt-auto pt-5 pb-3">
       <div class="container">
-        <p class="text-muted-custom small mb-0">&copy; 2026 ProfBel.</p>
+        <div class="row gy-4 mb-4">
+          <div class="col-lg-4 col-md-6 pe-lg-4">
+            <a class="navbar-brand logo d-inline-block mb-3" href="index.html"
+              >Prof<span>Bel</span></a
+            >
+            <p class="text-muted-custom small mb-4">
+              Твой персональный гид в мире профессий будущего. Помогаем
+              школьникам и студентам Беларуси сделать правильный выбор и найти
+              свое призвание в IT, науке и инженерии.
+            </p>
+            <div class="social-links d-flex gap-3">
+              <a
+                href="https://t.me/Bogdachkaa"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наш Telegram"
+                ><i class="fab fa-telegram-plane"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/ssfilt?igsh=bzB0em13NjN0eHls"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наш Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                href="https://vk.ru/vatashinay"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наша группа ВК"
+                ><i class="fab fa-vk"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Навигация</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Главная
+                  страница</a
+                >
+              </li>
+              <li>
+                <a href="catalog.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Каталог
+                  профессий</a
+                >
+              </li>
+              <li>
+                <a href="stories.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Истории
+                  успеха</a
+                >
+              </li>
+              <li>
+                <a href="test.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Пройти тест</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Проект</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right me-2 small"></i>О нас</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Методология</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Связь с нами</h3>
+            <ul
+              class="list-unstyled footer-contact text-muted-custom small mb-4"
+            >
+              <li class="mb-3 d-flex align-items-center">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <span>info@profbel.by</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <div class="contact-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span>г. Минск, Беларусь</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="footer-bottom pt-4 border-top custom-border d-flex flex-column flex-md-row justify-content-between align-items-center"
+        >
+          <p class="mb-0 text-muted-custom small">
+            &copy; 2026 ProfBel. Практический проект по веб-разработке.
+          </p>
+          <div class="footer-bottom-links mt-2 mt-md-0">
+            <a
+              href="#"
+              class="text-muted-custom small text-decoration-none hover-primary transition-all"
+              >Политика конфиденциальности</a
+            >
+          </div>
+        </div>
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/main.js"></script>
 
     <script>
+      // ИСПРАВЛЕННАЯ ЛОГИКА ВЫХОДА
+      document
+        .getElementById("logoutProfileBtn")
+        .addEventListener("click", () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "index.html";
+        });
+
       document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
         if (!token) return (window.location.href = "index.html");
 
         try {
-          // 1. ПОЛУЧАЕМ ДАННЫЕ ЮЗЕРА
           const res = await fetch("/api/profile/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const user = await res.json();
 
+          // Основные данные
           document.getElementById("profileName").textContent = user.name;
           document.getElementById("profileEmail").textContent = user.email;
           document.getElementById("profileGender").textContent =
@@ -564,19 +697,21 @@
               .getElementById("adminPanelLink")
               .classList.remove("d-none");
 
+          // Аватар
           const avatarImg = document.getElementById("profileAvatar");
           avatarImg.src =
-            user.avatar && user.avatar !== "default-avatar.png"
+            user.avatar && user.avatar.length > 50
               ? user.avatar
               : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=64ffda&color=0a192f&size=128`;
 
+          // Предзаполнение форм
           document.getElementById("editName").value = user.name;
           document.getElementById("editAge").value = user.age || "";
           document.getElementById("editGender").value =
             user.gender || "Не указан";
           document.getElementById("editEdu").value = user.education || "Школа";
 
-          // 2. ИСТОРИЯ ТЕСТОВ
+          // 1. ИСТОРИЯ ТЕСТОВ
           const histContainer = document.getElementById(
             "profileResultsContainer",
           );
@@ -591,44 +726,38 @@
                 )
                 .join("");
               histContainer.innerHTML += `
-              <div class="p-4 rounded-4 border custom-border" style="background-color: var(--bg-dark);">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <span class="badge bg-purple-soft text-purple px-3 py-2 rounded-pill">Попытка ${attempt}</span>
+              <div class="p-4 rounded-4 border custom-border mb-3" style="background-color: var(--bg-dark);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge bg-purple-soft text-purple">Попытка ${attempt}</span>
                   <span class="text-muted-custom small"><i class="far fa-clock me-1"></i> ${new Date(result.date).toLocaleDateString("ru-RU")}</span>
                 </div>
-                <div>${profs}</div>
+                <div class="small text-light mb-0">${profs}</div>
               </div>`;
             });
           }
 
-          // 3. ИЗБРАННОЕ (ИСПРАВЛЕНО: БЕРЕМ ИЗ БАЗЫ ДАННЫХ)
+          // 2. ИЗБРАННОЕ
           const favContainer = document.getElementById(
             "favoriteProfsContainer",
           );
-          if (user.favoriteProfessions && user.favoriteProfessions.length > 0) {
+          if (user.favoriteProfessions?.length > 0) {
             document.getElementById("emptyFavsMsg").classList.add("d-none");
 
-            // Скачиваем актуальные профессии из базы
             const profsRes = await fetch("/api/professions");
             const allProfessions = await profsRes.json();
 
             user.favoriteProfessions.forEach((profId) => {
-              // Ищем по строковому _id
-              const prof = allProfessions.find(
-                (p) => String(p._id) === String(profId),
-              );
+              const prof = allProfessions.find((p) => p._id === profId);
               if (prof) {
-                const col = document.createElement("div");
-                col.className = "col-md-6";
-                col.innerHTML = `
-                <div class="p-4 rounded-4 border custom-border h-100 d-flex flex-column" style="background-color: var(--bg-dark);">
-                  <span class="badge bg-purple-soft text-purple mb-3 align-self-start">${prof.direction}</span>
-                  <h5 class="fw-bold text-light mb-2">${prof.title}</h5>
-                  <div class="text-primary-custom small fw-bold mt-auto mb-3"><i class="fas fa-wallet me-2"></i>${prof.salaryMin} - ${prof.salaryMax} BYN</div>
-                  <a href="profession.html?id=${prof._id}" class="btn btn-outline-cyan btn-sm w-100">Подробнее</a>
-                </div>
-              `;
-                favContainer.appendChild(col);
+                favContainer.innerHTML += `
+                <div class="col-md-6">
+                  <div class="p-3 rounded-4 border custom-border h-100 d-flex flex-column" style="background-color: var(--bg-dark);">
+                    <span class="badge bg-purple-soft text-purple mb-2 align-self-start">${prof.direction}</span>
+                    <h6 class="fw-bold text-light mb-2">${prof.title}</h6>
+                    <div class="text-primary-custom small fw-bold mt-auto mb-3"><i class="fas fa-wallet me-1"></i> ${prof.salaryMin} - ${prof.salaryMax} BYN</div>
+                    <a href="profession.html?id=${prof._id}" class="btn btn-outline-cyan btn-sm w-100 mt-auto">Подробнее</a>
+                  </div>
+                </div>`;
               }
             });
           }
@@ -636,7 +765,7 @@
           console.error(err);
         }
 
-        // 4. ЗАГРУЗКА АВАТАРА
+        // ЗАГРУЗКА АВАТАРА
         document
           .getElementById("avatarInput")
           .addEventListener("change", async (e) => {
@@ -653,14 +782,14 @@
               const data = await res.json();
               if (res.ok) {
                 document.getElementById("profileAvatar").src = data.avatar;
-                window.showNotification("Аватар обновлен!");
+                window.showNotification("Аватар успешно обновлен!");
               }
             } catch (err) {
               window.showNotification("Ошибка загрузки", "error");
             }
           });
 
-        // 5. РЕДАКТИРОВАНИЕ АНКЕТЫ
+        // РЕДАКТИРОВАНИЕ ДАННЫХ
         document
           .getElementById("editProfileForm")
           .addEventListener("submit", async (e) => {
@@ -686,7 +815,7 @@
             }
           });
 
-        // 6. СМЕНА ПАРОЛЯ
+        // СМЕНА ПАРОЛЯ
         document
           .getElementById("changePasswordForm")
           .addEventListener("submit", async (e) => {
@@ -696,6 +825,14 @@
             const cnp = document.getElementById("confirmNewPassword").value;
             if (np !== cnp)
               return window.showNotification("Пароли не совпадают", "error");
+
+            const passwordRegex = /^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/;
+            if (!passwordRegex.test(np))
+              return window.showNotification(
+                "Пароль: мин. 6 символов, 1 ЗАГЛАВНАЯ буква и 1 цифра!",
+                "error",
+              );
+
             try {
               const res = await fetch("/api/profile/change-password", {
                 method: "PUT",
@@ -718,16 +855,7 @@
             }
           });
 
-        // 7. ВЫХОД
-        document
-          .getElementById("logoutProfileBtn")
-          .addEventListener("click", () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "index.html";
-          });
-
-        // Переключение вкладок
+        // Стили вкладок
         document
           .querySelectorAll('button[data-bs-toggle="pill"]')
           .forEach((btn) => {

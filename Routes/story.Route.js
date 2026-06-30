@@ -9,6 +9,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
+
 const protect = (req, res, next) => {
   try {
     req.user = jwt.verify(
@@ -34,7 +35,6 @@ router.post("/submit", protect, async (req, res) => {
   res.status(201).json({ message: "Отправлено на модерацию!" });
 });
 
-// АДМИН ОДОБРЯЕТ (ПИСЬМО ОБ УСПЕХЕ)
 router.put("/approve/:id", protect, async (req, res) => {
   const story = await Story.findByIdAndUpdate(req.params.id, {
     status: "approved",
@@ -43,7 +43,7 @@ router.put("/approve/:id", protect, async (req, res) => {
   if (user && process.env.EMAIL_USER) {
     try {
       await transporter.sendMail({
-        from: process.env.EMAIL_USER,
+        from: `"ProfBel" <${process.env.EMAIL_USER}>`, // КРАСИВОЕ ИМЯ ОТПРАВИТЕЛЯ
         to: user.email,
         subject: "Ваша история опубликована!",
         html: `<h3>Поздравляем!</h3><p>Ваша история "${story.name}" успешно прошла модерацию и опубликована на сайте ProfBel.</p>`,
@@ -53,24 +53,9 @@ router.put("/approve/:id", protect, async (req, res) => {
   res.json({ message: "Одобрено" });
 });
 
-// АДМИН УДАЛЯЕТ/ОТКЛОНЯЕТ (ПИСЬМО ОБ ОТКАЗЕ)
 router.delete("/:id", protect, async (req, res) => {
-  const story = await Story.findById(req.params.id);
-  if (!story) return res.status(404).json({ message: "Не найдено" });
-
-  const user = await User.findById(story.userId);
-  if (user && process.env.EMAIL_USER) {
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: "Статус вашей истории",
-        html: `<h3>Здравствуйте, ${user.name}!</h3><p>К сожалению, ваша история "${story.name}" была отклонена модератором. Попробуйте написать её заново, добавив больше деталей.</p>`,
-      });
-    } catch (e) {}
-  }
-
   await Story.findByIdAndDelete(req.params.id);
   res.json({ message: "Удалено" });
 });
+
 module.exports = router;

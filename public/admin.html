@@ -63,6 +63,9 @@
                 Новая профессия
               </h4>
               <form id="adminAddProfForm">
+                <h6 class="text-muted-custom border-bottom custom-border pb-1">
+                  Основная информация
+                </h6>
                 <input
                   type="text"
                   id="pTitle"
@@ -77,15 +80,30 @@
                   placeholder="Направление (IT, Медицина...)"
                   required
                 />
-                <select
-                  id="pEduLevel"
-                  class="form-select custom-select mb-2"
-                  required
-                >
-                  <option value="Вуз">Вуз</option>
-                  <option value="Колледж">Колледж</option>
-                  <option value="Вуз/Колледж">Вуз/Колледж</option>
-                </select>
+                <div class="row g-2 mb-2">
+                  <div class="col-6">
+                    <select
+                      id="pEduLevel"
+                      class="form-select custom-select"
+                      required
+                    >
+                      <option value="Вуз">Вуз</option>
+                      <option value="Колледж">Колледж</option>
+                      <option value="Вуз/Колледж">Вуз/Колледж</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <select
+                      id="pDemand"
+                      class="form-select custom-select"
+                      required
+                    >
+                      <option value="Растущий">Спрос: Растущий</option>
+                      <option value="Стабильный">Спрос: Стабильный</option>
+                      <option value="Новый">Спрос: Новый</option>
+                    </select>
+                  </div>
+                </div>
                 <input
                   type="text"
                   id="pImage"
@@ -127,6 +145,49 @@
                     />
                   </div>
                 </div>
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Где учиться (ВУЗ)
+                </h6>
+                <input
+                  type="text"
+                  id="pUniName"
+                  class="form-control custom-input mb-2"
+                  placeholder="Название ВУЗа (напр. БГУИР)"
+                />
+                <input
+                  type="text"
+                  id="pUniFac"
+                  class="form-control custom-input mb-2"
+                  placeholder="Факультет"
+                />
+                <input
+                  type="text"
+                  id="pUniSpec"
+                  class="form-control custom-input mb-3"
+                  placeholder="Специальность"
+                />
+
+                <h6
+                  class="text-muted-custom mt-3 border-bottom custom-border pb-1"
+                >
+                  Где учиться (Колледж)
+                </h6>
+                <input
+                  type="text"
+                  id="pColName"
+                  class="form-control custom-input mb-2"
+                  placeholder="Название Колледжа"
+                />
+                <input
+                  type="text"
+                  id="pColSpec"
+                  class="form-control custom-input mb-3"
+                  placeholder="Специальность"
+                />
+
                 <h6
                   class="text-muted-custom mt-3 border-bottom custom-border pb-1"
                 >
@@ -137,22 +198,26 @@
                   id="pSub1"
                   class="form-control custom-input mb-2"
                   placeholder="Предмет 1 (напр. Математика)"
-                /><input
+                />
+                <input
                   type="text"
                   id="pSub2"
                   class="form-control custom-input mb-2"
                   placeholder="Предмет 2"
-                /><input
+                />
+                <input
                   type="text"
                   id="pSub3"
                   class="form-control custom-input mb-2"
                   placeholder="Предмет 3 (Язык)"
-                /><input
+                />
+                <input
                   type="text"
                   id="pScore"
                   class="form-control custom-input mb-3"
                   placeholder="Проходной балл (от ...)"
                 />
+
                 <h6
                   class="text-muted-custom mt-3 border-bottom custom-border pb-1"
                 >
@@ -162,17 +227,18 @@
                   id="pSkills"
                   class="form-control custom-input mb-2"
                   placeholder="Хард-скиллы"
-                ></textarea
-                ><textarea
+                ></textarea>
+                <textarea
                   id="pSoft"
                   class="form-control custom-input mb-2"
                   placeholder="Софт-скиллы"
-                ></textarea
-                ><textarea
+                ></textarea>
+                <textarea
                   id="pCareer"
                   class="form-control custom-input mb-4"
                   placeholder="Карьера"
                 ></textarea>
+
                 <button
                   type="submit"
                   class="btn btn-accent-glow w-100"
@@ -186,7 +252,7 @@
                   id="cancelEditBtn"
                   onclick="cancelEdit()"
                 >
-                  Отменить
+                  Отменить редактирование
                 </button>
               </form>
             </div>
@@ -231,20 +297,44 @@
       </div>
     </div>
 
-    <!-- МОДАЛКА ОТВЕТА НА ПОЧТУ -->
+    <!-- МОДАЛКА ОТВЕТА НА ПОЧТУ (ТЕМНЫЙ ФОН) -->
     <div class="modal fade" id="replyModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-surface text-light border custom-border">
-          <div class="modal-body p-4">
-            <h5 class="mb-3">Ответ пользователю</h5>
+        <div
+          class="modal-content bg-surface text-light border custom-border"
+          style="
+            background-color: var(--bg-surface) !important;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+          "
+        >
+          <div
+            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
+          >
+            <h5 class="modal-title fw-bold w-100 text-center text-cyan">
+              Ответ пользователю
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute end-0 me-4"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4 p-md-5">
             <textarea
               id="replyText"
-              class="form-control custom-input mb-3 text-light"
-              style="background-color: var(--bg-dark)"
-              rows="4"
+              class="form-control custom-input mb-4 text-light"
+              style="
+                background-color: var(--bg-dark) !important;
+                border-radius: 12px;
+              "
+              rows="5"
               placeholder="Напишите ответ..."
             ></textarea>
-            <button class="btn btn-accent-glow w-100" onclick="sendReply()">
+            <button
+              class="btn btn-accent-glow w-100 py-3 fs-5"
+              onclick="sendReply()"
+            >
               Отправить на почту
             </button>
           </div>
@@ -252,30 +342,8 @@
       </div>
     </div>
 
-    <div
-      id="toast-container"
-      class="position-fixed top-0 end-0 p-3"
-      style="z-index: 10000"
-    ></div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      function notify(msg, type = "success") {
-        let container = document.getElementById("toast-container");
-        const bgClass = type === "success" ? "bg-success" : "bg-danger";
-        const iconClass =
-          type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
-        const toast = document.createElement("div");
-        toast.className = `toast align-items-center text-white ${bgClass} border-0 mb-2 show shadow-lg`;
-        toast.style.transition = "opacity 0.3s ease";
-        toast.innerHTML = `<div class="d-flex"><div class="toast-body fw-bold fs-6"><i class="fas ${iconClass} me-2"></i> ${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button></div>`;
-        container.appendChild(toast);
-        setTimeout(() => {
-          toast.style.opacity = "0";
-          setTimeout(() => toast.remove(), 300);
-        }, 4000);
-      }
-
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
       let editingProfId = null;
@@ -305,7 +373,7 @@
         document.getElementById("adminProfTable").innerHTML = data
           .map(
             (p) =>
-              `<tr><td>${p.title}</td><td>${p.salaryMin}-${p.salaryMax}</td><td><button class="btn btn-sm btn-outline-info me-1" onclick="editProf('${p._id}')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteProf('${p._id}')"><i class="fas fa-trash"></i></button></td></tr>`,
+              `<tr><td>${p.title}</td><td>${p.salaryMin}-${p.salaryMax}</td><td style="min-width: 100px;"><button class="btn btn-sm btn-outline-info me-1" onclick="editProf('${p._id}')"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteProf('${p._id}')"><i class="fas fa-trash"></i></button></td></tr>`,
           )
           .join("");
       }
@@ -316,7 +384,6 @@
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });
-          notify("Удалено");
           loadProfessions();
         }
       }
@@ -330,14 +397,36 @@
         document.getElementById("adminAddProfBtn").textContent =
           "Сохранить изменения";
         document.getElementById("cancelEditBtn").classList.remove("d-none");
+
         document.getElementById("pTitle").value = p.title;
         document.getElementById("pDir").value = p.direction;
         document.getElementById("pEduLevel").value = p.educationLevel;
+        document.getElementById("pDemand").value = p.demand || "Растущий";
         document.getElementById("pImage").value = p.image;
         document.getElementById("pDesc").value = p.description;
         document.getElementById("pPersp").value = p.perspectives;
         document.getElementById("pMin").value = p.salaryMin;
         document.getElementById("pMax").value = p.salaryMax;
+        if (p.universities && p.universities.length > 0) {
+          document.getElementById("pUniName").value =
+            p.universities[0].name || "";
+          document.getElementById("pUniFac").value =
+            p.universities[0].faculty || "";
+          document.getElementById("pUniSpec").value =
+            p.universities[0].specialty || "";
+        } else {
+          document.getElementById("pUniName").value = "";
+          document.getElementById("pUniFac").value = "";
+          document.getElementById("pUniSpec").value = "";
+        }
+        if (p.colleges && p.colleges.length > 0) {
+          document.getElementById("pColName").value = p.colleges[0].name || "";
+          document.getElementById("pColSpec").value =
+            p.colleges[0].specialty || "";
+        } else {
+          document.getElementById("pColName").value = "";
+          document.getElementById("pColSpec").value = "";
+        }
         if (p.entranceExams) {
           document.getElementById("pSub1").value =
             p.entranceExams.subject1 || "";
@@ -359,6 +448,7 @@
           : "";
         window.scrollTo(0, 0);
       }
+
       function cancelEdit() {
         editingProfId = null;
         document.getElementById("adminAddProfForm").reset();
@@ -373,15 +463,33 @@
         .getElementById("adminAddProfForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          const universities = [];
+          if (document.getElementById("pUniName").value) {
+            universities.push({
+              name: document.getElementById("pUniName").value,
+              faculty: document.getElementById("pUniFac").value,
+              specialty: document.getElementById("pUniSpec").value,
+            });
+          }
+          const colleges = [];
+          if (document.getElementById("pColName").value) {
+            colleges.push({
+              name: document.getElementById("pColName").value,
+              specialty: document.getElementById("pColSpec").value,
+            });
+          }
           const body = {
             title: document.getElementById("pTitle").value,
             direction: document.getElementById("pDir").value,
             educationLevel: document.getElementById("pEduLevel").value,
+            demand: document.getElementById("pDemand").value,
             image: document.getElementById("pImage").value,
             description: document.getElementById("pDesc").value,
             perspectives: document.getElementById("pPersp").value,
             salaryMin: document.getElementById("pMin").value,
             salaryMax: document.getElementById("pMax").value,
+            universities: universities,
+            colleges: colleges,
             entranceExams: {
               subject1: document.getElementById("pSub1").value,
               subject2: document.getElementById("pSub2").value,
@@ -391,15 +499,18 @@
             skills: document
               .getElementById("pSkills")
               .value.split(",")
-              .map((s) => s.trim()),
+              .map((s) => s.trim())
+              .filter(Boolean),
             softSkills: document
               .getElementById("pSoft")
               .value.split(",")
-              .map((s) => s.trim()),
+              .map((s) => s.trim())
+              .filter(Boolean),
             careerPath: document
               .getElementById("pCareer")
               .value.split(",")
-              .map((s) => s.trim()),
+              .map((s) => s.trim())
+              .filter(Boolean),
           };
           const url = editingProfId
             ? `/api/professions/${editingProfId}`
@@ -414,10 +525,12 @@
             body: JSON.stringify(body),
           });
           if (res.ok) {
-            notify("Успешно сохранено!");
+            alert("Успешно сохранено!");
             cancelEdit();
             loadProfessions();
-          } else notify("Ошибка сохранения", "error");
+          } else {
+            alert("Ошибка при сохранении");
+          }
         });
 
       async function loadFeedback() {
@@ -431,11 +544,11 @@
         document.getElementById("adminFeedbackList").innerHTML = data
           .map(
             (f) => `
-        <div class="p-3 border custom-border rounded-3 bg-dark">
-          <div class="d-flex justify-content-between mb-2"><strong class="text-light">${f.userName} (${f.userEmail})</strong> <small class="text-muted-custom">${new Date(f.date).toLocaleString()}</small></div>
-          <p class="mb-3 text-muted-custom">${f.message}</p>
-          ${f.status === "replied" ? '<span class="badge bg-success">Отвечено</span>' : `<button class="btn btn-sm btn-outline-cyan" onclick="openReplyModal('${f._id}')">Ответить на почту</button>`}
-        </div>`,
+      <div class="p-3 border custom-border rounded-3 bg-dark">
+        <div class="d-flex justify-content-between mb-2"><strong class="text-light">${f.userName} (${f.userEmail})</strong> <small class="text-muted-custom">${new Date(f.date).toLocaleString()}</small></div>
+        <p class="mb-3 text-muted-custom">${f.message}</p>
+        ${f.status === "replied" ? '<span class="badge bg-success">Отвечено</span>' : `<button class="btn btn-sm btn-outline-cyan" onclick="openReplyModal('${f._id}')">Ответить на почту</button>`}
+      </div>`,
           )
           .join("");
       }
@@ -444,6 +557,7 @@
         replyingToId = id;
         new bootstrap.Modal(document.getElementById("replyModal")).show();
       }
+
       async function sendReply() {
         const text = document.getElementById("replyText").value;
         const res = await fetch(`/api/feedback/reply/${replyingToId}`, {
@@ -455,12 +569,12 @@
           body: JSON.stringify({ replyText: text }),
         });
         if (res.ok) {
-          notify("Ответ отправлен!");
+          alert("Ответ отправлен!");
           bootstrap.Modal.getInstance(
             document.getElementById("replyModal"),
           ).hide();
           loadFeedback();
-        } else notify("Ошибка отправки", "error");
+        }
       }
 
       async function loadStories() {
@@ -497,16 +611,11 @@
           action === "approve"
             ? `/api/stories/approve/${id}`
             : `/api/stories/${id}`;
-        const res = await fetch(url, {
+        await fetch(url, {
           method,
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (res.ok) {
-          notify(
-            action === "approve" ? "История одобрена!" : "История удалена",
-          );
-          loadStories();
-        }
+        loadStories();
       }
 
       loadProfessions();

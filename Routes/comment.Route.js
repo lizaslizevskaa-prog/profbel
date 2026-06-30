@@ -31,7 +31,7 @@ router.get("/:storyId", async (req, res) => {
       await Comment.find({ storyId: req.params.storyId }).sort({ date: -1 }),
     );
   } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
+    res.status(500).json({ message: "Ошибка при загрузке" });
   }
 });
 
@@ -42,12 +42,12 @@ router.post("/", protect, async (req, res) => {
     await newComment.save();
     res.status(201).json(newComment);
   } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
+    res.status(500).json({ message: "Ошибка при создании вопроса" });
   }
 });
 
 // ==========================================
-// НОВОЕ: ОТВЕТИТЬ НА КОММЕНТАРИЙ
+// ОТВЕТИТЬ НА КОММЕНТАРИЙ
 // ==========================================
 router.post("/:id/reply", protect, async (req, res) => {
   try {
@@ -59,6 +59,7 @@ router.post("/:id/reply", protect, async (req, res) => {
       userId: req.user.id,
       userName: req.body.userName,
       text: req.body.text,
+      date: Date.now(),
     };
 
     comment.replies.push(reply);
@@ -66,28 +67,30 @@ router.post("/:id/reply", protect, async (req, res) => {
 
     // Отправка уведомления автору оригинального комментария
     if (comment.userId !== req.user.id) {
-      // Не отправляем, если ответил сам себе
       const originalUser = await User.findById(comment.userId);
-      if (originalUser && process.env.EMAIL_USER) {
+      if (originalUser && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         try {
           await transporter.sendMail({
             from: `"ProfBel" <${process.env.EMAIL_USER}>`,
             to: originalUser.email,
-            subject: "Новый ответ на ваш комментарий - ProfBel",
-            html: `<h3>Здравствуйте, ${originalUser.name}!</h3>
-                               <p>Пользователь <b>${req.body.userName}</b> ответил на ваш комментарий в Историях успеха:</p>
-                               <blockquote style="border-left: 3px solid #64ffda; padding-left: 10px; color: #555; background: #f9f9f9; padding: 10px;">${comment.text}</blockquote>
-                               <p><b>Ответ:</b> ${req.body.text}</p>
-                               <p>Зайдите на сайт ProfBel, чтобы продолжить обсуждение!</p>`,
+            subject: "Новый ответ на ваш вопрос - ProfBel",
+            html: `<div style="font-family: Arial; padding: 20px;">
+                    <h3>Здравствуйте, ${originalUser.name}!</h3>
+                    <p>Пользователь <b>${req.body.userName}</b> ответил на ваш вопрос в Историях успеха:</p>
+                    <blockquote style="border-left: 4px solid #64ffda; padding: 10px; background: #f1f1f1; color: #333;">${comment.text}</blockquote>
+                    <p><b>Ответ:</b> ${req.body.text}</p>
+                    <p>Зайдите на сайт ProfBel, чтобы ответить!</p>
+                   </div>`,
           });
         } catch (e) {
-          console.error("Ошибка отправки письма об ответе:", e);
+          console.error("Ошибка отправки письма:", e);
         }
       }
     }
 
     res.status(201).json(comment);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Ошибка при добавлении ответа" });
   }
 });
@@ -98,20 +101,20 @@ router.delete("/:id", protect, async (req, res) => {
     const comment = await Comment.findById(req.params.id);
     if (!comment) return res.status(404).json({ message: "Не найдено" });
 
-    // Админ может удалять любые
     const userObj = await User.findById(req.user.id);
     const isAdmin = userObj && userObj.role === "admin";
 
     if (comment.userId !== req.user.id && !isAdmin)
       return res.status(403).json({ message: "Нет прав" });
+
     await Comment.findByIdAndDelete(req.params.id);
     res.json({ message: "Удалено" });
   } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
+    res.status(500).json({ message: "Ошибка удаления" });
   }
 });
 
-// НОВОЕ: Удаление конкретного ответа
+// Удаление конкретного ответа
 router.delete("/:id/reply/:replyId", protect, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);

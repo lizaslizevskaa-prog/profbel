@@ -267,132 +267,8 @@
         </div>
       </div>
     </div>
-    <!-- ФУТЕР -->
-    <footer class="custom-footer mt-auto pt-5 pb-3">
-      <div class="container">
-        <div class="row gy-4 mb-4">
-          <div class="col-lg-4 col-md-6 pe-lg-4">
-            <a class="navbar-brand logo d-inline-block mb-3" href="index.html"
-              >Prof<span>Bel</span></a
-            >
-            <p class="text-muted-custom small mb-4">
-              Твой персональный гид в мире профессий будущего. Помогаем
-              школьникам и студентам Беларуси сделать правильный выбор и найти
-              свое призвание в IT, науке и инженерии.
-            </p>
-            <div class="social-links d-flex gap-3">
-              <!-- Ссылка на Telegram -->
-              <a
-                href="https://t.me/Bogdachkaa"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наш Telegram"
-              >
-                <i class="fab fa-telegram-plane"></i>
-              </a>
 
-              <!-- Ссылка на Instagram -->
-              <a
-                href="https://www.instagram.com/ssfilt?igsh=bzB0em13NjN0eHls"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наш Instagram"
-              >
-                <i class="fab fa-instagram"></i>
-              </a>
-
-              <!-- Ссылка на ВКонтакте -->
-              <a
-                href="https://vk.ru/vatashinay"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наша группа ВК"
-              >
-                <i class="fab fa-vk"></i>
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Навигация</h3>
-            <ul class="list-unstyled footer-links">
-              <li>
-                <a href="index.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Главная
-                  страница</a
-                >
-              </li>
-              <li>
-                <a href="catalog.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Каталог
-                  профессий</a
-                >
-              </li>
-              <li>
-                <a href="stories.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Истории
-                  успеха</a
-                >
-              </li>
-              <li>
-                <a href="test.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Пройти тест</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-lg-2 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Проект</h3>
-            <ul class="list-unstyled footer-links">
-              <li>
-                <a href="#"
-                  ><i class="fas fa-chevron-right me-2 small"></i>О нас</a
-                >
-              </li>
-              <li>
-                <a href="#"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Методология</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Связь с нами</h3>
-            <ul
-              class="list-unstyled footer-contact text-muted-custom small mb-4"
-            >
-              <li class="mb-3 d-flex align-items-center">
-                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                <span>info@profbel.by</span>
-              </li>
-              <li class="d-flex align-items-center">
-                <div class="contact-icon">
-                  <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <span>г. Минск, Беларусь</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div
-          class="footer-bottom pt-4 border-top custom-border d-flex flex-column flex-md-row justify-content-between align-items-center"
-        >
-          <p class="mb-0 text-muted-custom small">
-            &copy; 2026 ProfBel. Практический проект по веб-разработке.
-          </p>
-          <div class="footer-bottom-links mt-2 mt-md-0">
-            <a
-              href="#"
-              class="text-muted-custom small text-decoration-none hover-primary transition-all"
-              >Политика конфиденциальности</a
-            >
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!-- МОДАЛКА АВТОРИЗАЦИИ И СБРОСА ПАРОЛЯ -->
+    <!-- МОДАЛКА: АВТОРИЗАЦИЯ -->
     <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div
@@ -489,6 +365,7 @@
                 >
               </div>
             </form>
+
             <!-- 2. РЕГИСТРАЦИЯ -->
             <form id="registerForm" class="d-none">
               <input
@@ -512,6 +389,8 @@
                     id="regAge"
                     class="form-control custom-input"
                     placeholder="Возраст"
+                    min="14"
+                    max="100"
                     required
                   />
                 </div>
@@ -532,7 +411,7 @@
                   type="password"
                   id="regPassword"
                   class="form-control custom-input"
-                  placeholder="Пароль (мин 6 симв)"
+                  placeholder="Пароль (мин 6 симв, 1 загл, 1 цифра)"
                   required
                 />
                 <i
@@ -554,7 +433,8 @@
                 >
               </div>
             </form>
-            <!-- 3. ПОДТВЕРЖДЕНИЕ ПОЧТЫ -->
+
+            <!-- 3. ПОДТВЕРЖДЕНИЕ -->
             <form id="verifyForm" class="d-none text-center">
               <h5 class="mb-3">Подтвердите почту</h5>
               <p class="small text-muted-custom mb-4">
@@ -567,15 +447,17 @@
                 placeholder="0000"
                 maxlength="4"
                 style="height: 60px; letter-spacing: 10px"
+                required
               />
-              <button type="submit" class="btn btn-accent-glow w-100">
+              <button type="submit" class="btn btn-accent-glow w-100 py-3">
                 Подтвердить
               </button>
             </form>
-            <!-- 4. ЗАБЫЛИ ПАРОЛЬ (ШАГ 1) -->
+
+            <!-- 4. ЗАБЫЛИ ПАРОЛЬ -->
             <form id="forgotForm" class="d-none">
               <p class="small text-muted-custom mb-4 text-center">
-                Введите Email. Мы отправим код для сброса.
+                Введите Email для сброса пароля
               </p>
               <input
                 type="email"
@@ -584,8 +466,8 @@
                 placeholder="Email"
                 required
               />
-              <button type="submit" class="btn btn-accent-glow w-100 mb-3">
-                Получить код
+              <button type="submit" class="btn btn-accent-glow w-100 mb-3 py-3">
+                Отправить пароль
               </button>
               <div class="text-center">
                 <a href="#" class="small text-primary-custom backToLoginBtn"
@@ -593,7 +475,8 @@
                 >
               </div>
             </form>
-            <!-- 5. СБРОС ПАРОЛЯ (ШАГ 2) -->
+
+            <!-- 5. СБРОС ПАРОЛЯ -->
             <form id="resetPasswordForm" class="d-none">
               <p class="small text-muted-custom mb-4 text-center">
                 Введите код из письма и новый пароль.
@@ -631,62 +514,141 @@
         </div>
       </div>
     </div>
+
+    <!-- ФУТЕР -->
+    <footer class="custom-footer mt-auto pt-5 pb-3">
+      <div class="container">
+        <div class="row gy-4 mb-4">
+          <div class="col-lg-4 col-md-6 pe-lg-4">
+            <a class="navbar-brand logo d-inline-block mb-3" href="index.html"
+              >Prof<span>Bel</span></a
+            >
+            <p class="text-muted-custom small mb-4">
+              Твой персональный гид в мире профессий будущего. Помогаем
+              школьникам и студентам Беларуси сделать правильный выбор и найти
+              свое призвание в IT, науке и инженерии.
+            </p>
+            <div class="social-links d-flex gap-3">
+              <a
+                href="https://t.me/Bogdachkaa"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наш Telegram"
+                ><i class="fab fa-telegram-plane"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/ssfilt?igsh=bzB0em13NjN0eHls"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наш Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                href="https://vk.ru/vatashinay"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+                title="Наша группа ВК"
+                ><i class="fab fa-vk"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Навигация</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Главная
+                  страница</a
+                >
+              </li>
+              <li>
+                <a href="catalog.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Каталог
+                  профессий</a
+                >
+              </li>
+              <li>
+                <a href="stories.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Истории
+                  успеха</a
+                >
+              </li>
+              <li>
+                <a href="test.html"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Пройти тест</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Проект</h3>
+            <ul class="list-unstyled footer-links">
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right me-2 small"></i>О нас</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right me-2 small"></i>Методология</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h3 class="h5 text-white mb-4 fw-bold">Связь с нами</h3>
+            <ul
+              class="list-unstyled footer-contact text-muted-custom small mb-4"
+            >
+              <li class="mb-3 d-flex align-items-center">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <span>lizaslizevskaa@gmail.com</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <div class="contact-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span>г. Минск, Беларусь</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="footer-bottom pt-4 border-top custom-border d-flex flex-column flex-md-row justify-content-between align-items-center"
+        >
+          <p class="mb-0 text-muted-custom small">
+            &copy; 2026 ProfBel. Практический проект по веб-разработке.
+          </p>
+          <div class="footer-bottom-links mt-2 mt-md-0">
+            <a
+              href="#"
+              class="text-muted-custom small text-decoration-none hover-primary transition-all"
+              >Политика конфиденциальности</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
 
     <script>
-      // ЛОГИКА ОТПРАВКИ СВОЕЙ ИСТОРИИ
-      document
-        .getElementById("userStoryForm")
-        ?.addEventListener("submit", async (e) => {
+      // ЕДИНСТВЕННЫЙ И ПРАВИЛЬНЫЙ СКРИПТ ОТПРАВКИ ИСТОРИИ (С ЗАЩИТОЙ ОТ ДВОЙНОГО КЛИКА)
+      let isSubmittingStory = false;
+      const storyForm = document.getElementById("userStoryForm");
+
+      if (storyForm) {
+        storyForm.onsubmit = async function (e) {
           e.preventDefault();
-          const token = localStorage.getItem("token");
 
-          if (!token) {
-            alert("Чтобы предложить историю, пожалуйста, войдите в аккаунт.");
-            bootstrap.Modal.getInstance(
-              document.getElementById("submitStoryModal"),
-            ).hide();
-            new bootstrap.Modal(document.getElementById("authModal")).show();
-            return;
-          }
+          if (isSubmittingStory) return;
+          isSubmittingStory = true;
 
-          const body = {
-            name: document.getElementById("sName").value,
-            profession: document.getElementById("sProf").value,
-            education: document.getElementById("sEdu").value,
-            shortText: document.getElementById("sShort").value,
-            fullText: document.getElementById("sFull").value,
-          };
-
-          try {
-            const res = await fetch("/api/stories/submit", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(body),
-            });
-            const data = await res.json();
-            if (res.ok) {
-              alert(data.message);
-              document.getElementById("userStoryForm").reset();
-              bootstrap.Modal.getInstance(
-                document.getElementById("submitStoryModal"),
-              ).hide();
-            }
-          } catch (err) {
-            alert("Ошибка сервера");
-          }
-        });
-    </script>
-    <script>
-      document
-        .getElementById("userStoryForm")
-        ?.addEventListener("submit", async (e) => {
-          e.preventDefault();
           const token = localStorage.getItem("token");
           if (!token) {
             window.showNotification(
@@ -697,8 +659,16 @@
               document.getElementById("submitStoryModal"),
             ).hide();
             new bootstrap.Modal(document.getElementById("authModal")).show();
+            isSubmittingStory = false;
             return;
           }
+
+          const btn = this.querySelector('button[type="submit"]');
+          const originalText = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin me-2"></i>Отправка...';
+          btn.disabled = true;
+
           const body = {
             name: document.getElementById("sName").value,
             profession: document.getElementById("sProf").value,
@@ -706,6 +676,7 @@
             shortText: document.getElementById("sShort").value,
             fullText: document.getElementById("sFull").value,
           };
+
           try {
             const res = await fetch("/api/stories/submit", {
               method: "POST",
@@ -716,9 +687,10 @@
               body: JSON.stringify(body),
             });
             const data = await res.json();
+
             if (res.ok) {
               window.showNotification(data.message);
-              document.getElementById("userStoryForm").reset();
+              this.reset();
               bootstrap.Modal.getInstance(
                 document.getElementById("submitStoryModal"),
               ).hide();
@@ -727,8 +699,13 @@
             }
           } catch (err) {
             window.showNotification("Ошибка сервера", "error");
+          } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            isSubmittingStory = false;
           }
-        });
+        };
+      }
     </script>
   </body>
 </html>

@@ -9,31 +9,22 @@ const transporter = nodemailer.createTransport({
 });
 
 router.post("/", async (req, res) => {
-  try {
-    const f = new Feedback(req.body);
-    await f.save();
-    res.json({ message: "Сообщение получено!" });
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
-  }
+  const f = new Feedback(req.body);
+  await f.save();
+  res.json({ message: "Сообщение получено!" });
 });
-
 router.get("/", async (req, res) => {
-  try {
-    res.json(await Feedback.find().sort({ date: -1 }));
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
-  }
+  res.json(await Feedback.find().sort({ date: -1 }));
 });
 
-// ОТВЕТ НА ПОЧТУ
 router.post("/reply/:id", async (req, res) => {
   try {
     const feedback = await Feedback.findById(req.params.id);
     if (!feedback) return res.status(404).json({ message: "Не найдено" });
+
     if (process.env.EMAIL_USER) {
       await transporter.sendMail({
-        from: `"ProfBel" <${process.env.EMAIL_USER}>`,
+        from: `"ProfBel | Поддержка" <${process.env.EMAIL_USER}>`, // КРАСИВОЕ ИМЯ ОТПРАВИТЕЛЯ
         to: feedback.userEmail,
         subject: "Ответ на ваше обращение - ProfBel",
         html: `<h3>Здравствуйте, ${feedback.userName}!</h3><p>Вы писали: <i>${feedback.message}</i></p><p><b>Ответ администратора:</b><br>${req.body.replyText}</p>`,

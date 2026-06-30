@@ -1,6 +1,6 @@
 let globalStories = [];
 
-// ГЕНЕРАТОР УВЕДОМЛЕНИЙ
+// 1. ГЕНЕРАТОР УВЕДОМЛЕНИЙ (Глобальный)
 window.showNotification = function (message, type = "success") {
   let container = document.getElementById("toast-container");
   if (!container) {
@@ -25,10 +25,11 @@ window.showNotification = function (message, type = "success") {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. ТЕМА
+  // 2. ЛОГИКА ТЕМЫ
   const themeBtn = document.getElementById("themeToggle");
   if (localStorage.getItem("profbel_theme") === "light")
     document.body.classList.add("light-theme");
+
   themeBtn?.addEventListener("click", () => {
     document.body.classList.toggle("light-theme");
     localStorage.setItem(
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
 
-  // 2. ГЛАЗИКИ ДЛЯ ПАРОЛЕЙ
+  // 3. ГЛАЗИКИ ДЛЯ ПАРОЛЕЙ
   document.querySelectorAll(".toggle-password").forEach((icon) => {
     icon.addEventListener("click", function () {
       const input = this.parentElement.querySelector("input");
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3. ФОРМА КОНТАКТОВ
+  // 4. ФОРМА ОБРАТНОЙ СВЯЗИ
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", async function (e) {
@@ -61,14 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
         userEmail: document.getElementById("userEmail").value.trim(),
         message: document.getElementById("userMessage").value.trim(),
       };
-      if (
-        body.userName.length < 2 ||
-        body.userEmail === "" ||
-        body.message === ""
-      ) {
-        showNotification("Заполните все поля корректно!", "error");
-        return;
-      }
       try {
         const res = await fetch("/api/feedback", {
           method: "POST",
@@ -86,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4. СЛАЙДЕР ИСТОРИЙ УСПЕХА
+  // 5. СЛАЙДЕР ИСТОРИЙ УСПЕХА
   const sliderTrack = document.getElementById("sliderTrack");
   if (sliderTrack) {
     let currentX = 0;
@@ -129,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSlider();
   }
 
-  // 5. ИСТОРИИ (ГРИД)
+  // 6. ИСТОРИИ (ГРИД)
   const storiesGridView = document.getElementById("storiesGridView");
   if (storiesGridView) {
     const loadGrid = async () => {
@@ -153,16 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 6. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
-  const pastResultsSection = document.getElementById("pastResultsSection");
-  const pastResultsContainer = document.getElementById("pastResultsContainer");
+  // 7. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ (ИДЕАЛЬНО РОВНЫЕ)
+  const pastResCont = document.getElementById("pastResultsContainer");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  if (pastResultsSection && pastResultsContainer) {
+  if (pastResCont) {
     if (!token) {
-      pastResultsSection.classList.remove("d-none");
-      pastResultsContainer.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите, чтобы увидеть результаты</h3><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
+      pastResCont.parentElement.classList.remove("d-none");
+      pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3><p class="text-muted-custom mb-4">Чтобы увидеть свои результаты.</p><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
     } else {
       fetch("/api/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -170,129 +162,135 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((res) => res.json())
         .then((u) => {
           if (u.testResults?.length > 0) {
-            pastResultsSection.classList.remove("d-none");
-            pastResultsContainer.innerHTML = u.testResults
-              .map((result, index) => {
-                const attemptNum = u.testResults.length - index;
-                const profList = result.topProfessions
-                  .map(
-                    (p) =>
-                      `<li class="mb-1"><i class="fas fa-check text-primary-custom me-2 small"></i>${p}</li>`,
-                  )
+            pastResCont.parentElement.classList.remove("d-none");
+            fetch("/api/professions")
+              .then((r) => r.json())
+              .then((allProfs) => {
+                pastResCont.innerHTML = u.testResults
+                  .map((result, index) => {
+                    const profList = result.topProfessions
+                      .map((pName) => {
+                        const pData = allProfs.find((x) => x.title === pName);
+                        const profUrl = pData
+                          ? `profession.html?id=${pData._id}`
+                          : "catalog.html";
+                        return `<li class="mb-2 d-flex align-items-center"><i class="fas fa-check-circle text-primary-custom me-2"></i><a href="${profUrl}" class="text-light text-decoration-none hover-primary small">${pName}</a></li>`;
+                      })
+                      .join("");
+                    return `
+                    <div class="col-md-4 d-flex align-items-stretch mt-4">
+                        <div class="custom-card card p-4 w-100 border custom-border position-relative" style="background-color: var(--bg-surface); border-radius: 20px;">
+                            <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-cyan text-dark px-3 py-2 shadow">Попытка ${u.testResults.length - index}</div>
+                            <div class="mt-2 mb-3 border-bottom custom-border pb-2 d-flex justify-content-between align-items-center"><span class="text-main fw-bold small">Ваш Топ-3:</span><span class="text-muted-custom extra-small">${new Date(result.date).toLocaleDateString("ru-RU")}</span></div>
+                            <ul class="list-unstyled mb-0">${profList}</ul>
+                        </div>
+                    </div>`;
+                  })
                   .join("");
-                return `<div class="col-md-4 mt-4"><div class="custom-card card p-4 border border-secondary shadow-sm" style="background-color: var(--bg-dark);"><div class="badge rounded-pill bg-cyan text-dark mb-2">Попытка ${attemptNum}</div><ul class="list-unstyled text-muted-custom small">${profList}</ul></div></div>`;
-              })
-              .join("");
+              });
           }
         });
     }
   }
 
-  // 7. ШАПКА АВТОРИЗАЦИИ
-  const authBtns = document.querySelectorAll(
-    'button[data-bs-target="#authModal"]',
-  );
-  if (token && user && authBtns.length > 0) {
-    authBtns.forEach((btn) => {
-      btn.parentElement.innerHTML = `
+  // 8. ШАПКА И АВТОРИЗАЦИЯ
+  if (token && user) {
+    document
+      .querySelectorAll('button[data-bs-target="#authModal"]')
+      .forEach((btn) => {
+        btn.parentElement.innerHTML = `
         <div class="dropdown">
           <button class="btn btn-outline-cyan dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-user-circle"></i> ${user.name.split(" ")[0]}</button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end bg-surface border border-secondary shadow-lg">
             <li><a class="dropdown-item" href="profile.html">Профиль</a></li>
             ${user.role === "admin" ? '<li><a class="dropdown-item text-warning" href="admin.html">Админка</a></li>' : ""}
             <li><hr class="dropdown-divider"></li>
-            <li><button class="dropdown-item text-danger" onclick="localStorage.clear();location.reload()">Выйти</button></li>
+            <li><button class="dropdown-item text-danger" id="logoutBtn">Выйти</button></li>
           </ul>
         </div>`;
+      });
+    document.body.addEventListener("click", (e) => {
+      if (e.target.id === "logoutBtn") {
+        localStorage.clear();
+        location.href = "index.html";
+      }
     });
   }
 
-  // 8. ЛОГИКА ФОРМ АВТОРИЗАЦИИ
+  // 9. ЛОГИКА ФОРМ АВТОРИЗАЦИИ
   const loginForm = document.getElementById("loginForm");
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
   const forgotForm = document.getElementById("forgotForm");
   const resetPasswordForm = document.getElementById("resetPasswordForm");
+  const authModalTitle = document.getElementById("authModalTitle");
   let currentRegEmail = "";
 
   const showF = (f, t) => {
     [loginForm, regForm, verifyForm, forgotForm, resetPasswordForm].forEach(
       (el) => {
-        if (el) el.classList.replace("d-block", "d-none");
+        if (el) {
+          el.classList.add("d-none");
+          el.classList.remove("d-block");
+        }
       },
     );
-    if (f) f.classList.replace("d-none", "d-block");
-    const title = document.getElementById("authModalTitle");
-    if (title) title.textContent = t;
+    if (f) {
+      f.classList.remove("d-none");
+      f.classList.add("d-block");
+    }
+    if (authModalTitle) authModalTitle.textContent = t;
   };
 
-  document
-    .getElementById("showRegisterBtn")
-    ?.addEventListener("click", () => showF(regForm, "Регистрация"));
-  document
-    .getElementById("showLoginBtn")
-    ?.addEventListener("click", () => showF(loginForm, "Вход"));
-  document
-    .getElementById("showForgotBtn")
-    ?.addEventListener("click", () => showF(forgotForm, "Сброс пароля"));
-  document
-    .querySelectorAll(".backToLoginBtn")
-    .forEach((btn) =>
-      btn.addEventListener("click", () => showF(loginForm, "Вход")),
-    );
+  document.getElementById("showRegisterBtn")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showF(regForm, "Регистрация");
+  });
+  document.getElementById("showLoginBtn")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showF(loginForm, "Вход");
+  });
+  document.getElementById("showForgotBtn")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showF(forgotForm, "Сброс пароля");
+  });
+  document.querySelectorAll(".backToLoginBtn").forEach((btn) =>
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      showF(loginForm, "Вход");
+    }),
+  );
 
   if (regForm)
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-
-      // ПРОВЕРКА ВОЗРАСТА
-      const ageInput = document.getElementById("regAge");
-      const age = parseInt(ageInput.value);
-      if (isNaN(age) || age < 14 || age > 100) {
-        showNotification("Возраст должен быть от 14 до 100 лет", "error");
-        ageInput.classList.add("is-invalid");
+      const age = parseInt(document.getElementById("regAge").value);
+      if (age < 14 || age > 100) {
+        showNotification("Возраст от 14 до 100 лет", "error");
         return;
       }
-      ageInput.classList.remove("is-invalid");
-
-      // ПРОВЕРКА ПАРОЛЯ
-      const passInput = document.getElementById("regPassword");
-      const password = passInput.value;
-      const passwordRegex = /^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/;
-      if (!passwordRegex.test(password)) {
-        showNotification(
-          "Пароль: мин. 6 символов, 1 ЗАГЛАВНАЯ буква и 1 цифра!",
-          "error",
-        );
-        passInput.classList.add("is-invalid");
+      const pass = document.getElementById("regPassword").value;
+      if (!/^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/.test(pass)) {
+        showNotification("Пароль: 6+ симв, заглавная буква, цифра", "error");
         return;
       }
-      passInput.classList.remove("is-invalid");
-
       currentRegEmail = document.getElementById("regEmail").value;
       const body = {
         name: document.getElementById("regName").value,
         email: currentRegEmail,
-        password: password,
-        age: age,
+        password: pass,
+        age,
         gender: document.getElementById("regGender").value,
         education: document.getElementById("regEdu").value,
       };
-
-      const btn = regForm.querySelector('button[type="submit"]');
-      btn.innerHTML = "Загрузка...";
-      btn.disabled = true;
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      btn.innerHTML = "Зарегистрироваться";
-      btn.disabled = false;
-
       if (res.ok) {
-        showF(verifyForm, "Подтверждение почты");
+        showF(verifyForm, "Подтверждение");
         showNotification(data.message);
       } else showNotification(data.message, "error");
     });
@@ -308,17 +306,16 @@ document.addEventListener("DOMContentLoaded", () => {
           code: document.getElementById("verifyCode").value,
         }),
       });
-      const data = await res.json();
       if (res.ok) {
-        showNotification("Успех! Войдите.");
+        showNotification("Успех!");
         showF(loginForm, "Вход");
-      } else showNotification(data.message, "error");
+      } else showNotification("Ошибка кода", "error");
     });
 
   if (loginForm)
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const inputs = loginForm.querySelectorAll(".custom-input");
+      const inputs = loginForm.querySelectorAll("input");
       const email = inputs[0].value;
       const password = inputs[1].value;
       const res = await fetch("/api/auth/login", {
@@ -337,20 +334,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (forgotForm)
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      tempEmail = document.getElementById("forgotEmail").value;
-      const btn = forgotForm.querySelector('button[type="submit"]');
-      btn.innerHTML = "Загрузка...";
-      btn.disabled = true;
+      const email = document.getElementById("forgotEmail").value;
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: tempEmail }),
+        body: JSON.stringify({ email }),
       });
       const data = await res.json();
-      btn.innerHTML = "Получить код";
-      btn.disabled = false;
       if (res.ok) {
         showNotification(data.message);
+        currentRegEmail = email;
         showF(resetPasswordForm, "Новый пароль");
       } else showNotification(data.message, "error");
     });
@@ -358,12 +351,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (resetPasswordForm)
     resetPasswordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const code = document.getElementById("resetCode").value;
-      const newPassword = document.getElementById("resetNewPassword").value;
+      const body = {
+        email: currentRegEmail,
+        code: document.getElementById("resetCode").value,
+        newPassword: document.getElementById("resetNewPassword").value,
+      };
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: tempEmail, code, newPassword }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (res.ok) {
@@ -373,9 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// ==========================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ (ИСТОРИИ И КОММЕНТАРИИ)
-// ==========================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ (ИСТОРИИ И КОММЕНТАРИИ С ОТВЕТАМИ)
 window.openFullArticle = function (id) {
   const story = globalStories.find((s) => s._id === id);
   if (story) {
@@ -400,52 +394,42 @@ window.loadComments = async function (storyId) {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // 1. Форма ввода (Главный вопрос)
   if (!token || !user) {
     formContainer.innerHTML = `<div class="p-3 rounded-3 border custom-border text-center" style="background-color: var(--bg-dark);"><p class="text-muted-custom small mb-0">Войдите в личный кабинет, чтобы задать вопрос.</p></div>`;
   } else {
-    formContainer.innerHTML = `
-      <form id="addCommentForm" class="d-flex gap-2">
-        <input type="text" id="commentText" class="form-control custom-input text-light" placeholder="Задайте ваш вопрос..." style="background-color: var(--bg-dark) !important; border-radius: 12px; height: 50px;" required>
-        <button type="submit" class="btn btn-accent-glow py-2 px-4">Спросить</button>
-      </form>`;
-
-    document
-      .getElementById("addCommentForm")
-      .addEventListener("submit", async (e) => {
-        e.preventDefault();
-        try {
-          const res = await fetch("/api/comments", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              storyId,
-              text: document.getElementById("commentText").value,
-              userName: user.name,
-            }),
-          });
-          if (res.ok) {
-            document.getElementById("commentText").value = "";
-            loadComments(storyId);
-          }
-        } catch (err) {
-          console.error(err);
+    formContainer.innerHTML = `<form id="addCommentForm" class="d-flex gap-2"><input type="text" id="commentText" class="form-control custom-input text-light" placeholder="Задайте ваш вопрос..." style="background-color: var(--bg-dark) !important; border-radius: 12px; height: 50px;" required><button type="submit" class="btn btn-accent-glow py-2 px-4">Спросить</button></form>`;
+    document.getElementById("addCommentForm").onsubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch("/api/comments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            storyId,
+            text: document.getElementById("commentText").value,
+            userName: user.name,
+          }),
+        });
+        if (res.ok) {
+          document.getElementById("commentText").value = "";
+          loadComments(storyId);
         }
-      });
+      } catch (err) {
+        console.error(err);
+      }
+    };
   }
 
-  // 2. Загрузка вопросов и ответов
   try {
     const res = await fetch(`/api/comments/${storyId}`);
     const comments = await res.json();
     if (comments.length === 0) {
-      commentsList.innerHTML = `<div class="text-center text-muted-custom py-3">Вопросов пока нет. Спросите что-нибудь первыми!</div>`;
+      commentsList.innerHTML = `<div class="text-center text-muted-custom py-3">Вопросов пока нет.</div>`;
       return;
     }
-
     const currentUserId = user ? user.id : null;
     const isAdmin = user ? user.role === "admin" : false;
 
@@ -453,136 +437,65 @@ window.loadComments = async function (storyId) {
       .map((c) => {
         const isOwner = currentUserId === c.userId || isAdmin;
         const deleteBtn = isOwner
-          ? `<button class="btn btn-link text-danger p-0 ms-auto delete-comment-btn" data-id="${c._id}" title="Удалить"><i class="fas fa-trash-alt"></i></button>`
+          ? `<button class="btn btn-link text-danger p-0 ms-auto" onclick="window.deleteComment('${c._id}', '${storyId}')" title="Удалить"><i class="fas fa-trash-alt"></i></button>`
           : "";
 
         // Вложенные ответы
-        const repliesHtml =
-          c.replies && c.replies.length > 0
-            ? c.replies
-                .map((r) => {
-                  const isReplyOwner = currentUserId === r.userId || isAdmin;
-                  const deleteReplyBtn = isReplyOwner
-                    ? `<button class="btn btn-link text-danger p-0 ms-auto delete-reply-btn" data-comment-id="${c._id}" data-reply-id="${r._id}" title="Удалить ответ"><i class="fas fa-trash-alt"></i></button>`
-                    : "";
-                  return `
-          <div class="p-3 mt-2 rounded-4 border custom-border text-start d-flex flex-column" style="background-color: var(--bg-surface); margin-left: 30px;">
-              <div class="d-flex align-items-center mb-2">
-                <i class="fas fa-reply text-purple me-2"></i>
-                <span class="fw-bold text-light small">${r.userName} ${r.userId === c.userId ? '<span class="badge bg-purple-soft text-purple ms-1 px-2">Автор</span>' : ""}</span>
-                <span class="text-muted-custom small ms-2">${new Date(r.date).toLocaleDateString("ru-RU")}</span>
-                ${deleteReplyBtn}
-              </div>
-              <p class="mb-0 text-muted-custom small ms-4" style="color: var(--text-main) !important;">${r.text}</p>
-          </div>`;
-                })
-                .join("")
-            : "";
+        const repliesHtml = (c.replies || [])
+          .map((r) => {
+            const isReplyOwner = currentUserId === r.userId || isAdmin;
+            const delReplyBtn = isReplyOwner
+              ? `<button class="btn btn-link text-danger p-0 ms-auto" onclick="window.deleteReply('${c._id}', '${r._id}', '${storyId}')"><i class="fas fa-trash-alt"></i></button>`
+              : "";
+            return `<div class="p-3 mt-2 rounded-4 border custom-border" style="background-color: var(--bg-surface); margin-left: 30px;"><div class="d-flex align-items-center mb-2"><i class="fas fa-reply text-purple me-2"></i><span class="fw-bold text-light small">${r.userName}</span><span class="text-muted-custom small ms-2">${new Date(r.date).toLocaleDateString("ru-RU")}</span>${delReplyBtn}</div><p class="mb-0 text-muted-custom small ms-4">${r.text}</p></div>`;
+          })
+          .join("");
 
-        // Форма для ответа на комментарий (скрыта)
         const replyFormHtml = token
-          ? `
-        <div class="mt-3 d-none reply-form-container" id="reply-form-${c._id}">
-            <form class="d-flex gap-2 reply-form" data-comment-id="${c._id}" data-story-id="${storyId}">
-                <input type="text" class="form-control custom-input text-light reply-input" placeholder="Написать ответ..." style="background-color: var(--bg-surface) !important; border-radius: 12px; height: 40px;" required>
-                <button type="submit" class="btn btn-accent-glow py-1 px-3 btn-sm">Ответить</button>
-            </form>
-        </div>
-        <button class="btn btn-link text-cyan p-0 mt-2 small text-decoration-none toggle-reply-btn" data-target="reply-form-${c._id}">
-            <i class="fas fa-reply me-1"></i>Ответить
-        </button>
-      `
+          ? `<div class="mt-3 d-none" id="rf-${c._id}"><form class="d-flex gap-2" onsubmit="window.sendReply(event, '${c._id}', '${storyId}')"><input type="text" class="form-control custom-input text-light ri-${c._id}" placeholder="Ответ..." style="background-color: var(--bg-surface)!important; height: 40px;" required><button type="submit" class="btn btn-accent-glow py-1 btn-sm">OK</button></form></div><button class="btn btn-link text-cyan p-0 mt-2 small text-decoration-none" onclick="document.getElementById('rf-${c._id}').classList.toggle('d-none')"><i class="fas fa-reply me-1"></i>Ответить</button>`
           : "";
 
-        return `
-        <div class="p-3 rounded-4 border custom-border text-start d-flex flex-column" style="background-color: var(--bg-dark);">
-          <div class="d-flex align-items-center mb-2">
-            <i class="fas fa-user-circle fs-4 text-cyan me-2"></i>
-            <span class="fw-bold text-light small">${c.userName}</span>
-            <span class="text-muted-custom small ms-2">${new Date(c.date).toLocaleDateString("ru-RU")}</span>
-            ${deleteBtn}
-          </div>
-          <p class="mb-0 text-muted-custom small ms-1" style="color: var(--text-main) !important;">${c.text}</p>
-          ${repliesHtml}
-          ${replyFormHtml}
-        </div>
-      `;
+        return `<div class="p-3 rounded-4 border custom-border text-start d-flex flex-column" style="background-color: var(--bg-dark);"><div class="d-flex align-items-center mb-2"><i class="fas fa-user-circle fs-4 text-cyan me-2"></i><span class="fw-bold text-light small">${c.userName}</span><span class="text-muted-custom small ms-2">${new Date(c.date).toLocaleDateString("ru-RU")}</span>${deleteBtn}</div><p class="mb-0 text-muted-custom small ms-1">${c.text}</p>${repliesHtml}${replyFormHtml}</div>`;
       })
       .join("");
-
-    // Слушатели: Удаление комментария
-    document.querySelectorAll(".delete-comment-btn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const commentId = e.currentTarget.getAttribute("data-id");
-        if (confirm("Удалить этот комментарий?")) {
-          try {
-            await fetch(`/api/comments/${commentId}`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            showNotification("Комментарий удален");
-            loadComments(storyId);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      });
-    });
-
-    // Слушатели: Удаление ответа
-    document.querySelectorAll(".delete-reply-btn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const commentId = e.currentTarget.getAttribute("data-comment-id");
-        const replyId = e.currentTarget.getAttribute("data-reply-id");
-        if (confirm("Удалить этот ответ?")) {
-          try {
-            await fetch(`/api/comments/${commentId}/reply/${replyId}`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            showNotification("Ответ удален");
-            loadComments(storyId);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      });
-    });
-
-    // Слушатели: Показать форму ответа
-    document.querySelectorAll(".toggle-reply-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const targetId = e.currentTarget.getAttribute("data-target");
-        document.getElementById(targetId).classList.toggle("d-none");
-      });
-    });
-
-    // Слушатели: Отправить ответ
-    document.querySelectorAll(".reply-form").forEach((form) => {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const commentId = form.getAttribute("data-comment-id");
-        const sId = form.getAttribute("data-story-id");
-        const text = form.querySelector(".reply-input").value;
-        try {
-          const res = await fetch(`/api/comments/${commentId}/reply`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ text, userName: user.name }),
-          });
-          if (res.ok) {
-            showNotification("Ответ добавлен!");
-            loadComments(sId);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      });
-    });
   } catch (err) {
     console.error(err);
+  }
+};
+
+window.sendReply = async function (e, commentId, storyId) {
+  e.preventDefault();
+  const text = document.querySelector(`.ri-${commentId}`).value;
+  const res = await fetch(`/api/comments/${commentId}/reply`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      text,
+      userName: JSON.parse(localStorage.getItem("user")).name,
+    }),
+  });
+  if (res.ok) loadComments(storyId);
+};
+
+window.deleteComment = async function (id, sId) {
+  if (confirm("Удалить вопрос?")) {
+    await fetch(`/api/comments/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    loadComments(sId);
+  }
+};
+
+window.deleteReply = async function (cId, rId, sId) {
+  if (confirm("Удалить ответ?")) {
+    await fetch(`/api/comments/${cId}/reply/${rId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    loadComments(sId);
   }
 };

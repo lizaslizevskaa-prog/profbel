@@ -3,13 +3,9 @@ const router = express.Router();
 const User = require("../Models/user.Model");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 const bcrypt = require("bcryptjs");
 
-const uploadDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
+// Проверка авторизации
 const protect = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "Нет авторизации" });
@@ -21,20 +17,13 @@ const protect = (req, res, next) => {
   }
 };
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) =>
-      cb(
-        null,
-        `${req.user.id}_${Date.now()}${path.extname(file.originalname)}`,
-      ),
-  }),
-});
+// НАСТРОЙКА ДЛЯ VERCEL: Храним файл в оперативной памяти, а не на диске!
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/me", protect, async (req, res) => {
   res.json(await User.findById(req.user.id).select("-password"));
 });
+
 router.put("/update", protect, async (req, res) => {
   res.json(
     await User.findByIdAndUpdate(req.user.id, req.body, { new: true }).select(
@@ -43,15 +32,26 @@ router.put("/update", protect, async (req, res) => {
   );
 });
 
+// НОВАЯ ЗАГРУЗКА АВАТАРКИ (В ФОРМАТЕ ТЕКСТА BASE64)
 router.post("/avatar", protect, upload.single("avatar"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ message: "Файл не загружен" });
-  const avatarUrl = `/uploads/${req.file.filename}`;
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    { avatar: avatarUrl },
-    { new: true },
-  ).select("-password");
-  res.json({ avatar: avatarUrl, user });
+  try {
+    if (!req.file) return res.status(400).json({ message: "Файл не загружен" });
+
+    // Превращаем картинку в текстовую строку Base64
+    const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+    // Сохраняем эту строку прямо в MongoDB
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { avatar: base64Image },
+      { new: true },
+    ).select("-password");
+
+    res.json({ avatar: base64Image, user });
+  } catch (err) {
+    console.error("Ошибка загрузки аватара:", err);
+    res.status(500).json({ message: "Ошибка сохранения аватара" });
+  }
 });
 
 router.post("/test-result", protect, async (req, res) => {
@@ -62,19 +62,14 @@ router.post("/test-result", protect, async (req, res) => {
   res.json({ message: "Сохранено" });
 });
 
-// ИСПРАВЛЕНО: Избранное (перевод ID в строку)
 router.post("/favorites", protect, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    const profId = String(req.body.profId);
-    const index = user.favoriteProfessions.indexOf(profId);
-    if (index === -1) user.favoriteProfessions.push(profId);
-    else user.favoriteProfessions.splice(index, 1);
-    await user.save();
-    res.json({ message: "Обновлено", favorites: user.favoriteProfessions });
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка сервера" });
-  }
+  const user = await User.findById(req.user.id);
+  const profId = String(req.body.profId);
+  const index = user.favoriteProfessions.indexOf(profId);
+  if (index === -1) user.favoriteProfessions.push(profId);
+  else user.favoriteProfessions.splice(index, 1);
+  await user.save();
+  res.json({ message: "Обновлено", favorites: user.favoriteProfessions });
 });
 
 router.put("/change-password", protect, async (req, res) => {
