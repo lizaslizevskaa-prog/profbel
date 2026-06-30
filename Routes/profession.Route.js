@@ -35,5 +35,19 @@ router.delete("/:id", adminOnly, async (req, res) => {
   await Profession.findByIdAndDelete(req.params.id);
   res.json({ message: "Удалено" });
 });
+// СЕКРЕТНЫЙ РОУТ ДЛЯ ЗАГРУЗКИ ПРОФЕССИЙ (Потом можно удалить)
+router.post("/seed", async (req, res) => {
+  try {
+    // Получаем массив профессий, который ты отправишь
+    const professionsArray = req.body;
 
+    // Удаляем старые (если есть) и записываем новые
+    await Profession.deleteMany({});
+    await Profession.insertMany(professionsArray);
+
+    res.json({ message: "УРА! Все профессии успешно загружены в базу!" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка загрузки", error: err });
+  }
+});
 module.exports = router;
