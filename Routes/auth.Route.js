@@ -5,23 +5,25 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const User = require("../Models/user.Model");
 
+// ИСПРАВЛЕНИЕ ОШИБКИ TIMEOUT: Добавлены host, port 465 и secure: true
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465, // Защищенный порт
+  port: 465,
   secure: true,
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-// РЕГИСТРАЦИЯ (умная - обновляет неподтвержденные аккаунты)
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, gender, age, education } = req.body;
 
     const passwordRegex = /^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/;
     if (!passwordRegex.test(password))
-      return res.status(400).json({
-        message: "Пароль: мин. 6 символов, 1 заглавная буква и 1 цифра!",
-      });
+      return res
+        .status(400)
+        .json({
+          message: "Пароль: мин. 6 символов, 1 заглавная буква и 1 цифра!",
+        });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -61,21 +63,19 @@ router.post("/register", async (req, res) => {
           from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: email,
           subject: "Код подтверждения ProfBel",
-          html: `<h2>Ваш код: ${code}</h2>`,
+          html: `<div style="font-family: Arial; padding: 20px; text-align: center;"><h2>Ваш код: <span style="color: #00bcd4;">${code}</span></h2></div>`,
         });
       } catch (e) {
-        console.error("Ошибка отправки письма:", e);
+        console.error("Ошибка письма:", e);
       }
     }
     console.log(`🔑 КОД ДЛЯ ${email}: ${code}`);
     res.status(201).json({ message: "Код отправлен на почту!" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Ошибка сервера" });
   }
 });
 
-// ПОДТВЕРЖДЕНИЕ ПОЧТЫ
 router.post("/verify", async (req, res) => {
   try {
     const { email, code } = req.body;
@@ -91,7 +91,6 @@ router.post("/verify", async (req, res) => {
   }
 });
 
-// ВХОД
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -119,7 +118,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// СБРОС ПАРОЛЯ
 router.post("/forgot-password", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -133,34 +131,11 @@ router.post("/forgot-password", async (req, res) => {
           from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject: "Новый пароль ProfBel",
-          html: `<h3>Пароль: ${newPass}</h3>`,
+          html: `<h3>Ваш новый пароль: <span style="color: #00bcd4;">${newPass}</span></h3><p>Используйте его для входа, а затем сможете сменить в личном кабинете.</p>`,
         });
       } catch (e) {}
     }
-    console.log(`🔑 НОВЫЙ ПАРОЛЬ ДЛЯ ${user.email}: ${newPass}`);
-    res.json({ message: "Пароль отправлен!" });
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
-  }
-});
-
-// СБРОС НЕПОДТВЕРЖДЕННОГО АККАУНТА (СЕКРЕТНЫЙ РОУТ)
-// Этот роут удалит из базы твой неподтвержденный аккаунт,
-// чтобы ты мог(ла) зарегистрироваться заново.
-router.post("/force-delete-unverified", async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.json({ message: "Такого аккаунта нет" });
-    if (user.isVerified)
-      return res
-        .status(400)
-        .json({ message: "Аккаунт уже подтвержден, удалять нельзя" });
-    await User.deleteOne({ email });
-    res.json({
-      message:
-        "Неподтвержденный аккаунт удален! Теперь можно регистрироваться заново.",
-    });
+    res.json({ message: "Новый пароль отправлен на почту!" });
   } catch (err) {
     res.status(500).json({ message: "Ошибка" });
   }

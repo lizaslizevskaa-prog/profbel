@@ -21,7 +21,7 @@ window.showNotification = function (message, type = "success") {
 };
 
 // ==========================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ (ИСТОРИИ И КОММЕНТАРИИ) - ВЕРНУЛ НА МЕСТО!
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ (ИСТОРИИ И КОММЕНТАРИИ)
 // ==========================================
 window.openFullArticle = function (id) {
   const story = globalStories.find((s) => s._id === id);
@@ -150,6 +150,9 @@ window.deleteReply = async function (cId, rId, sId) {
   }
 };
 
+// ==========================================
+// ОСНОВНОЙ СКРИПТ САЙТА
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   // ТЕМА И ПАРОЛИ
   const themeBtn = document.getElementById("themeToggle");
@@ -172,13 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ФОРМА ОБРАТНОЙ СВЯЗИ (С ПРОВЕРКОЙ EMAIL)
+  // ФОРМА ОБРАТНОЙ СВЯЗИ
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", async function (e) {
       e.preventDefault();
       const emailVal = document.getElementById("userEmail").value.trim();
-      // Строгая проверка email
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
         alert("Пожалуйста, введите корректный Email адрес!");
         return;
@@ -343,19 +345,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
   const forgotForm = document.getElementById("forgotForm");
-  const resetPasswordForm = document.getElementById("resetPasswordForm");
   const authModalTitle = document.getElementById("authModalTitle");
   let currentRegEmail = "";
 
   const showF = (f, t) => {
-    [loginForm, regForm, verifyForm, forgotForm, resetPasswordForm].forEach(
-      (el) => {
-        if (el) {
-          el.classList.add("d-none");
-          el.classList.remove("d-block");
-        }
-      },
-    );
+    [loginForm, regForm, verifyForm, forgotForm].forEach((el) => {
+      if (el) {
+        el.classList.add("d-none");
+        el.classList.remove("d-block");
+      }
+    });
     if (f) {
       f.classList.remove("d-none");
       f.classList.add("d-block");
@@ -382,6 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
   );
 
+  // --- РЕГИСТРАЦИЯ ---
   if (regForm) {
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -438,6 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- ПОДТВЕРЖДЕНИЕ ---
   if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -473,6 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- ВХОД ---
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -506,6 +508,41 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         alert("Ошибка связи");
+      }
+    });
+  }
+
+  // --- ЗАБЫЛИ ПАРОЛЬ ---
+  if (forgotForm) {
+    forgotForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("forgotEmail").value;
+      const submitBtn = forgotForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          alert("Новый пароль отправлен на вашу почту!");
+          showF(loginForm, "Вход");
+        } else {
+          alert("Ошибка: " + data.message);
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка сервера!");
       }
     });
   }
