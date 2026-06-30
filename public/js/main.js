@@ -1,6 +1,6 @@
 let globalStories = [];
 
-// 1. ГЕНЕРАТОР УВЕДОМЛЕНИЙ
+// 1. ГЕНЕРАТОР УВЕДОМЛЕНИЙ (КРАСИВЫЕ АЛЕРТЫ-ТОСТЫ)
 window.showNotification = function (message, type = "success") {
   let container = document.getElementById("toast-container");
   if (!container) {
@@ -182,7 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const emailVal = document.getElementById("userEmail").value.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-        alert("Пожалуйста, введите корректный Email адрес!");
+        window.showNotification(
+          "Пожалуйста, введите корректный Email адрес!",
+          "error",
+        );
         return;
       }
       const body = {
@@ -303,21 +306,22 @@ document.addEventListener("DOMContentLoaded", () => {
               pastResCont.parentElement.classList.remove("d-none");
             fetch("/api/professions")
               .then((r) => r.json())
-              .then((allProfs) => {
-                pastResCont.innerHTML = u.testResults
-                  .map((result, index) => {
-                    const profList = result.topProfessions
-                      .map((pName) => {
-                        const pData = allProfs.find((x) => x.title === pName);
-                        const profUrl = pData
-                          ? `profession.html?id=${pData._id}`
-                          : "catalog.html";
-                        return `<li class="mb-2 d-flex align-items-center"><i class="fas fa-check-circle text-primary-custom me-2"></i><a href="${profUrl}" class="text-light text-decoration-none hover-primary small">${pName}</a></li>`;
-                      })
-                      .join("");
-                    return `<div class="col-md-4 d-flex align-items-stretch mt-4"><div class="custom-card card p-4 w-100 border custom-border position-relative" style="background-color: var(--bg-surface); border-radius: 20px;"><div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-cyan text-dark px-3 py-2 shadow">Попытка ${u.testResults.length - index}</div><div class="mt-2 mb-3 border-bottom custom-border pb-2 d-flex justify-content-between align-items-center"><span class="text-main fw-bold small">Ваш Топ-3:</span><span class="text-muted-custom extra-small">${new Date(result.date).toLocaleDateString("ru-RU")}</span></div><ul class="list-unstyled mb-0">${profList}</ul></div></div>`;
-                  })
-                  .join("");
+              .then((allProfessions) => {
+                user.testResults.forEach((result, index) => {
+                  const attempt = user.testResults.length - index;
+                  const profList = result.topProfessions
+                    .map((pName) => {
+                      const pData = allProfessions.find(
+                        (x) => x.title === pName,
+                      );
+                      const profUrl = pData
+                        ? `profession.html?id=${pData._id}`
+                        : "catalog.html";
+                      return `<li class="mb-2 d-flex align-items-center"><i class="fas fa-check-circle text-primary-custom me-2"></i><a href="${profUrl}" class="text-light text-decoration-none hover-primary small">${pName}</a></li>`;
+                    })
+                    .join("");
+                  pastResCont.innerHTML += `<div class="col-md-4 d-flex align-items-stretch mt-4"><div class="custom-card card p-4 w-100 border custom-border position-relative" style="background-color: var(--bg-surface); border-radius: 20px;"><div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-cyan text-dark px-3 py-2 shadow">Попытка ${attempt}</div><div class="mt-2 mb-3 border-bottom custom-border pb-2 d-flex justify-content-between align-items-center"><span class="text-main fw-bold small">Ваш Топ-3:</span><span class="text-muted-custom extra-small">${new Date(result.date).toLocaleDateString("ru-RU")}</span></div><ul class="list-unstyled mb-0">${profList}</ul></div></div>`;
+                });
               });
           }
         })
@@ -387,13 +391,17 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const age = parseInt(document.getElementById("regAge").value);
       if (isNaN(age) || age < 14 || age > 100) {
-        alert("Возраст от 14 до 100 лет");
+        window.showNotification(
+          "Возраст должен быть от 14 до 100 лет",
+          "error",
+        );
         return;
       }
       const pass = document.getElementById("regPassword").value;
       if (!/^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/.test(pass)) {
-        alert(
+        window.showNotification(
           "Слабый пароль! Нужно: мин 6 символов, 1 заглавная буква и 1 цифра.",
+          "error",
         );
         return;
       }
@@ -425,20 +433,21 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = false;
 
         if (res.ok) {
-          alert("Отлично! " + data.message);
-          showF(verifyForm, "Подтверждение");
+          // ИСПРАВЛЕНИЕ: Показываем красивый тост об успехе и сразу перенаправляем на Вход (минуя форму ввода кода)
+          window.showNotification(data.message, "success");
+          showF(loginForm, "Вход");
         } else {
-          alert("Ошибка: " + data.message);
+          window.showNotification("Ошибка: " + data.message, "error");
         }
       } catch (error) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        alert("Ошибка сервера!");
+        window.showNotification("Ошибка сервера!", "error");
       }
     });
   }
 
-  // --- ПОДТВЕРЖДЕНИЕ ---
+  // --- ПОДТВЕРЖДЕНИЕ (Оставлено для совместимости, но больше не вызывается при регистрации) ---
   if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -461,15 +470,15 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = false;
 
         if (res.ok) {
-          alert("Почта подтверждена!");
+          window.showNotification("Почта подтверждена!", "success");
           showF(loginForm, "Вход");
         } else {
-          alert("Неверный код!");
+          window.showNotification("Неверный код!", "error");
         }
       } catch (error) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        alert("Ошибка связи");
+        window.showNotification("Ошибка связи", "error");
       }
     });
   }
@@ -502,17 +511,17 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("user", JSON.stringify(data.user));
           window.location.reload();
         } else {
-          alert("Ошибка: " + data.message);
+          window.showNotification("Ошибка: " + data.message, "error");
         }
       } catch (error) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        alert("Ошибка связи");
+        window.showNotification("Ошибка связи", "error");
       }
     });
   }
 
-  // --- ЗАБЫЛИ ПАРОЛЬ ---
+  // --- ЗАБЫЛИ ПАРОЛЬ (Рабочая отправка реальных писем) ---
   if (forgotForm) {
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -534,15 +543,19 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = false;
 
         if (res.ok) {
-          alert("Новый пароль отправлен на вашу почту!");
+          // ИСПРАВЛЕНИЕ: Используем красивый тост об отправке пароля
+          window.showNotification(
+            "Новый пароль успешно отправлен на вашу почту!",
+            "success",
+          );
           showF(loginForm, "Вход");
         } else {
-          alert("Ошибка: " + data.message);
+          window.showNotification("Ошибка: " + data.message, "error");
         }
       } catch (error) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        alert("Ошибка сервера!");
+        window.showNotification("Ошибка сервера!", "error");
       }
     });
   }

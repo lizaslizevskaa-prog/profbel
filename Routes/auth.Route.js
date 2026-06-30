@@ -2,7 +2,16 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const User = require("../Models/user.Model");
+
+// Ваша исходная настройка почты для "Забыли пароль" (осталась нетронутой)
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
 
 router.post("/register", async (req, res) => {
   try {
@@ -15,7 +24,6 @@ router.post("/register", async (req, res) => {
       });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
 
     let user = await User.findOne({ email });
 
@@ -29,8 +37,7 @@ router.post("/register", async (req, res) => {
       user.gender = gender;
       user.age = age;
       user.education = education;
-      user.verificationCode = code;
-      user.isVerified = false;
+      user.isVerified = true; // Сразу подтверждаем аккаунт
       await user.save();
     } else {
       user = new User({
@@ -40,38 +47,15 @@ router.post("/register", async (req, res) => {
         gender,
         age,
         education,
-        isVerified: false,
-        verificationCode: code,
+        isVerified: true, // Сразу подтверждаем аккаунт
       });
       await user.save();
     }
 
-    // Отправка писем через защищенный HTTPS-запрос к API Resend (не блокируется Render)
-    if (process.env.RESEND_API_KEY) {
-      fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-          from: "onboarding@resend.dev", // Дефолтный отправитель на бесплатном тарифе Resend
-          to: email,
-          subject: "Код подтверждения ProfBel",
-          html: `<div style="font-family: Arial; padding: 20px; text-align: center;"><h2>Ваш код подтверждения: <span style="color: #00bcd4;">${code}</span></h2></div>`,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) =>
-          console.log("✅ Код подтверждения отправлен через Resend API:", data),
-        )
-        .catch((e) =>
-          console.error("❌ Ошибка отправки письма через Resend:", e),
-        );
-    }
-
-    console.log(`🔑 КОД ДЛЯ ${email}: ${code}`);
-    res.status(201).json({ message: "Код отправлен на почту!" });
+    // Полностью убрали отправку писем при регистрации. Всё происходит мгновенно.
+    res
+      .status(201)
+      .json({ message: "Регистрация успешна! Теперь вы можете войти." });
   } catch (err) {
     console.error("Ошибка при регистрации:", err);
     res.status(500).json({ message: "Ошибка сервера" });
@@ -128,32 +112,19 @@ router.post("/forgot-password", async (req, res) => {
     user.password = await bcrypt.hash(newPass, 10);
     await user.save();
 
-    if (process.env.RESEND_API_KEY) {
-      fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        },
-        body: JSON.stringify({
-          from: "onboarding@resend.dev",
+    // Ваша оригинальная рабочая логика отправки пароля на почту через Gmail
+    if (process.env.EMAIL_USER) {
+      try {
+        await transporter.sendMail({
+          from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject: "Новый пароль ProfBel",
           html: `<h3>Ваш новый пароль: <span style="color: #00bcd4;">${newPass}</span></h3><p>Используйте его для входа, а затем сможете сменить в личном кабинете.</p>`,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) =>
-          console.log(
-            "✅ Письмо с новым паролем отправлено через Resend:",
-            data,
-          ),
-        )
-        .catch((e) =>
-          console.error("❌ Ошибка отправки нового пароля через Resend:", e),
-        );
+        });
+      } catch (e) {
+        console.error("Ошибка отправки письма при восстановлении:", e);
+      }
     }
-
     res.json({ message: "Новый пароль отправлен на почту!" });
   } catch (err) {
     res.status(500).json({ message: "Ошибка" });
