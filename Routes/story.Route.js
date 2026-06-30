@@ -5,8 +5,11 @@ const jwt = require("jsonwebtoken");
 const User = require("../Models/user.Model");
 const nodemailer = require("nodemailer");
 
+// Настройка почты для отправки через Gmail SMTP (на Vercel порты 465/587 полностью открыты)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
@@ -45,15 +48,21 @@ router.put("/approve/:id", protect, async (req, res) => {
     status: "approved",
   });
   const user = await User.findById(story.userId);
-  if (user && process.env.EMAIL_USER) {
+  if (user && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     try {
+      // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
       await transporter.sendMail({
         from: `"ProfBel" <${process.env.EMAIL_USER}>`,
         to: user.email,
         subject: "Ваша история опубликована!",
         html: `<h3>Поздравляем!</h3><p>Ваша история "${story.name}" успешно прошла модерацию и опубликована на сайте ProfBel.</p>`,
       });
-    } catch (e) {}
+      console.log(
+        "✅ Письмо с уведомлением об одобрении истории успешно отправлено!",
+      );
+    } catch (e) {
+      console.error("❌ Ошибка отправки письма при одобрении истории:", e);
+    }
   }
   res.json({ message: "Одобрено" });
 });

@@ -1,3 +1,5 @@
+// Путь к файлу: public/js/test.js
+
 const { createApp } = Vue;
 
 const testApp = createApp({
@@ -222,9 +224,8 @@ const testApp = createApp({
   },
   methods: {
     async loadProfessions() {
-      const res = await fetch(
-        "https://profbel-production.up.railway.app/api/professions",
-      );
+      // ИСПРАВЛЕНИЕ: Путь сделан относительным
+      const res = await fetch("/api/professions");
       this.professionsFromDb = await res.json();
     },
     startTest() {
@@ -291,17 +292,15 @@ const testApp = createApp({
       const list = this.recommendedProfessions.map((p) => p.title);
       if (token) {
         try {
-          const res = await fetch(
-            "https://profbel-production.up.railway.app/api/profile/test-result",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ professions: list }),
+          // ИСПРАВЛЕНИЕ: Путь сделан относительным
+          const res = await fetch("/api/profile/test-result", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
-          );
+            body: JSON.stringify({ professions: list }),
+          });
           if (res.ok) {
             this.saved = true;
             if (typeof window.showNotification !== "undefined")
@@ -333,7 +332,4 @@ const testApp = createApp({
       return ((this.step - 1) / this.totalSteps) * 100;
     },
   },
-  mounted() {
-    this.loadProfessions();
-  },
-}).mount("#testApp");
+});

@@ -1,3 +1,5 @@
+<!-- Путь к файлу: public/profile.html -->
+
 <!doctype html>
 <html lang="ru">
   <head>
@@ -479,7 +481,7 @@
                   <i
                     class="fas fa-eye position-absolute text-muted-custom toggle-password"
                     style="
-                      right: 18px;
+                      right: 15px;
                       top: 50%;
                       transform: translateY(-50%);
                       cursor: pointer;
@@ -488,10 +490,6 @@
                 </div>
               </div>
               <div class="mb-5">
-                <label
-                  class="form-label text-muted-custom small text-uppercase fw-bold text-warning"
-                  >Повтор пароля</label
-                >
                 <div class="position-relative">
                   <i
                     class="fas fa-check position-absolute text-warning"
@@ -662,7 +660,7 @@
     <script src="js/main.js"></script>
 
     <script>
-      // ИСПРАВЛЕННАЯ ЛОГИКА ВЫХОДА
+      // ЛОГИКА ВЫХОДА
       document
         .getElementById("logoutProfileBtn")
         .addEventListener("click", () => {
@@ -676,12 +674,10 @@
         if (!token) return (window.location.href = "index.html");
 
         try {
-          const res = await fetch(
-            "https://profbel-production.up.railway.app/api/profile/me",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
+          // ИСПРАВЛЕНИЕ: Путь сделан относительным
+          const res = await fetch("/api/profile/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
           const user = await res.json();
 
           // Основные данные
@@ -746,9 +742,8 @@
           if (user.favoriteProfessions?.length > 0) {
             document.getElementById("emptyFavsMsg").classList.add("d-none");
 
-            const profsRes = await fetch(
-              "https://profbel-production.up.railway.app/api/professions",
-            );
+            // ИСПРАВЛЕНИЕ: Путь сделан относительным
+            const profsRes = await fetch("/api/professions");
             const allProfessions = await profsRes.json();
 
             user.favoriteProfessions.forEach((profId) => {
@@ -779,14 +774,12 @@
             const fd = new FormData();
             fd.append("avatar", file);
             try {
-              const res = await fetch(
-                "https://profbel-production.up.railway.app/api/profile/avatar",
-                {
-                  method: "POST",
-                  headers: { Authorization: `Bearer ${token}` },
-                  body: fd,
-                },
-              );
+              // ИСПРАВЛЕНИЕ: Путь сделан относительным
+              const res = await fetch("/api/profile/avatar", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: fd,
+              });
               const data = await res.json();
               if (res.ok) {
                 document.getElementById("profileAvatar").src = data.avatar;
@@ -809,17 +802,15 @@
               education: document.getElementById("editEdu").value,
             };
             try {
-              const res = await fetch(
-                "https://profbel-production.up.railway.app/api/profile/update",
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify(body),
+              // ИСПРАВЛЕНИЕ: Путь сделан относительным
+              const res = await fetch("/api/profile/update", {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
                 },
-              );
+                body: JSON.stringify(body),
+              });
               if (res.ok) window.location.reload();
             } catch (err) {
               window.showNotification("Ошибка обновления", "error");
@@ -845,20 +836,18 @@
               );
 
             try {
-              const res = await fetch(
-                "https://profbel-production.up.railway.app/api/profile/change-password",
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify({
-                    currentPassword: cp,
-                    newPassword: np,
-                  }),
+              // ИСПРАВЛЕНИЕ: Путь сделан относительным
+              const res = await fetch("/api/profile/change-password", {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
                 },
-              );
+                body: JSON.stringify({
+                  currentPassword: cp,
+                  newPassword: np,
+                }),
+              });
               const data = await res.json();
               if (res.ok) {
                 window.showNotification("Пароль изменен!");

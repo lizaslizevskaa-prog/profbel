@@ -5,9 +5,11 @@ const User = require("../Models/user.Model"); // Подключили юзера
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-// Настройка почты для уведомлений
+// Настройка почты для отправки через Gmail SMTP (на Vercel порты 465/587 полностью открыты)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
@@ -70,6 +72,7 @@ router.post("/:id/reply", protect, async (req, res) => {
       const originalUser = await User.findById(comment.userId);
       if (originalUser && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         try {
+          // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
           await transporter.sendMail({
             from: `"ProfBel" <${process.env.EMAIL_USER}>`,
             to: originalUser.email,
@@ -82,8 +85,14 @@ router.post("/:id/reply", protect, async (req, res) => {
                     <p>Зайдите на сайт ProfBel, чтобы ответить!</p>
                    </div>`,
           });
+          console.log(
+            "✅ Письмо-уведомление о новом ответе на комментарий отправлено!",
+          );
         } catch (e) {
-          console.error("Ошибка отправки письма:", e);
+          console.error(
+            "❌ Ошибка отправки письма при ответе на комментарий:",
+            e,
+          );
         }
       }
     }

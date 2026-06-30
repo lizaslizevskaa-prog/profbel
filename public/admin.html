@@ -1,3 +1,5 @@
+<!-- Путь к файлу: public/admin.html -->
+
 <!doctype html>
 <html lang="ru">
   <head>
@@ -368,9 +370,8 @@
       }
 
       async function loadProfessions() {
-        const res = await fetch(
-          "https://profbel-production.up.railway.app/api/professions",
-        );
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const res = await fetch("/api/professions");
         const data = await res.json();
         document.getElementById("adminProfTable").innerHTML = data
           .map(
@@ -382,21 +383,18 @@
 
       async function deleteProf(id) {
         if (confirm("Точно удалить?")) {
-          await fetch(
-            `https://profbel-production.up.railway.app/api/professions/${id}`,
-            {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
+          // ИСПРАВЛЕНИЕ: Путь сделан относительным
+          await fetch(`/api/professions/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          });
           loadProfessions();
         }
       }
 
       async function editProf(id) {
-        const res = await fetch(
-          `https://profbel-production.up.railway.app/api/professions/${id}`,
-        );
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const res = await fetch(`/api/professions/${id}`);
         const p = await res.json();
         editingProfId = id;
         document.getElementById("profFormTitle").textContent =
@@ -519,10 +517,13 @@
               .map((s) => s.trim())
               .filter(Boolean),
           };
+
+          // ИСПРАВЛЕНИЕ: Пути сделаны относительными
           const url = editingProfId
-            ? `https://profbel-production.up.railway.app/api/professions/${editingProfId}`
-            : "https://profbel-production.up.railway.app/api/professions";
+            ? `/api/professions/${editingProfId}`
+            : "/api/professions";
           const method = editingProfId ? "PUT" : "POST";
+
           const res = await fetch(url, {
             method,
             headers: {
@@ -541,12 +542,10 @@
         });
 
       async function loadFeedback() {
-        const res = await fetch(
-          "https://profbel-production.up.railway.app/api/feedback",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const res = await fetch("/api/feedback", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         if (data.length === 0)
           return (document.getElementById("adminFeedbackList").innerHTML =
@@ -570,17 +569,15 @@
 
       async function sendReply() {
         const text = document.getElementById("replyText").value;
-        const res = await fetch(
-          `https://profbel-production.up.railway.app/api/feedback/reply/${replyingToId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ replyText: text }),
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const res = await fetch(`/api/feedback/reply/${replyingToId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
+          body: JSON.stringify({ replyText: text }),
+        });
         if (res.ok) {
           alert("Ответ отправлен!");
           bootstrap.Modal.getInstance(
@@ -591,16 +588,14 @@
       }
 
       async function loadStories() {
-        const resP = await fetch(
-          "https://profbel-production.up.railway.app/api/stories/pending",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const resP = await fetch("/api/stories/pending", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const pending = await resP.json();
-        const resA = await fetch(
-          "https://profbel-production.up.railway.app/api/stories/approved",
-        );
+
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
+        const resA = await fetch("/api/stories/approved");
         const approved = await resA.json();
 
         let html = '<h5 class="text-warning mt-3">На модерации:</h5>';
@@ -625,10 +620,11 @@
 
       async function actStory(id, action) {
         const method = action === "approve" ? "PUT" : "DELETE";
+        // ИСПРАВЛЕНИЕ: Путь сделан относительным
         const url =
           action === "approve"
-            ? `https://profbel-production.up.railway.app/api/stories/approve/${id}`
-            : `https://profbel-production.up.railway.app/api/stories/${id}`;
+            ? `/api/stories/approve/${id}`
+            : `/api/stories/${id}`;
         await fetch(url, {
           method,
           headers: { Authorization: `Bearer ${token}` },

@@ -1,630 +1,84 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProfBel | Описание профессии</title>
-    <meta
-      name="description"
-      content="ProfBel - твой персональный гид в мире профессий будущего в Беларуси."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body class="bg-main text-light d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
-      <div class="container">
-        <a class="navbar-brand logo" href="index.html">Prof<span>Bel</span></a>
-        <button
-          class="navbar-toggler custom-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <i class="fas fa-bars text-light"></i>
-        </button>
-        <div
-          class="collapse navbar-collapse justify-content-end"
-          id="navbarNav"
-        >
-          <ul class="navbar-nav gap-4 align-items-center">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Главная</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="catalog.html">Каталог профессий</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="stories.html">Истории успеха</a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-accent-glow" href="test.html">Пройти тест</a>
-            </li>
-
-            <!-- Кнопка Войти -->
-            <li class="nav-item ms-lg-3">
-              <button
-                class="btn btn-outline-cyan"
-                data-bs-toggle="modal"
-                data-bs-target="#authModal"
-              >
-                <i class="fas fa-user me-2"></i>Войти
-              </button>
-            </li>
-            <!-- Смена темы -->
-            <li class="nav-item ms-lg-2">
-              <button
-                id="themeToggle"
-                class="btn btn-outline-secondary rounded-circle"
-                style="
-                  width: 42px;
-                  height: 42px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  border-color: rgba(100, 255, 218, 0.3);
-                "
-              >
-                <i class="fas fa-sun text-warning fs-5"></i>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <main class="container py-5 flex-grow-1" id="professionContent">
-      <a href="catalog.html" class="btn btn-outline-cyan mb-4">
-        <i class="fas fa-arrow-left me-2"></i> Вернуться в каталог
-      </a>
-
-      <div id="errorBlock" class="text-center py-5 d-none">
-        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-        <h2 class="fw-bold">Профессия не найдена</h2>
-        <p class="text-muted-custom">
-          Возможно, вы перешли по устаревшей ссылке.
-        </p>
-        <a href="catalog.html" class="btn btn-accent-glow mt-3">В каталог</a>
-      </div>
-
-      <div id="profDataBlock" class="d-none">
-        <img
-          id="profImage"
-          src=""
-          alt=""
-          class="img-fluid rounded-4 w-100 mb-4 shadow-cyan"
-          style="height: 400px; object-fit: cover"
-        />
-
-        <div
-          class="detail-card p-4 p-md-5 rounded-4 mb-5 position-relative overflow-hidden"
-        >
-          <div
-            class="glow-backdrop-large"
-            style="opacity: 0.15; top: 0; left: 80%"
-          ></div>
-          <div class="position-relative z-index-2">
-            <div class="d-flex flex-wrap gap-2 mb-3">
-              <span
-                id="profDirection"
-                class="badge bg-purple-soft text-purple fs-6 px-3 py-2 rounded-pill border border-purple"
-              ></span>
-              <span
-                id="profDemand"
-                class="badge bg-cyan text-dark fs-6 px-3 py-2 rounded-pill fw-bold"
-              ></span>
-              <span
-                id="profEduLevel"
-                class="badge border border-secondary text-light fs-6 px-3 py-2 rounded-pill"
-              ></span>
-            </div>
-            <h1 id="profTitle" class="display-4 fw-bold mb-4">
-              Название профессии
-            </h1>
-            <div
-              class="d-flex align-items-center text-primary-custom fs-4 fw-bold"
-            >
-              <i class="fas fa-wallet me-3"></i><span id="profSalary"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="row g-4">
-          <div class="col-lg-8">
-            <div class="mb-5">
-              <h2 class="h3 fw-bold mb-3 border-bottom custom-border pb-2">
-                О профессии
-              </h2>
-              <p
-                id="profDesc"
-                class="text-muted-custom fs-5 mb-4"
-                style="line-height: 1.8"
-              ></p>
-              <h3 class="h4 fw-bold mb-3 text-light">
-                Перспективы в Беларуси
-                <i class="fas fa-chart-line text-primary-custom ms-2"></i>
-              </h3>
-              <div
-                class="bg-surface p-4 rounded-4 border border-purple border-opacity-25"
-              >
-                <p id="profPerspectives" class="text-muted-custom mb-0 m-0"></p>
-              </div>
-            </div>
-
-            <div class="row g-4 mb-5">
-              <div class="col-md-6">
-                <div class="detail-card p-4 rounded-4 h-100">
-                  <h4 class="fw-bold mb-3">
-                    <i class="fas fa-laptop-code text-primary-custom me-2"></i>
-                    Хард-скиллы
-                  </h4>
-                  <p class="text-muted-custom small mb-3">
-                    Профессиональные навыки и инструменты.
-                  </p>
-                  <ul
-                    id="profHardSkills"
-                    class="list-unstyled detail-list mb-0 text-muted-custom"
-                  ></ul>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="detail-card p-4 rounded-4 h-100">
-                  <h4 class="fw-bold mb-3">
-                    <i class="fas fa-users text-purple me-2"></i> Софт-скиллы
-                  </h4>
-                  <p class="text-muted-custom small mb-3">
-                    Личные качества, важные для работы.
-                  </p>
-                  <ul
-                    id="profSoftSkills"
-                    class="list-unstyled detail-list mb-0 text-muted-custom"
-                  ></ul>
-                </div>
-              </div>
-            </div>
-            <div class="mb-4">
-              <h3 class="fw-bold mb-4 border-bottom custom-border pb-2">
-                Карьерный путь
-              </h3>
-              <div class="detail-card p-4 rounded-4">
-                <div
-                  class="d-flex flex-column flex-md-row justify-content-between align-items-md-center position-relative"
-                  id="profCareer"
-                >
-                  <div
-                    class="position-absolute top-50 start-0 w-100 border-top custom-border d-none d-md-block"
-                    style="z-index: 1"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4">
-            <div class="detail-card p-4 rounded-4 mb-4">
-              <h4 class="fw-bold mb-4 border-bottom custom-border pb-2">
-                <i class="fas fa-file-alt text-primary-custom me-2"></i>
-                Поступление
-              </h4>
-              <p class="text-muted-custom small mb-3">
-                Предметы ЦТ/ЦЭ для поступления:
-              </p>
-              <ul
-                id="profExamsList"
-                class="list-unstyled text-light fw-bold mb-4"
-              ></ul>
-              <div
-                class="bg-dark p-3 rounded-3 border custom-border text-center"
-              >
-                <span class="text-muted-custom small d-block mb-1"
-                  >Проходной балл (ориентир)</span
-                >
-                <span
-                  id="profScore"
-                  class="fs-4 fw-bold text-primary-custom"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="detail-card p-4 rounded-4 mb-4"
-              id="profUniversitiesBlock"
-            >
-              <h4 class="fw-bold mb-4 border-bottom custom-border pb-2">
-                <i class="fas fa-university text-purple me-2"></i> Вузы
-              </h4>
-              <div id="profUniversities"></div>
-            </div>
-            <div class="detail-card p-4 rounded-4" id="profCollegesBlock">
-              <h4 class="fw-bold mb-4 border-bottom custom-border pb-2">
-                <i class="fas fa-school text-cyan me-2"></i> Колледжи
-              </h4>
-              <div id="profColleges"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- ФУТЕР -->
-    <footer class="custom-footer mt-auto pt-5 pb-3">
-      <div class="container">
-        <div class="row gy-4 mb-4">
-          <div class="col-lg-4 col-md-6 pe-lg-4">
-            <a class="navbar-brand logo d-inline-block mb-3" href="index.html"
-              >Prof<span>Bel</span></a
-            >
-            <p class="text-muted-custom small mb-4">
-              Твой персональный гид в мире профессий будущего. Помогаем
-              школьникам и студентам Беларуси сделать правильный выбор и найти
-              свое призвание в IT, науке и инженерии.
-            </p>
-            <div class="social-links d-flex gap-3">
-              <!-- Ссылка на Telegram -->
-              <a
-                href="https://t.me/Bogdachkaa"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наш Telegram"
-              >
-                <i class="fab fa-telegram-plane"></i>
-              </a>
-
-              <!-- Ссылка на Instagram -->
-              <a
-                href="https://www.instagram.com/ssfilt?igsh=bzB0em13NjN0eHls"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наш Instagram"
-              >
-                <i class="fab fa-instagram"></i>
-              </a>
-
-              <!-- Ссылка на ВКонтакте -->
-              <a
-                href="https://vk.ru/vatashinay"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="social-icon"
-                title="Наша группа ВК"
-              >
-                <i class="fab fa-vk"></i>
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Навигация</h3>
-            <ul class="list-unstyled footer-links">
-              <li>
-                <a href="index.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Главная
-                  страница</a
-                >
-              </li>
-              <li>
-                <a href="catalog.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Каталог
-                  профессий</a
-                >
-              </li>
-              <li>
-                <a href="stories.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Истории
-                  успеха</a
-                >
-              </li>
-              <li>
-                <a href="test.html"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Пройти тест</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-lg-2 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Проект</h3>
-            <ul class="list-unstyled footer-links">
-              <li>
-                <a href="#"
-                  ><i class="fas fa-chevron-right me-2 small"></i>О нас</a
-                >
-              </li>
-              <li>
-                <a href="#"
-                  ><i class="fas fa-chevron-right me-2 small"></i>Методология</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h3 class="h5 text-white mb-4 fw-bold">Связь с нами</h3>
-            <ul
-              class="list-unstyled footer-contact text-muted-custom small mb-4"
-            >
-              <li class="mb-3 d-flex align-items-center">
-                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                <span>lizaslizevskaa@gmail.com</span>
-              </li>
-              <li class="d-flex align-items-center">
-                <div class="contact-icon">
-                  <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <span>г. Минск, Беларусь</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div
-          class="footer-bottom pt-4 border-top custom-border d-flex flex-column flex-md-row justify-content-between align-items-center"
-        >
-          <p class="mb-0 text-muted-custom small">
-            &copy; 2026 ProfBel. Практический проект по веб-разработке.
-          </p>
-          <div class="footer-bottom-links mt-2 mt-md-0">
-            <a
-              href="#"
-              class="text-muted-custom small text-decoration-none hover-primary transition-all"
-              >Политика конфиденциальности</a
-            >
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!-- МОДАЛКА АВТОРИЗАЦИИ И СБРОСА ПАРОЛЯ -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div
-          class="modal-content text-light border custom-border"
-          style="
-            background-color: var(--bg-surface) !important;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-          "
-        >
-          <div
-            class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4"
-          >
-            <h3
-              class="h5 modal-title fw-bold w-100 text-center"
-              id="authModalTitle"
-            >
-              Вход в личный кабинет
-            </h3>
-            <button
-              type="button"
-              class="btn-close btn-close-white position-absolute end-0 me-4"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body p-4 p-md-5">
-            <!-- 1. ВХОД -->
-            <form id="loginForm" class="d-block">
-              <div class="mb-4">
-                <div class="position-relative">
-                  <i
-                    class="fas fa-envelope position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="email"
-                    class="form-control custom-input text-light"
-                    placeholder="Email"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                </div>
-              </div>
-              <div class="mb-5">
-                <div class="position-relative">
-                  <i
-                    class="fas fa-lock position-absolute text-muted-custom"
-                    style="left: 18px; top: 50%; transform: translateY(-50%)"
-                  ></i>
-                  <input
-                    type="password"
-                    class="form-control custom-input text-light"
-                    placeholder="Пароль"
-                    style="
-                      padding-left: 50px;
-                      height: 50px;
-                      background-color: var(--bg-dark) !important;
-                    "
-                    required
-                  />
-                  <i
-                    class="fas fa-eye position-absolute text-muted-custom toggle-password"
-                    style="
-                      right: 18px;
-                      top: 50%;
-                      transform: translateY(-50%);
-                      cursor: pointer;
-                    "
-                  ></i>
-                </div>
-                <div class="text-end mt-2">
-                  <a href="#" id="showForgotBtn" class="small text-muted-custom"
-                    >Забыли пароль?</a
-                  >
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-accent-glow w-100 mb-4 py-3 fs-5"
-              >
-                Войти
-              </button>
-              <div class="text-center text-muted-custom small">
-                Нет аккаунта?
-                <a
-                  href="#"
-                  id="showRegisterBtn"
-                  class="text-primary-custom text-decoration-none fw-bold ms-1"
-                  >Создать</a
-                >
-              </div>
-            </form>
-            <!-- 2. РЕГИСТРАЦИЯ -->
-            <form id="registerForm" class="d-none">
-              <input
-                type="text"
-                id="regName"
-                class="form-control custom-input mb-3"
-                placeholder="Имя"
-                required
-              />
-              <input
-                type="email"
-                id="regEmail"
-                class="form-control custom-input mb-3"
-                placeholder="Email"
-                required
-              />
-              <div class="row mb-3">
-                <div class="col-6">
-                  <input
-                    type="number"
-                    id="regAge"
-                    class="form-control custom-input"
-                    placeholder="Возраст"
-                    required
-                  />
-                </div>
-                <div class="col-6">
-                  <select id="regGender" class="form-select custom-select">
-                    <option value="Мужской">Мужской</option>
-                    <option value="Женский">Женский</option>
-                  </select>
-                </div>
-              </div>
-              <select id="regEdu" class="form-select custom-select mb-3">
-                <option value="Школа">Школа</option>
-                <option value="Колледж">Колледж</option>
-                <option value="ВУЗ">ВУЗ</option>
-              </select>
-              <div class="position-relative mb-4">
-                <input
-                  type="password"
-                  id="regPassword"
-                  class="form-control custom-input"
-                  placeholder="Пароль (мин 6 симв)"
-                  required
-                />
-                <i
-                  class="fas fa-eye position-absolute text-muted-custom toggle-password"
-                  style="
-                    right: 15px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                  "
-                ></i>
-              </div>
-              <button type="submit" class="btn btn-outline-cyan w-100 py-3">
-                Зарегистрироваться
-              </button>
-              <div class="text-center mt-3">
-                <a href="#" class="small text-primary-custom backToLoginBtn"
-                  >Назад ко входу</a
-                >
-              </div>
-            </form>
-            <!-- 3. ПОДТВЕРЖДЕНИЕ ПОЧТЫ -->
-            <form id="verifyForm" class="d-none text-center">
-              <h5 class="mb-3">Подтвердите почту</h5>
-              <p class="small text-muted-custom mb-4">
-                Код выслан на вашу почту.
-              </p>
-              <input
-                type="text"
-                id="verifyCode"
-                class="form-control custom-input text-center fs-3 mb-4"
-                placeholder="0000"
-                maxlength="4"
-                style="height: 60px; letter-spacing: 10px"
-              />
-              <button type="submit" class="btn btn-accent-glow w-100">
-                Подтвердить
-              </button>
-            </form>
-            <!-- 4. ЗАБЫЛИ ПАРОЛЬ (ШАГ 1) -->
-            <form id="forgotForm" class="d-none">
-              <p class="small text-muted-custom mb-4 text-center">
-                Введите Email. Мы отправим код для сброса.
-              </p>
-              <input
-                type="email"
-                id="forgotEmail"
-                class="form-control custom-input mb-4"
-                placeholder="Email"
-                required
-              />
-              <button type="submit" class="btn btn-accent-glow w-100 mb-3">
-                Получить код
-              </button>
-              <div class="text-center">
-                <a href="#" class="small text-primary-custom backToLoginBtn"
-                  >Назад ко входу</a
-                >
-              </div>
-            </form>
-            <!-- 5. СБРОС ПАРОЛЯ (ШАГ 2) -->
-            <form id="resetPasswordForm" class="d-none">
-              <p class="small text-muted-custom mb-4 text-center">
-                Введите код из письма и новый пароль.
-              </p>
-              <input
-                type="text"
-                id="resetCode"
-                class="form-control custom-input mb-3 text-center"
-                placeholder="Код из письма"
-                required
-              />
-              <div class="position-relative mb-4">
-                <input
-                  type="password"
-                  id="resetNewPassword"
-                  class="form-control custom-input text-light"
-                  placeholder="Новый пароль"
-                  required
-                />
-                <i
-                  class="fas fa-eye position-absolute text-muted-custom toggle-password"
-                  style="
-                    right: 15px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                  "
-                ></i>
-              </div>
-              <button type="submit" class="btn btn-accent-glow w-100 py-3">
-                Сохранить пароль
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/profession.js"></script>
-  </body>
-</html>
+document.addEventListener("DOMContentLoaded", async () => { const urlParams =
+new URLSearchParams(window.location.search); const profId = urlParams.get("id");
+const errorBlock = document.getElementById("errorBlock"); const profDataBlock =
+document.getElementById("profDataBlock"); if (!profId) {
+errorBlock.classList.remove("d-none"); return; } try { // ИСПРАВЛЕНИЕ: Путь
+сделан относительным const res = await fetch(`/api/professions/${profId}`); if
+(!res.ok) throw new Error("Профессия не найдена"); const prof = await
+res.json(); profDataBlock.classList.remove("d-none");
+document.getElementById("profTitle").textContent = prof.title;
+document.getElementById("profDirection").textContent = prof.direction;
+document.getElementById("profDemand").textContent = `Спрос: ${prof.demand}`;
+document.getElementById("profEduLevel").textContent = prof.educationLevel;
+document.getElementById("profSalary").textContent = `${prof.salaryMin} –
+${prof.salaryMax} BYN`; document.getElementById("profDesc").textContent =
+prof.description; document.getElementById("profPerspectives").textContent =
+prof.perspectives; const profImageEl = document.getElementById("profImage");
+profImageEl.src = prof.image ||
+"https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop";
+profImageEl.alt = prof.title; const examsList =
+document.getElementById("profExamsList"); examsList.innerHTML = ""; const exams
+= prof.entranceExams || {}; if (exams.subject1) examsList.innerHTML += `
+<li class="mb-2">
+  <i class="fas fa-check text-cyan me-2"></i> ${exams.subject1}
+</li>
+`; if (exams.subject2) examsList.innerHTML += `
+<li class="mb-2">
+  <i class="fas fa-check text-cyan me-2"></i> ${exams.subject2}
+</li>
+`; if (exams.subject3) examsList.innerHTML += `
+<li><i class="fas fa-check text-cyan me-2"></i> ${exams.subject3}</li>
+`; document.getElementById("profScore").textContent = exams.passingScore || "Не
+указан"; const hardSkillsList = document.getElementById("profHardSkills");
+hardSkillsList.innerHTML = (prof.skills || []) .map( (skill) => `
+<li><i class="fas fa-cog text-muted"></i> <span>${skill}</span></li>
+`, ) .join(""); const softSkillsList =
+document.getElementById("profSoftSkills"); softSkillsList.innerHTML =
+(prof.softSkills || []) .map( (skill) => `
+<li><i class="fas fa-user-check text-muted"></i> <span>${skill}</span></li>
+`, ) .join(""); const uniBlock =
+document.getElementById("profUniversitiesBlock"); const uniContainer =
+document.getElementById("profUniversities"); if (prof.universities &&
+prof.universities.length > 0) { uniContainer.innerHTML = prof.universities .map(
+(uni) => `
+<div class="mb-3 border-bottom custom-border pb-3 last-border-none">
+  <h5 class="fw-bold text-light mb-1">${uni.name}</h5>
+  <p class="text-muted-custom small mb-1">
+    <strong>Факультет:</strong> ${uni.faculty || "-"}
+  </p>
+  <p class="text-muted-custom small mb-0">
+    <strong>Специальность:</strong> ${uni.specialty || "-"}
+  </p>
+</div>
+`, ) .join(""); } else { uniBlock.classList.add("d-none"); } const colBlock =
+document.getElementById("profCollegesBlock"); const colContainer =
+document.getElementById("profColleges"); if (prof.colleges &&
+prof.colleges.length > 0) { colContainer.innerHTML = prof.colleges .map( (col)
+=> `
+<div class="mb-3 border-bottom custom-border pb-3 last-border-none">
+  <h5 class="fw-bold text-light mb-1">${col.name}</h5>
+  <p class="text-muted-custom small mb-0">
+    <strong>Специальность:</strong> ${col.specialty || "-"}
+  </p>
+</div>
+`, ) .join(""); } else { colBlock.classList.add("d-none"); } const
+careerContainer = document.getElementById("profCareer"); if (prof.careerPath &&
+prof.careerPath.length > 0) { careerContainer.innerHTML = prof.careerPath .map(
+(step, index) => `
+<div
+  class="text-center position-relative bg-surface p-2 z-index-2 mb-3 mb-md-0"
+  style="min-width: 120px"
+>
+  <div
+    class="rounded-circle bg-dark border border-primary mx-auto mb-2 d-flex align-items-center justify-content-center text-primary-custom fw-bold"
+    style="width: 40px; height: 40px"
+  >
+    ${index + 1}
+  </div>
+  <span class="d-block text-light small fw-bold">${step}</span>
+</div>
+`, ) .join(""); const lineDiv = document.createElement("div"); lineDiv.className
+= "position-absolute start-50 top-0 h-100 border-start custom-border d-md-none";
+lineDiv.style.zIndex = "1"; careerContainer.appendChild(lineDiv); }
+document.title = `ProfBel | ${prof.title}`; } catch (err) { console.error(err);
+errorBlock.classList.remove("d-none"); } });
