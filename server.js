@@ -7,7 +7,12 @@ const path = require("path");
 const app = express();
 
 // 1. НАСТРОЙКИ (Middleware)
-app.use(cors()); // Разрешает фронтенду делать запросы к бекенду
+app.use(
+  cors({
+    origin: ["https://profbel.vercel.app", "http://localhost:5173"], // Замени на свой адрес верселя
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // 2. РАБОТА С ФАЙЛАМИ
