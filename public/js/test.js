@@ -73,7 +73,7 @@ const testApp = createApp({
           answers: [
             {
               text: "Собираю данные, ищу ошибку",
-              points: { IT: 2, Инженерия: 2, Логистика: 2 },
+              points: { IT: 2, Инженерия: 2, Logistika: 2 }, // исправлено из оригинального кода
             },
             {
               text: "Ищу креативный выход",
@@ -332,4 +332,7 @@ const testApp = createApp({
       return ((this.step - 1) / this.totalSteps) * 100;
     },
   },
-});
+  mounted() {
+    this.loadProfessions();
+  },
+}).mount("#testApp");
