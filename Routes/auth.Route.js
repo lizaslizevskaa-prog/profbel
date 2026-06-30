@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
+// РЕГИСТРАЦИЯ (умная - обновляет неподтвержденные аккаунты)
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, gender, age, education } = req.body;
@@ -25,22 +26,20 @@ router.post("/register", async (req, res) => {
 
     let user = await User.findOne({ email });
 
+    if (user && user.isVerified) {
+      return res.status(400).json({ message: "Этот Email уже занят" });
+    }
+
     if (user) {
-      if (user.isVerified) {
-        // Если почта уже подтверждена - не даем регаться
-        return res.status(400).json({ message: "Этот Email уже занят" });
-      } else {
-        // Если аккаунт завис "неподтвержденным" - обновляем ему код и данные
-        user.name = name;
-        user.password = hashedPassword;
-        user.gender = gender;
-        user.age = age;
-        user.education = education;
-        user.verificationCode = code;
-        await user.save();
-      }
+      user.name = name;
+      user.password = hashedPassword;
+      user.gender = gender;
+      user.age = age;
+      user.education = education;
+      user.verificationCode = code;
+      user.isVerified = false;
+      await user.save();
     } else {
-      // Если такого email вообще нет - создаем нового
       user = new User({
         name,
         email,
@@ -57,22 +56,24 @@ router.post("/register", async (req, res) => {
     if (process.env.EMAIL_USER) {
       try {
         await transporter.sendMail({
-          from: `"ProfBel" <${process.env.EMAIL_USER}>`, // КРАСИВОЕ ИМЯ ОТПРАВИТЕЛЯ
+          from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: email,
           subject: "Код подтверждения ProfBel",
           html: `<h2>Ваш код: ${code}</h2>`,
         });
       } catch (e) {
-        console.error("Ошибка отправки письма", e);
+        console.error("Ошибка отправки письма:", e);
       }
     }
     console.log(`🔑 КОД ДЛЯ ${email}: ${code}`);
     res.status(201).json({ message: "Код отправлен на почту!" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Ошибка сервера" });
   }
 });
 
+// ПОДТВЕРЖДЕНИЕ ПОЧТЫ
 router.post("/verify", async (req, res) => {
   try {
     const { email, code } = req.body;
@@ -88,6 +89,7 @@ router.post("/verify", async (req, res) => {
   }
 });
 
+// ВХОД
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -115,6 +117,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// СБРОС ПАРОЛЯ
 router.post("/forgot-password", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -125,15 +128,37 @@ router.post("/forgot-password", async (req, res) => {
     if (process.env.EMAIL_USER) {
       try {
         await transporter.sendMail({
-          from: `"ProfBel" <${process.env.EMAIL_USER}>`, // КРАСИВОЕ ИМЯ ОТПРАВИТЕЛЯ
+          from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: user.email,
-          subject: "Новый пароль",
+          subject: "Новый пароль ProfBel",
           html: `<h3>Пароль: ${newPass}</h3>`,
         });
       } catch (e) {}
     }
     console.log(`🔑 НОВЫЙ ПАРОЛЬ ДЛЯ ${user.email}: ${newPass}`);
     res.json({ message: "Пароль отправлен!" });
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка" });
+  }
+});
+
+// СБРОС НЕПОДТВЕРЖДЕННОГО АККАУНТА (СЕКРЕТНЫЙ РОУТ)
+// Этот роут удалит из базы твой неподтвержденный аккаунт,
+// чтобы ты мог(ла) зарегистрироваться заново.
+router.post("/force-delete-unverified", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.json({ message: "Такого аккаунта нет" });
+    if (user.isVerified)
+      return res
+        .status(400)
+        .json({ message: "Аккаунт уже подтвержден, удалять нельзя" });
+    await User.deleteOne({ email });
+    res.json({
+      message:
+        "Неподтвержденный аккаунт удален! Теперь можно регистрироваться заново.",
+    });
   } catch (err) {
     res.status(500).json({ message: "Ошибка" });
   }
