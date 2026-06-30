@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 7. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ (ИДЕАЛЬНО РОВНЫЕ)
+  // 7. РЕЗУЛЬТАТЫ НА ГЛАВНОЙ
   const pastResCont = document.getElementById("pastResultsContainer");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 9. ЛОГИКА ФОРМ АВТОРИЗАЦИИ
+  // 9. ЛОГИКА ФОРМ АВТОРИЗАЦИИ (ЖЕЛЕЗОБЕТОННАЯ)
   const loginForm = document.getElementById("loginForm");
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
@@ -261,93 +261,180 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
   );
 
+  // --- РЕГИСТРАЦИЯ ---
   if (regForm)
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const age = parseInt(document.getElementById("regAge").value);
-      if (age < 14 || age > 100) {
-        showNotification("Возраст от 14 до 100 лет", "error");
+      if (isNaN(age) || age < 14 || age > 100) {
+        alert("Пожалуйста, введите корректный возраст (от 14 до 100 лет)");
         return;
       }
+
       const pass = document.getElementById("regPassword").value;
       if (!/^(?=.*[A-ZА-ЯЁ])(?=.*\d).{6,}$/.test(pass)) {
-        showNotification("Пароль: 6+ симв, заглавная буква, цифра", "error");
+        alert(
+          "Слабый пароль! Нужно: минимум 6 символов, 1 заглавная буква и 1 цифра.",
+        );
         return;
       }
+
       currentRegEmail = document.getElementById("regEmail").value;
       const body = {
         name: document.getElementById("regName").value,
         email: currentRegEmail,
         password: pass,
-        age,
         gender: document.getElementById("regGender").value,
+        age: age,
         education: document.getElementById("regEdu").value,
       };
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showF(verifyForm, "Подтверждение");
-        showNotification(data.message);
-      } else showNotification(data.message, "error");
+
+      const submitBtn = regForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          alert("Отлично! " + data.message);
+          showF(verifyForm, "Подтверждение");
+        } else {
+          alert("Ошибка: " + data.message);
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка связи с сервером! Проверьте интернет.");
+      }
     });
 
+  // --- ПОДТВЕРЖДЕНИЕ ---
   if (verifyForm)
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const res = await fetch("/api/auth/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: currentRegEmail,
-          code: document.getElementById("verifyCode").value,
-        }),
-      });
-      if (res.ok) {
-        showNotification("Успех!");
-        showF(loginForm, "Вход");
-      } else showNotification("Ошибка кода", "error");
+      const submitBtn = verifyForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: currentRegEmail,
+            code: document.getElementById("verifyCode").value,
+          }),
+        });
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          alert("Почта успешно подтверждена! Теперь вы можете войти.");
+          showF(loginForm, "Вход");
+        } else {
+          alert("Неверный код! Проверьте письмо еще раз.");
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка связи с сервером.");
+      }
     });
 
+  // --- ВХОД ---
   if (loginForm)
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const inputs = loginForm.querySelectorAll("input");
       const email = inputs[0].value;
       const password = inputs[1].value;
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.reload();
-      } else showNotification(data.message, "error");
+
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      try {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.reload();
+        } else {
+          alert("Ошибка: " + data.message);
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка связи с сервером.");
+      }
     });
 
+  // --- ЗАБЫЛИ ПАРОЛЬ ---
   if (forgotForm)
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("forgotEmail").value;
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showNotification(data.message);
-        currentRegEmail = email;
-        showF(resetPasswordForm, "Новый пароль");
-      } else showNotification(data.message, "error");
+      const submitBtn = forgotForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          alert("Пароль успешно отправлен на вашу почту!");
+          currentRegEmail = email;
+          showF(resetPasswordForm, "Новый пароль");
+        } else {
+          alert("Ошибка: " + data.message);
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка связи с сервером.");
+      }
     });
 
+  // --- СБРОС ПАРОЛЯ ---
   if (resetPasswordForm)
     resetPasswordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -356,16 +443,38 @@ document.addEventListener("DOMContentLoaded", () => {
         code: document.getElementById("resetCode").value,
         newPassword: document.getElementById("resetNewPassword").value,
       };
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showNotification(data.message);
-        showF(loginForm, "Вход");
-      } else showNotification(data.message, "error");
+
+      const submitBtn = resetPasswordForm.querySelector(
+        'button[type="submit"]',
+      );
+      const originalText = submitBtn.innerHTML;
+
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+        submitBtn.disabled = true;
+
+        const res = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          alert("Пароль успешно изменен! Вы можете войти.");
+          showF(loginForm, "Вход");
+        } else {
+          alert("Ошибка: " + data.message);
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert("Ошибка связи с сервером.");
+      }
     });
 });
 
@@ -440,7 +549,6 @@ window.loadComments = async function (storyId) {
           ? `<button class="btn btn-link text-danger p-0 ms-auto" onclick="window.deleteComment('${c._id}', '${storyId}')" title="Удалить"><i class="fas fa-trash-alt"></i></button>`
           : "";
 
-        // Вложенные ответы
         const repliesHtml = (c.replies || [])
           .map((r) => {
             const isReplyOwner = currentUserId === r.userId || isAdmin;
