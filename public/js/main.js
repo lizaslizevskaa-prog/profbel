@@ -1,6 +1,6 @@
 let globalStories = [];
 
-// 1. ГЕНЕРАТОР УВЕДОМЛЕНИЙ (КРАСИВЫЕ АЛЕРТЫ-ТОСТЫ)
+// 1. ГЕНЕРАТОР ВСПЛЫВАЮЩИХ УВЕДОМЛЕНИЙ (КРАСИВЫЕ ТОСТЫ)
 window.showNotification = function (message, type = "success") {
   let container = document.getElementById("toast-container");
   if (!container) {
@@ -18,6 +18,39 @@ window.showNotification = function (message, type = "success") {
   toast.innerHTML = `<div class="d-flex"><div class="toast-body fw-bold fs-6"><i class="fas ${iconClass} me-2"></i> ${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button></div>`;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 4000);
+};
+
+// 2. ГЕНЕРАТОР КРАСИВЫХ ДИАЛОГОВЫХ ОКОН (КРАСИВЫЕ АЛЕРТЫ)
+window.showCustomAlert = function (title, message, type = "success") {
+  // Удаляем старый алерт, если он остался на странице
+  const oldAlert = document.getElementById("custom-alert-modal");
+  if (oldAlert) oldAlert.remove();
+
+  const iconClass =
+    type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
+  const titleColor = type === "success" ? "text-primary-custom" : "text-danger";
+
+  const modalHtml = `
+    <div class="modal fade" id="custom-alert-modal" tabindex="-1" aria-hidden="true" style="z-index: 10050;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-light border custom-border" style="background-color: var(--bg-surface) !important; border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);">
+          <div class="modal-header border-bottom custom-border border-opacity-25 pb-3 pt-4 justify-content-center">
+            <h5 class="modal-title fw-bold text-center ${titleColor}">
+              <i class="fas ${iconClass} me-2"></i> ${title}
+            </h5>
+          </div>
+          <div class="modal-body p-4 text-center">
+            <div class="fs-5 text-muted-custom" style="line-height: 1.6;">${message}</div>
+            <button type="button" class="btn btn-accent-glow px-5 py-2 mt-3" data-bs-dismiss="modal">Понятно</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+  const modalEl = document.getElementById("custom-alert-modal");
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
 };
 
 // ==========================================
@@ -151,7 +184,7 @@ window.deleteReply = async function (cId, rId, sId) {
 };
 
 // ==========================================
-// ОСНОВНОЙ СКРИПТ САЙТА
+// ОСНОВНОЙ СКИПТ САЙТА
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   // ТЕМА И ПАРОЛИ
@@ -521,7 +554,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- ЗАБЫЛИ ПАРОЛЬ (Рабочая отправка реальных писем) ---
+  // --- ЗАБЫЛИ ПАРОЛЬ (Оставлено красивое уведомление) ---
   if (forgotForm) {
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -543,11 +576,8 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = false;
 
         if (res.ok) {
-          // ИСПРАВЛЕНИЕ: Используем красивый тост об отправке пароля
-          window.showNotification(
-            "Новый пароль успешно отправлен на вашу почту!",
-            "success",
-          );
+          // ИСПРАВЛЕНИЕ: Используем красивый тост и красивое диалоговое окно для пароля
+          window.showCustomAlert("Сброс пароля", data.message, "success");
           showF(loginForm, "Вход");
         } else {
           window.showNotification("Ошибка: " + data.message, "error");

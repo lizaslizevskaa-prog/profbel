@@ -2,16 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const User = require("../Models/user.Model");
-
-// Ваша исходная настройка почты для "Забыли пароль" (осталась нетронутой)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
 
 router.post("/register", async (req, res) => {
   try {
@@ -37,7 +28,7 @@ router.post("/register", async (req, res) => {
       user.gender = gender;
       user.age = age;
       user.education = education;
-      user.isVerified = true; // Сразу подтверждаем аккаунт
+      user.isVerified = true; // Сразу подтверждаем аккаунт при регистрации
       await user.save();
     } else {
       user = new User({
@@ -47,15 +38,17 @@ router.post("/register", async (req, res) => {
         gender,
         age,
         education,
-        isVerified: true, // Сразу подтверждаем аккаунт
+        isVerified: true, // Сразу подтверждаем аккаунт при регистрации
       });
       await user.save();
     }
 
-    // Полностью убрали отправку писем при регистрации. Всё происходит мгновенно.
+    // Почта полностью отключена для регистрации. Всё происходит мгновенно.
     res
       .status(201)
-      .json({ message: "Регистрация успешна! Теперь вы можете войти." });
+      .json({
+        message: "Регистрация успешна! Теперь вы можете войти в аккаунт.",
+      });
   } catch (err) {
     console.error("Ошибка при регистрации:", err);
     res.status(500).json({ message: "Ошибка сервера" });
@@ -108,24 +101,15 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).json({ message: "Email не найден" });
+
     const newPass = Math.random().toString(36).slice(-8) + "1A";
     user.password = await bcrypt.hash(newPass, 10);
     await user.save();
 
-    // Ваша оригинальная рабочая логика отправки пароля на почту через Gmail
-    if (process.env.EMAIL_USER) {
-      try {
-        await transporter.sendMail({
-          from: `"ProfBel" <${process.env.EMAIL_USER}>`,
-          to: user.email,
-          subject: "Новый пароль ProfBel",
-          html: `<h3>Ваш новый пароль: <span style="color: #00bcd4;">${newPass}</span></h3><p>Используйте его для входа, а затем сможете сменить в личном кабинете.</p>`,
-        });
-      } catch (e) {
-        console.error("Ошибка отправки письма при восстановлении:", e);
-      }
-    }
-    res.json({ message: "Новый пароль отправлен на почту!" });
+    // Генерация и возвращение временного пароля прямо в ответе (без отправки на заблокированную почту)
+    res.json({
+      message: `Сброс пароля выполнен! Ваш новый временный пароль: <span class="text-primary-custom fw-bold">${newPass}</span>. Используйте его для входа и затем смените в личном кабинете.`,
+    });
   } catch (err) {
     res.status(500).json({ message: "Ошибка" });
   }
