@@ -225,7 +225,7 @@ const testApp = createApp({
   methods: {
     async loadProfessions() {
       // ИСПРАВЛЕНИЕ: Путь сделан относительным
-      const res = await fetch("/api/professions");
+      const res = await fetch(`${API_URL}/api/professions`);
       this.professionsFromDb = await res.json();
     },
     startTest() {
@@ -293,7 +293,7 @@ const testApp = createApp({
       if (token) {
         try {
           // ИСПРАВЛЕНИЕ: Путь сделан относительным
-          const res = await fetch("/api/profile/test-result", {
+          const res = await fetch(`${API_URL}/api/profile/test-result`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

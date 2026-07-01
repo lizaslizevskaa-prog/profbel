@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // ИСПРАВЛЕНИЕ: Путь сделан относительным
-    const res = await fetch("/api/professions");
+    const res = await fetch(`${API_URL}/api/professions`);
     allProfessions = await res.json();
   } catch (err) {
     console.error("Ошибка загрузки каталога:", err);
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (token) {
       try {
         // ИСПРАВЛЕНИЕ: Путь сделан относительным
-        const res = await fetch("/api/profile/me", {
+        const res = await fetch(`${API_URL}/api/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const icon = e.currentTarget.querySelector("i");
         try {
           // ИСПРАВЛЕНИЕ: Путь сделан относительным
-          const res = await fetch("/api/profile/favorites", {
+          const res = await fetch(`${API_URL}/api/profile/favorites`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

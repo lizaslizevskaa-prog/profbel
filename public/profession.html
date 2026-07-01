@@ -3,7 +3,7 @@ new URLSearchParams(window.location.search); const profId = urlParams.get("id");
 const errorBlock = document.getElementById("errorBlock"); const profDataBlock =
 document.getElementById("profDataBlock"); if (!profId) {
 errorBlock.classList.remove("d-none"); return; } try { // ИСПРАВЛЕНИЕ: Путь
-сделан относительным const res = await fetch(`/api/professions/${profId}`); if
+сделан относительным const res = await fetch(`${API_URL}/api/professions/${profId}`); if
 (!res.ok) throw new Error("Профессия не найдена"); const prof = await
 res.json(); profDataBlock.classList.remove("d-none");
 document.getElementById("profTitle").textContent = prof.title;

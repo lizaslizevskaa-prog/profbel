@@ -57,7 +57,7 @@ window.loadComments = async function (storyId) {
     document.getElementById("addCommentForm").onsubmit = async (e) => {
       e.preventDefault();
       try {
-        const res = await fetch("/api/comments", {
+        const res = await fetch(`${API_URL}/api/comments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -80,7 +80,7 @@ window.loadComments = async function (storyId) {
   }
 
   try {
-    const res = await fetch(`/api/comments/${storyId}`);
+    const res = await fetch(`${API_URL}/api/comments/${storyId}`);
     const comments = await res.json();
     if (comments.length === 0) {
       commentsList.innerHTML = `<div class="text-center text-muted-custom py-3">Вопросов пока нет.</div>`;
@@ -118,7 +118,7 @@ window.loadComments = async function (storyId) {
 window.sendReply = async function (e, commentId, storyId) {
   e.preventDefault();
   const text = document.querySelector(`.ri-${commentId}`).value;
-  const res = await fetch("/api/comments/" + commentId + "/reply", {
+  const res = await fetch(`${API_URL}/api/comments/${commentId}/reply`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -134,7 +134,7 @@ window.sendReply = async function (e, commentId, storyId) {
 
 window.deleteComment = async function (id, sId) {
   if (confirm("Удалить вопрос?")) {
-    await fetch(`/api/comments/${id}`, {
+    await fetch(`${API_URL}/api/comments/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
@@ -144,7 +144,7 @@ window.deleteComment = async function (id, sId) {
 
 window.deleteReply = async function (cId, rId, sId) {
   if (confirm("Удалить ответ?")) {
-    await fetch(`/api/comments/${cId}/reply/${rId}`, {
+    await fetch(`${API_URL}/api/comments/${cId}/reply/${rId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
         message: document.getElementById("userMessage").value.trim(),
       };
       try {
-        const res = await fetch("/api/feedback", {
+        const res = await fetch(`${API_URL}/api/feedback`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isPaused = false;
     const loadSlider = async () => {
       try {
-        const res = await fetch("/api/stories/approved");
+        const res = await fetch(`${API_URL}/api/stories/approved`);
         const stories = await res.json();
         if (stories.length === 0) return;
         sliderTrack.innerHTML = stories
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (storiesGridView) {
     const loadGrid = async () => {
       try {
-        const res = await fetch("/api/stories/approved");
+        const res = await fetch(`${API_URL}/api/stories/approved`);
         globalStories = await res.json();
         storiesGridView.innerHTML = globalStories
           .map(
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pastResCont.parentElement.classList.remove("d-none");
       pastResCont.innerHTML = `<div class="col-12 text-center py-5"><div class="p-5 rounded-4 border custom-border bg-surface shadow-lg"><i class="fas fa-lock fa-3x text-muted-custom mb-3"></i><h3 class="h4 text-light fw-bold mb-3">Войдите в личный кабинет</h3><p class="text-muted-custom mb-4">Чтобы увидеть свои результаты.</p><button class="btn btn-outline-cyan px-4 py-2" data-bs-toggle="modal" data-bs-target="#authModal">Войти</button></div></div>`;
     } else {
-      fetch("/api/profile/me", {
+      fetch(`${API_URL}/api/profile/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (u.testResults && u.testResults.length > 0) {
             if (pastResCont.parentElement)
               pastResCont.parentElement.classList.remove("d-none");
-            fetch("/api/professions")
+                fetch(`${API_URL}/api/professions`)
               .then((r) => r.json())
               .then((allProfessions) => {
                 pastResCont.innerHTML = u.testResults
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/register", {
+        const res = await fetch(`${API_URL}/api/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -460,7 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Проверка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/verify", {
+        const res = await fetch(`${API_URL}/api/auth/verify`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -496,7 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -535,7 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<i class="fas fa-spinner fa-spin"></i> Отправка...';
         submitBtn.disabled = true;
 
-        const res = await fetch("/api/auth/forgot-password", {
+        const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
