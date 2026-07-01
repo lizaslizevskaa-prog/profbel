@@ -44,7 +44,16 @@ mongoose
   .then(() => console.log("✅ База данных успешно подключена!"))
   .catch((err) => console.error("❌ Ошибка подключения к БД:", err));
 
-// 5. ЗАПУСК
+// 5. HEALTH CHECK (для Railway, чтобы не засыпал)
+app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+
+// 6. ГЛОБАЛЬНЫЙ ОБРАБОТЧИК ОШИБОК
+app.use((err, req, res, next) => {
+  console.error("❌ Необработанная ошибка:", err);
+  res.status(500).json({ message: "Ошибка сервера" });
+});
+
+// 6. ЗАПУСК
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Сервер запущен на порту ${PORT}`);

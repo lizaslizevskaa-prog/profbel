@@ -514,12 +514,12 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("user", JSON.stringify(data.user));
           window.location.reload();
         } else {
-          window.showNotification("Ошибка: " + data.message, "error");
+          window.showNotification(data.message, "error");
         }
       } catch (error) {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        window.showNotification("Ошибка связи", "error");
+        window.showNotification("Сервер не отвечает. Подождите 30 сек и попробуйте снова.", "error");
       }
     });
   }
