@@ -403,8 +403,8 @@
                 type="text"
                 id="verifyCode"
                 class="form-control custom-input text-center fs-3 mb-4"
-                placeholder="0000"
-                maxlength="4"
+                placeholder="000000"
+                maxlength="6"
                 style="height: 60px; letter-spacing: 10px"
                 required
               />
@@ -425,13 +425,47 @@
                 required
               />
               <button type="submit" class="btn btn-accent-glow w-100 mb-3 py-3">
-                Отправить пароль
+                Отправить код
               </button>
               <div class="text-center">
                 <a href="#" class="small text-primary-custom backToLoginBtn"
                   >Назад ко входу</a
                 >
               </div>
+            </form>
+            <!-- СБРОС ПАРОЛЯ (ШАГ 2) -->
+            <form id="resetPasswordForm" class="d-none">
+              <p class="small text-muted-custom mb-4 text-center">
+                Введите код из письма и новый пароль.
+              </p>
+              <input
+                type="text"
+                id="resetCode"
+                class="form-control custom-input mb-3 text-center"
+                placeholder="Код из письма"
+                required
+              />
+              <div class="position-relative mb-4">
+                <input
+                  type="password"
+                  id="resetNewPassword"
+                  class="form-control custom-input text-light"
+                  placeholder="Новый пароль"
+                  required
+                />
+                <i
+                  class="fas fa-eye position-absolute text-muted-custom toggle-password"
+                  style="
+                    right: 15px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    cursor: pointer;
+                  "
+                ></i>
+              </div>
+              <button type="submit" class="btn btn-accent-glow w-100 py-3">
+                Сохранить пароль
+              </button>
             </form>
           </div>
         </div>

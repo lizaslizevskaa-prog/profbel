@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
     avatar: { type: String, default: "default-avatar.png" },
     isVerified: { type: Boolean, default: false },
     verificationCode: { type: String },
+    codeExpires: { type: Date },
 
     // ИСПРАВЛЕНО: Теперь это String, чтобы сохранять ID из MongoDB
     favoriteProfessions: [{ type: String }],

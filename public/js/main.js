@@ -352,11 +352,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const regForm = document.getElementById("registerForm");
   const verifyForm = document.getElementById("verifyForm");
   const forgotForm = document.getElementById("forgotForm");
+  const resetPasswordForm = document.getElementById("resetPasswordForm");
   const authModalTitle = document.getElementById("authModalTitle");
   let currentRegEmail = "";
 
   const showF = (f, t) => {
-    [loginForm, regForm, verifyForm, forgotForm].forEach((el) => {
+    [loginForm, regForm, verifyForm, forgotForm, resetPasswordForm].forEach((el) => {
       if (el) {
         el.classList.add("d-none");
         el.classList.remove("d-block");
@@ -437,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           window.showNotification(data.message, "success");
-          showF(loginForm, "Вход");
+          showF(verifyForm, "Подтверждение почты");
         } else {
           window.showNotification("Ошибка: " + data.message, "error");
         }
@@ -449,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- ПОДТВЕРЖДЕНИЕ (Оставлено для совместимости, но больше не вызывается при регистрации) ---
+  // --- ПОДТВЕРЖДЕНИЕ ПОЧТЫ ---
   if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -523,11 +524,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- ЗАБЫЛИ ПАРОЛЬ (Оставлено красивое уведомление) ---
+  // --- ЗАБЫЛИ ПАРОЛЬ (ШАГ 1) ---
   if (forgotForm) {
     forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("forgotEmail").value;
+      currentRegEmail = document.getElementById("forgotEmail").value;
       const submitBtn = forgotForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       try {
@@ -538,18 +539,51 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email: currentRegEmail }),
         });
         const data = await res.json();
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
 
         if (res.ok) {
-          // ИСПРАВЛЕНИЕ: Используем красивый тост об отправке пароля
-          window.showNotification(
-            "Новый пароль успешно отправлен на вашу почту!",
-            "success",
-          );
+          window.showNotification(data.message, "success");
+          showF(resetPasswordForm, "Новый пароль");
+        } else {
+          window.showNotification("Ошибка: " + data.message, "error");
+        }
+      } catch (error) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        window.showNotification("Ошибка сервера!", "error");
+      }
+    });
+  }
+
+  // --- СБРОС ПАРОЛЯ (ШАГ 2) ---
+  if (resetPasswordForm) {
+    resetPasswordForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("resetCode").value;
+      const newPassword = document.getElementById("resetNewPassword").value;
+      const submitBtn = resetPasswordForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      try {
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+        submitBtn.disabled = true;
+
+        const res = await fetch(`${API_URL}/api/auth/reset-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: currentRegEmail, code, newPassword }),
+        });
+        const data = await res.json();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        if (res.ok) {
+          window.showNotification(data.message, "success");
+          resetPasswordForm.reset();
           showF(loginForm, "Вход");
         } else {
           window.showNotification("Ошибка: " + data.message, "error");
