@@ -72,7 +72,6 @@ router.post("/:id/reply", protect, async (req, res) => {
       const originalUser = await User.findById(comment.userId);
       if (originalUser && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         try {
-          // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
           await transporter.sendMail({
             from: `"ProfBel" <${process.env.EMAIL_USER}>`,
             to: originalUser.email,
@@ -85,15 +84,12 @@ router.post("/:id/reply", protect, async (req, res) => {
                     <p>Зайдите на сайт ProfBel, чтобы ответить!</p>
                    </div>`,
           });
-          console.log(
-            "✅ Письмо-уведомление о новом ответе на комментарий отправлено!",
-          );
+          console.log("✅ Уведомление о ответе отправлено на", originalUser.email);
         } catch (e) {
-          console.error(
-            "❌ Ошибка отправки письма при ответе на комментарий:",
-            e,
-          );
+          console.error("❌ Ошибка отправки уведомления:", e);
         }
+      } else {
+        console.warn("⚠️ Уведомление не отправлено: email не настроен или пользователь не найден");
       }
     }
 

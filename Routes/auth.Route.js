@@ -85,10 +85,14 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user || !user.isVerified)
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: "Аккаунт не найден. Возможно, нужно зарегистрироваться." });
+    if (!user.isVerified)
       return res
         .status(403)
-        .json({ message: "Аккаунт не найден или не подтвержден" });
+        .json({ message: "Аккаунт не подтвержден" });
     if (!(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ message: "Неверный пароль" });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -116,23 +120,27 @@ router.post("/forgot-password", async (req, res) => {
     user.password = await bcrypt.hash(newPass, 10);
     await user.save();
 
-    if (process.env.EMAIL_USER) {
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       try {
-        // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
         await transporter.sendMail({
           from: `"ProfBel" <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject: "Новый пароль ProfBel",
           html: `<h3>Ваш новый пароль: <span style="color: #00bcd4;">${newPass}</span></h3><p>Используйте его для входа, а затем сможете сменить в личном кабинете.</p>`,
         });
-        console.log("✅ Письмо с новым паролем успешно отправлено на Vercel!");
+        console.log("✅ Письмо с новым паролем отправлено на", user.email);
       } catch (e) {
-        console.error("❌ Ошибка отправки письма при восстановлении:", e);
+        console.error("❌ Ошибка отправки письма:", e);
+        return res.status(500).json({ message: "Не удалось отправить письмо. Попробуйте позже." });
       }
+    } else {
+      console.warn("⚠️ EMAIL_USER/EMAIL_PASS не заданы — письмо не отправлено");
+      return res.status(500).json({ message: "Сервис почты не настроен. Обратитесь к администратору." });
     }
     res.json({ message: "Новый пароль успешно отправлен на вашу почту!" });
   } catch (err) {
-    res.status(500).json({ message: "Ошибка" });
+    console.error("❌ Ошибка forgot-password:", err);
+    res.status(500).json({ message: "Ошибка сервера" });
   }
 });
 
