@@ -3,15 +3,7 @@ const router = express.Router();
 const Story = require("../Models/story.Model");
 const jwt = require("jsonwebtoken");
 const User = require("../Models/user.Model");
-const nodemailer = require("nodemailer");
-
-// Настройка почты для отправки через Gmail SMTP (на Vercel порты 465/587 полностью открыты)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+const { sendMail } = require("../Utils/mailer");
 
 const protect = (req, res, next) => {
   try {
@@ -35,6 +27,11 @@ router.get("/pending", protect, async (req, res) => {
   res.json(await Story.find({ status: "pending" }));
 });
 
+// ПОЛУЧИТЬ ОТКЛОНЁННЫЕ ИСТОРИИ
+router.get("/rejected", protect, async (req, res) => {
+  res.json(await Story.find({ status: "rejected" }));
+});
+
 // ОТПРАВИТЬ НОВУЮ ИСТОРИЮ
 router.post("/submit", protect, async (req, res) => {
   const s = new Story({ ...req.body, userId: req.user.id, status: "pending" });
@@ -48,23 +45,38 @@ router.put("/approve/:id", protect, async (req, res) => {
     status: "approved",
   });
   const user = await User.findById(story.userId);
-  if (user && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+  if (user && process.env.GOOGLE_REFRESH_TOKEN) {
     try {
-      // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
-      await transporter.sendMail({
-        from: `"ProfBel" <${process.env.EMAIL_USER}>`,
+      await sendMail({
         to: user.email,
         subject: "Ваша история опубликована!",
-        html: `<h3>Поздравляем!</h3><p>Ваша история "${story.name}" успешно прошла модерацию и опубликована на сайте ProfBel.</p>`,
+        html: `<h3>Поздравляем!</h3><p>Ваша история "<b>${story.name}</b>" успешно прошла модерацию и опубликована на сайте ProfBel.</p>`,
       });
-      console.log(
-        "✅ Письмо с уведомлением об одобрении истории успешно отправлено!",
-      );
     } catch (e) {
-      console.error("❌ Ошибка отправки письма при одобрении истории:", e);
+      console.error("Ошибка отправки письма при одобрении:", e);
     }
   }
   res.json({ message: "Одобрено" });
+});
+
+// ОТКЛОНИТЬ ИСТОРИЮ
+router.put("/reject/:id", protect, async (req, res) => {
+  const story = await Story.findByIdAndUpdate(req.params.id, {
+    status: "rejected",
+  });
+  const user = await User.findById(story.userId);
+  if (user && process.env.GOOGLE_REFRESH_TOKEN) {
+    try {
+      await sendMail({
+        to: user.email,
+        subject: "История не прошла модерацию",
+        html: `<h3>Уведомление от ProfBel</h3><p>Ваша история "<b>${story.name}</b>" не прошла модерацию.</p><p>Пожалуйста, отредактируйте и отправьте заново.</p>`,
+      });
+    } catch (e) {
+      console.error("Ошибка отправки письма при отклонении:", e);
+    }
+  }
+  res.json({ message: "Отклонено" });
 });
 
 // УДАЛИТЬ ИСТОРИЮ

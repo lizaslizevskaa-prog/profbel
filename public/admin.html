@@ -589,15 +589,18 @@
       }
 
       async function loadStories() {
-        // ИСПРАВЛЕНИЕ: Путь сделан относительным
         const resP = await fetch(`${API_URL}/api/stories/pending`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const pending = await resP.json();
 
-        // ИСПРАВЛЕНИЕ: Путь сделан относительным
         const resA = await fetch(`${API_URL}/api/stories/approved`);
         const approved = await resA.json();
+
+        const resR = await fetch(`${API_URL}/api/stories/rejected`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const rejected = await resR.json();
 
         let html = '<h5 class="text-warning mt-3">На модерации:</h5>';
         if (pending.length === 0)
@@ -605,7 +608,7 @@
         html += pending
           .map(
             (s) =>
-              `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark"><h6 class="text-light">${s.name} - ${s.profession}</h6><p class="small text-muted-custom">${s.shortText}</p><div class="d-flex gap-2"><button class="btn btn-sm btn-success w-100" onclick="actStory('${s._id}', 'approve')">Одобрить</button><button class="btn btn-sm btn-danger w-100" onclick="actStory('${s._id}', 'delete')">Отклонить</button></div></div></div>`,
+              `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark"><h6 class="text-light">${s.name} - ${s.profession}</h6><p class="small text-muted-custom">${s.shortText}</p><div class="d-flex gap-2"><button class="btn btn-sm btn-success w-100" onclick="actStory('${s._id}', 'approve')">Одобрить</button><button class="btn btn-sm btn-danger w-100" onclick="actStory('${s._id}', 'reject')">Отклонить</button></div></div></div>`,
           )
           .join("");
 
@@ -616,16 +619,31 @@
               `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark"><h6 class="text-light">${s.name} - ${s.profession}</h6><button class="btn btn-sm btn-danger w-100 mt-2" onclick="actStory('${s._id}', 'delete')">Удалить с сайта</button></div></div>`,
           )
           .join("");
+
+        html += '<h5 class="text-secondary mt-4">Отклонённые:</h5>';
+        if (rejected.length === 0)
+          html += '<p class="small text-muted-custom">Пусто</p>';
+        html += rejected
+          .map(
+            (s) =>
+              `<div class="col-md-6"><div class="p-3 border custom-border rounded-4 bg-dark opacity-75"><h6 class="text-light">${s.name} - ${s.profession}</h6><p class="small text-muted-custom">${s.shortText}</p><button class="btn btn-sm btn-danger w-100 mt-2" onclick="actStory('${s._id}', 'delete')">Удалить</button></div></div>`,
+          )
+          .join("");
         document.getElementById("adminStoriesList").innerHTML = html;
       }
 
       async function actStory(id, action) {
-        const method = action === "approve" ? "PUT" : "DELETE";
-        // ИСПРАВЛЕНИЕ: Путь сделан относительным
-        const url =
-          action === "approve"
-            ? `${API_URL}/api/stories/approve/${id}`
-            : `${API_URL}/api/stories/${id}`;
+        let url, method;
+        if (action === "approve") {
+          url = `${API_URL}/api/stories/approve/${id}`;
+          method = "PUT";
+        } else if (action === "reject") {
+          url = `${API_URL}/api/stories/reject/${id}`;
+          method = "PUT";
+        } else {
+          url = `${API_URL}/api/stories/${id}`;
+          method = "DELETE";
+        }
         await fetch(url, {
           method,
           headers: { Authorization: `Bearer ${token}` },

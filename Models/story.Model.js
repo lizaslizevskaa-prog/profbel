@@ -11,7 +11,7 @@ const StorySchema = new mongoose.Schema(
       type: String,
       default: "https://randomuser.me/api/portraits/lego/1.jpg",
     },
-    status: { type: String, enum: ["pending", "approved"], default: "pending" },
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true },
