@@ -1,15 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Feedback = require("../Models/feedback.Model");
-const nodemailer = require("nodemailer");
-
-// Настройка почты для отправки через Gmail SMTP (на Vercel порты 465/587 полностью открыты)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+const { sendMail } = require("../Utils/mailer");
 
 router.post("/", async (req, res) => {
   const f = new Feedback(req.body);
@@ -25,18 +17,14 @@ router.post("/reply/:id", async (req, res) => {
     const feedback = await Feedback.findById(req.params.id);
     if (!feedback) return res.status(404).json({ message: "Не найдено" });
 
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      try {
-        // НА VERCEL ОБЯЗАТЕЛЕН AWAIT: без него безсерверная функция заморозится до того, как письмо уйдет
-        await transporter.sendMail({
-          from: `"ProfBel | Поддержка" <${process.env.EMAIL_USER}>`,
-          to: feedback.userEmail,
-          subject: "Ответ на ваше обращение - ProfBel",
-          html: `<h3>Здравствуйте, ${feedback.userName}!</h3><p>Вы писали: <i>${feedback.message}</i></p><p><b>Ответ администратора:</b><br>${req.body.replyText}</p>`,
-        });
-        console.log("✅ Письмо с ответом поддержки успешно отправлено!");
-      } catch (e) {
-        console.error("❌ Ошибка отправки письма при ответе на обращение:", e);
+    if (process.env.GOOGLE_REFRESH_TOKEN) {
+      const sent = await sendMail({
+        to: feedback.userEmail,
+        subject: "Ответ на ваше обращение - ProfBel",
+        html: `<h3>Здравствуйте, ${feedback.userName}!</h3><p>Вы писали: <i>${feedback.message}</i></p><p><b>Ответ администратора:</b><br>${req.body.replyText}</p>`,
+      });
+      if (!sent) {
+        console.error("❌ Не удалось отправить ответ на обращение");
       }
     }
     feedback.status = "replied";
