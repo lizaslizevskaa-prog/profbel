@@ -144,4 +144,14 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
+router.get("/check-email", async (req, res) => {
+  try {
+    await transporter.verify();
+    res.json({ status: "ok", message: "Почта настроена корректно" });
+  } catch (e) {
+    console.error("❌ Ошибка проверки почты:", e);
+    res.status(500).json({ status: "error", message: e.message });
+  }
+});
+
 module.exports = router;
