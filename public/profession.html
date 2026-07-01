@@ -52,78 +52,95 @@
       <div id="profDataBlock" class="d-none">
         <a href="catalog.html" class="btn btn-outline-secondary mb-4"><i class="fas fa-arrow-left me-2"></i>Назад в каталог</a>
 
-        <div class="row g-4">
-          <!-- ЛЕВАЯ КОЛОНКА -->
-          <div class="col-lg-5">
-            <div class="detail-card p-4 rounded-4 text-center shadow-lg">
-              <img id="profImage" src="" alt="" class="rounded-4 w-100 mb-4" style="max-height:300px;object-fit:cover;" />
-              <h2 id="profTitle" class="fw-bold mb-2"></h2>
-              <span id="profDirection" class="badge bg-purple-soft text-purple mb-2"></span>
-              <p id="profDemand" class="text-muted-custom small mb-3"></p>
-              <p id="profEduLevel" class="text-muted-custom small"></p>
-              <div class="mt-3 p-3 rounded-4 border custom-border" style="background-color:var(--bg-dark);">
+        <!-- ШАПКА: фото + основная инфа -->
+        <div class="detail-card p-4 p-md-5 rounded-4 shadow-lg mb-4">
+          <div class="row align-items-center g-4">
+            <div class="col-md-5 text-center">
+              <img id="profImage" src="" alt="" class="rounded-4 w-100 shadow" style="max-height:280px;object-fit:cover;" />
+            </div>
+            <div class="col-md-7">
+              <h1 id="profTitle" class="fw-bold mb-2"></h1>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span id="profDirection" class="badge bg-purple-soft text-purple"></span>
+                <span id="profDemand" class="badge bg-dark text-light border custom-border"></span>
+                <span id="profEduLevel" class="badge bg-dark text-light border custom-border"></span>
+              </div>
+              <div class="p-3 rounded-4 border custom-border" style="background-color:var(--bg-dark);">
                 <i class="fas fa-wallet text-primary-custom me-2"></i>
-                <span id="profSalary" class="fw-bold"></span>
+                <span id="profSalary" class="fw-bold fs-5"></span>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- ПРАВАЯ КОЛОНКА -->
-          <div class="col-lg-8">
-            <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
-              <h4 class="fw-bold mb-3">Описание</h4>
-              <p id="profDesc" class="text-muted-custom"></p>
+        <!-- ОПИСАНИЕ И ПЕРСПЕКТИВЫ -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <div class="detail-card p-4 rounded-4 shadow-lg h-100">
+              <h4 class="fw-bold mb-3"><i class="fas fa-info-circle text-cyan me-2"></i>Описание</h4>
+              <p id="profDesc" class="text-muted-custom mb-0"></p>
             </div>
-
-            <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
-              <h4 class="fw-bold mb-3">Перспективы в РБ</h4>
-              <p id="profPerspectives" class="text-muted-custom"></p>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-card p-4 rounded-4 shadow-lg h-100">
+              <h4 class="fw-bold mb-3"><i class="fas fa-rocket text-purple me-2"></i>Перспективы в РБ</h4>
+              <p id="profPerspectives" class="text-muted-custom mb-0"></p>
             </div>
+          </div>
+        </div>
 
-            <!-- ЭКЗАМЕНЫ -->
-            <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
-              <h4 class="fw-bold mb-3"><i class="fas fa-pen text-cyan me-2"></i>Вступительные экзамены (ЦТ/ЦЭ)</h4>
-              <ul id="profExamsList" class="list-unstyled mb-3"></ul>
-              <div class="p-3 rounded-4 border custom-border" style="background-color:var(--bg-dark);">
-                <span class="text-muted-custom small">Проходной балл:</span>
-                <span id="profScore" class="fw-bold text-light ms-2"></span>
+        <!-- ЭКЗАМЕНЫ -->
+        <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
+          <h4 class="fw-bold mb-3"><i class="fas fa-pen text-cyan me-2"></i>Вступительные экзамены (ЦТ/ЦЭ)</h4>
+          <div class="row g-3 align-items-start">
+            <div class="col-md-8">
+              <ul id="profExamsList" class="list-unstyled mb-0"></ul>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-4 border custom-border text-center" style="background-color:var(--bg-dark);">
+                <span class="text-muted-custom small d-block mb-1">Проходной балл</span>
+                <span id="profScore" class="fw-bold fs-4 text-cyan"></span>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- НАВЫКИ -->
-            <div class="row g-4 mb-4">
-              <div class="col-md-6">
-                <div class="detail-card p-4 rounded-4 shadow-lg h-100">
-                  <h5 class="fw-bold mb-3"><i class="fas fa-cog text-cyan me-2"></i>Hard Skills</h5>
-                  <ul id="profHardSkills" class="list-unstyled"></ul>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="detail-card p-4 rounded-4 shadow-lg h-100">
-                  <h5 class="fw-bold mb-3"><i class="fas fa-user-check text-purple me-2"></i>Soft Skills</h5>
-                  <ul id="profSoftSkills" class="list-unstyled"></ul>
-                </div>
-              </div>
+        <!-- НАВЫКИ -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <div class="detail-card p-4 rounded-4 shadow-lg h-100">
+              <h5 class="fw-bold mb-3"><i class="fas fa-cog text-cyan me-2"></i>Hard Skills</h5>
+              <ul id="profHardSkills" class="list-unstyled mb-0"></ul>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-card p-4 rounded-4 shadow-lg h-100">
+              <h5 class="fw-bold mb-3"><i class="fas fa-user-check text-purple me-2"></i>Soft Skills</h5>
+              <ul id="profSoftSkills" class="list-unstyled mb-0"></ul>
+            </div>
+          </div>
+        </div>
 
-            <!-- ГДЕ УЧИТЬСЯ: ВУЗЫ -->
-            <div id="profUniversitiesBlock" class="detail-card p-4 rounded-4 shadow-lg mb-4">
+        <!-- ГДЕ УЧИТЬСЯ -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <div id="profUniversitiesBlock" class="detail-card p-4 rounded-4 shadow-lg h-100">
               <h4 class="fw-bold mb-3"><i class="fas fa-university text-primary-custom me-2"></i>Вузы</h4>
               <div id="profUniversities"></div>
             </div>
-
-            <!-- ГДЕ УЧИТЬСЯ: КОЛЛЕДЖИ -->
-            <div id="profCollegesBlock" class="detail-card p-4 rounded-4 shadow-lg mb-4">
+          </div>
+          <div class="col-md-6">
+            <div id="profCollegesBlock" class="detail-card p-4 rounded-4 shadow-lg h-100">
               <h4 class="fw-bold mb-3"><i class="fas fa-school text-primary-custom me-2"></i>Колледжи</h4>
               <div id="profColleges"></div>
             </div>
-
-            <!-- КАРЬЕРНЫЙ ПУТЬ -->
-            <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
-              <h4 class="fw-bold mb-3"><i class="fas fa-route text-cyan me-2"></i>Карьерный путь</h4>
-              <div id="profCareer" class="d-flex flex-wrap justify-content-center gap-3 position-relative py-3"></div>
-            </div>
           </div>
+        </div>
+
+        <!-- КАРЬЕРНЫЙ ПУТЬ -->
+        <div class="detail-card p-4 rounded-4 shadow-lg mb-4">
+          <h4 class="fw-bold mb-3"><i class="fas fa-route text-cyan me-2"></i>Карьерный путь</h4>
+          <div id="profCareer" class="d-flex flex-wrap justify-content-center gap-3 position-relative py-3"></div>
         </div>
       </div>
     </main>
